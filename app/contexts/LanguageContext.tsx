@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { Locale, defaultLocale, translations, localeNames } from '../../lib/i18n'
+import Cookies from 'js-cookie'
 
 interface LanguageContextType {
   locale: Locale
@@ -13,19 +14,22 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(defaultLocale)
+  const [locale, setLocale] = useState<Locale>(() => {
+    const cookieLocale = Cookies.get('locale') as Locale | undefined
+    return cookieLocale && Object.keys(localeNames).includes(cookieLocale) ? cookieLocale : defaultLocale
+  })
 
   useEffect(() => {
-    // Load language setting from browser localStorage
-    const savedLocale = localStorage.getItem('locale') as Locale
-    if (savedLocale && Object.values(localeNames).includes(savedLocale)) {
-      setLocale(savedLocale)
+    // Sync locale from cookie on mount (in case cookie was changed elsewhere)
+    const cookieLocale = Cookies.get('locale') as Locale | undefined
+    if (cookieLocale && Object.keys(localeNames).includes(cookieLocale) && cookieLocale !== locale) {
+      setLocale(cookieLocale)
     }
   }, [])
 
   const handleSetLocale = (newLocale: Locale) => {
     setLocale(newLocale)
-    localStorage.setItem('locale', newLocale)
+    Cookies.set('locale', newLocale, { expires: 365 })
   }
 
   const t = (key: string): string => {

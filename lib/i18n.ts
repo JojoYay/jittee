@@ -85,11 +85,18 @@ export const translations = {
     contactSubtitle: 'Please feel free to contact us',
     contactMethods: 'Contact Methods',
     contactDescription: 'Please contact us through the following methods',
+    phoneWhatsapp: 'Phone / WhatsApp',
+    phoneWhatsappDescription: 'You can contact us by phone or WhatsApp.',
+    emailLabel: 'Email',
+    emailAddress: 'info@jittee.com',
+    emailDescription: 'Please contact us by email.',
     whatsapp: 'WhatsApp',
     whatsappDescription: 'Please feel free to contact us via WhatsApp',
     phoneLabel: 'Phone',
     phoneNumber: '+65 8815 4153',
     urgentNote: 'For urgent matters, please contact us directly through the above methods. We will respond promptly.',
+    // Footer
+    emailInfo: 'Email: info@jittee.com',
     
     // Common
     learnMore: 'Learn More',
@@ -191,11 +198,18 @@ export const translations = {
     contactSubtitle: '请随时联系我们',
     contactMethods: '联系方式',
     contactDescription: '请通过以下方式联系我们',
+    phoneWhatsapp: '电话 / WhatsApp',
+    phoneWhatsappDescription: '您可以通过电话或WhatsApp与我们联系。',
+    emailLabel: '邮箱',
+    emailAddress: 'info@jittee.com',
+    emailDescription: '请通过电子邮件与我们联系。',
     whatsapp: 'WhatsApp',
     whatsappDescription: '请通过WhatsApp随时联系我们',
     phoneLabel: '电话',
     phoneNumber: '+65 8815 4153',
     urgentNote: '紧急情况请通过上述方式直接联系我们。我们将及时回复。',
+    // Footer
+    emailInfo: '邮箱: info@jittee.com',
     
     // Common
     learnMore: '了解更多',
@@ -297,11 +311,18 @@ export const translations = {
     contactSubtitle: 'お気軽にお問い合わせください',
     contactMethods: 'お問い合わせ方法',
     contactDescription: '以下の方法でお気軽にお問い合わせください',
+    phoneWhatsapp: '電話・WhatsApp',
+    phoneWhatsappDescription: 'お電話またはWhatsAppでご連絡いただけます。',
+    emailLabel: 'メール',
+    emailAddress: 'info@jittee.com',
+    emailDescription: 'メールでご連絡ください。',
     whatsapp: 'WhatsApp',
     whatsappDescription: 'WhatsAppでお気軽にお問い合わせください',
     phoneLabel: '電話',
     phoneNumber: '+65 8815 4153',
     urgentNote: 'お急ぎの場合は、上記の方法で直接お問い合わせください。迅速に対応させていただきます。',
+    // Footer
+    emailInfo: 'Email: info@jittee.com',
     
     // Common
     learnMore: '詳しく見る',

@@ -52,7 +52,7 @@ export default function Footer() {
                   {t('phoneInfo')}
                 </li>
                 <li className="text-base text-gray-300">
-                  {t('email')}
+                  {t('emailInfo')}
                 </li>
               </ul>
             </div>
