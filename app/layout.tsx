@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { LanguageProvider } from './contexts/LanguageContext'
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </LanguageProvider>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ''} />
       </body>
     </html>
   )

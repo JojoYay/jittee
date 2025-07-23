@@ -42,6 +42,7 @@ next-env.d.ts
 plotpicture-firebase-adminsdk-fbsvc-f993189ae8.json
 config/config.prod.json
 config/config.test.json
+config/config.json
 
 #firebase
 .firebase*

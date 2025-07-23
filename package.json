@@ -7,13 +7,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "node scripts/setEnv.js && firebase deploy"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@next/third-parties": "^15.4.3",
     "@tailwindcss/postcss": "^4.1.11",
     "js-cookie": "^3.0.5",
     "next": "^15.4.1",
