@@ -1,13 +1,46 @@
 {
-  "hosting": {
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "frameworksBackend": {
-      "region": "asia-east1"
+  "apphosting": [
+    {
+      "backendId": "jittee",
+      "rootDir": "/",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions",
+        "temp",
+        ".next",
+        "out",
+        "build",
+        "dist",
+        "coverage",
+        ".nyc_output",
+        "*.log",
+        "*.tmp",
+        "*.temp",
+        "emulator-data",
+        "firebase-export-*",
+        "config",
+        "scripts"
+      ]
     }
+  ],
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "emulators": {
+    "apphosting": {
+      "port": 5002,
+      "rootDirectory": "./",
+      "startCommand": "npm run dev"
+    },
+    "storage": {
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

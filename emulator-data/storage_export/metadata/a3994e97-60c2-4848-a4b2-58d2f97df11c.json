@@ -1,0 +1,19 @@
+{
+  "name": "temp/1Huk7Kyv_asBvTKprEZGpb7yqTA9IIVvF/1753663270072.mp4_chunk_0",
+  "bucket": "jittee-corporate-site.firebasestorage.app",
+  "metageneration": 1,
+  "generation": 1754288473230,
+  "contentType": "application/octet-stream",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "d4de03d1-cb55-4202-9807-6742b00e42b7"
+  ],
+  "etag": "WKWexK7qsO4FRgiY5d1TvhWQqYk",
+  "customMetadata": {},
+  "timeCreated": "2025-08-04T06:21:13.231Z",
+  "updated": "2025-08-04T06:21:13.231Z",
+  "size": 3265026,
+  "md5Hash": "muDVDcRr0B8VCqGVOLis9w==",
+  "crc32c": "262720532"
+}

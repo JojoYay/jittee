@@ -50,3 +50,4 @@ config/config.json
 firebase-debug.log*
 
 .vercel
+temp/*

@@ -13,6 +13,7 @@ export const translations = {
   en: {
     // Navigation
     home: 'Home',
+    strengths: 'Our Strengths',
     products: 'Products & Services',
     contact: 'Contact',
     
@@ -120,12 +121,40 @@ export const translations = {
     
     // Products Page
     featuresGallery: 'Features (Click to enlarge)',
-    serviceContent: 'Service Content'
+    serviceContent: 'Service Content',
+    
+    // Strengths Page
+    ourStrengths: 'Our Strengths',
+    strengthsSubtitle: 'Discover what makes Jittee the ideal partner for your business success',
+    strength1Title: 'End-to-End Service Delivery',
+    strength1Description: 'From requirements definition to maintenance, we handle the entire development lifecycle to deliver truly valuable solutions.',
+    strength1Point1: 'Comprehensive requirements analysis and system design',
+    strength1Point2: 'Custom development tailored to your business needs',
+    strength1Point3: 'Ongoing maintenance and continuous improvement support',
+    strength2Title: 'AI-Powered Development Efficiency',
+    strength2Description: 'We leverage cutting-edge AI technology to significantly reduce development costs while maintaining high quality.',
+    strength2Point1: 'Advanced AI tools for faster development cycles',
+    strength2Point2: 'Automated testing and quality assurance processes',
+    strength2Point3: 'Cost-effective solutions without compromising quality',
+    strength3Title: 'Deep Understanding of Japanese Business Culture',
+    strength3Description: 'With extensive experience in Japanese business practices and successful operations in Singapore, we excel at serving Japanese companies.',
+    strength3Point1: 'Thorough understanding of Japanese business customs and practices',
+    strength3Point2: 'Proven track record of successful operations in Singapore',
+    strength3Point3: 'Specialized expertise in serving Japanese companies',
+    endToEndService: 'End-to-End Service',
+    endToEndServiceDescription: 'Complete project lifecycle management from conception to maintenance',
+    aiInnovation: 'AI Innovation',
+    aiInnovationDescription: 'Cutting-edge AI technology for efficient and cost-effective development',
+    japaneseExpertise: 'Japanese Expertise',
+    japaneseExpertiseDescription: 'Deep cultural understanding and proven success in Japanese business environments',
+    strengthsCTA: 'Ready to Experience Our Strengths?',
+    strengthsCTADescription: 'Let us demonstrate how our comprehensive approach can transform your business'
   },
   
   zh: {
     // Navigation
     home: '首页',
+    strengths: '我们的优势',
     products: '产品服务',
     contact: '联系我们',
     
@@ -233,12 +262,40 @@ export const translations = {
     
     // Products Page
     featuresGallery: '提供功能（点击放大）',
-    serviceContent: '服务内容'
+    serviceContent: '服务内容',
+    
+    // Strengths Page
+    ourStrengths: '我们的优势',
+    strengthsSubtitle: '了解为什么Jittee是您业务成功的理想合作伙伴',
+    strength1Title: '端到端服务交付',
+    strength1Description: '从需求定义到维护，我们处理整个开发生命周期，提供真正有价值的解决方案。',
+    strength1Point1: '全面的需求分析和系统设计',
+    strength1Point2: '根据您的业务需求定制开发',
+    strength1Point3: '持续的维护和改进支持',
+    strength2Title: 'AI驱动的开发效率',
+    strength2Description: '我们利用尖端AI技术显著降低开发成本，同时保持高质量。',
+    strength2Point1: '先进的AI工具，加快开发周期',
+    strength2Point2: '自动化测试和质量保证流程',
+    strength2Point3: '经济高效的解决方案，不妥协质量',
+    strength3Title: '对日本商业文化的深度理解',
+    strength3Description: '凭借在日本商业实践中的丰富经验和在新加坡的成功运营，我们擅长为日本公司服务。',
+    strength3Point1: '对日本商业习俗和实践的透彻理解',
+    strength3Point2: '在新加坡成功运营的可靠记录',
+    strength3Point3: '为日本公司服务的专业专长',
+    endToEndService: '端到端服务',
+    endToEndServiceDescription: '从概念到维护的完整项目生命周期管理',
+    aiInnovation: 'AI创新',
+    aiInnovationDescription: '尖端AI技术，实现高效且经济实惠的开发',
+    japaneseExpertise: '日本专长',
+    japaneseExpertiseDescription: '对日本商业环境的深度文化理解和成功经验',
+    strengthsCTA: '准备体验我们的优势？',
+    strengthsCTADescription: '让我们展示我们的综合方法如何改变您的业务'
   },
   
   ja: {
     // Navigation
     home: 'ホーム',
+    strengths: '弊社の強み',
     products: '製品・サービス',
     contact: 'お問い合わせ',
     
@@ -346,7 +403,34 @@ export const translations = {
     
     // Products Page
     featuresGallery: '提供機能（クリックで拡大）',
-    serviceContent: 'サービス内容'
+    serviceContent: 'サービス内容',
+    
+    // Strengths Page
+    ourStrengths: '弊社の強み',
+    strengthsSubtitle: 'Jitteeがお客様のビジネス成功の理想的なパートナーである理由をご紹介します',
+    strength1Title: '要件定義から保守まで一貫したサービス提供',
+    strength1Description: '要件定義から保守まで、開発の全工程を一貫して受け持つことで、本当に価値のあるソリューションを提供できます。',
+    strength1Point1: '包括的な要件分析とシステム設計',
+    strength1Point2: 'お客様のビジネスニーズに合わせたカスタム開発',
+    strength1Point3: '継続的なメンテナンスと改善サポート',
+    strength2Title: 'AIを活用した開発効率化',
+    strength2Description: '最先端のAI技術を活用することで、開発コストを大幅に削減しながら高品質を維持します。',
+    strength2Point1: '開発サイクルを短縮する先進的なAIツール',
+    strength2Point2: '自動化されたテストと品質保証プロセス',
+    strength2Point3: '品質を損なうことのないコスト効率の良いソリューション',
+    strength3Title: '日本の商習慣への深い理解',
+    strength3Description: '日本の商習慣への豊富な経験とシンガポールでの成功した運用実績により、日系企業へのサービスが得意です。',
+    strength3Point1: '日本の商習慣や慣習への深い理解',
+    strength3Point2: 'シンガポールでの成功した運用実績',
+    strength3Point3: '日系企業へのサービスに特化した専門知識',
+    endToEndService: '一貫したサービス',
+    endToEndServiceDescription: '企画から保守まで、プロジェクトの全ライフサイクルを管理',
+    aiInnovation: 'AI革新',
+    aiInnovationDescription: '効率的でコストパフォーマンスの高い開発のための最先端AI技術',
+    japaneseExpertise: '日本企業への専門知識',
+    japaneseExpertiseDescription: '日本のビジネス環境への深い文化的理解と実績',
+    strengthsCTA: '弊社の強みを体験してみませんか？',
+    strengthsCTADescription: '弊社の包括的なアプローチがお客様のビジネスをどのように変革できるかお見せします'
   }
 } as const
 

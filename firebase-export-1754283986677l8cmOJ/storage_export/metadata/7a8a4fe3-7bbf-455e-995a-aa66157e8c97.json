@@ -1,0 +1,19 @@
+{
+  "name": "temp/15qgVD65oaG4NPRM24Y9KULHwJUGcCGJO/dji_fly_20250622_084416_85_1750554361703_video.mp4_chunk_20",
+  "bucket": "jittee-corporate-site.firebasestorage.app",
+  "metageneration": 1,
+  "generation": 1754277015973,
+  "contentType": "application/octet-stream",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "e6e3cab7-acb9-453d-a30e-6630652d870d"
+  ],
+  "etag": "+7rsExdX1Xil1S/1HMW+53hB06M",
+  "customMetadata": {},
+  "timeCreated": "2025-08-04T03:10:15.980Z",
+  "updated": "2025-08-04T03:10:15.980Z",
+  "size": 26214400,
+  "md5Hash": "OssNDS/YkB4CfwBEnYOknA==",
+  "crc32c": "3307231740"
+}

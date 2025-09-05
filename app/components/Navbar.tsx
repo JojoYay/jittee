@@ -34,6 +34,9 @@ export default function Navbar() {
               <Link href="/" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('home')}
               </Link>
+              <Link href="/strengths" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                {t('strengths')}
+              </Link>
               <Link href="/products" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('products')}
               </Link>
@@ -98,6 +101,13 @@ export default function Navbar() {
             onClick={() => setIsMenuOpen(false)}
           >
             {t('home')}
+          </Link>
+          <Link
+            href="/strengths"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {t('strengths')}
           </Link>
           <Link
             href="/products"

@@ -1,7 +1,5 @@
 {
   "projects": {
     "default": "jittee-corporate-site"
-  },
-  "targets": {},
-  "etags": {}
+  }
 }
