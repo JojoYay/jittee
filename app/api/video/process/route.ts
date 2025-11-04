@@ -317,8 +317,8 @@ export async function POST(request: NextRequest) {
     await createUploadingFolder(drive, folderId, folderName);
 
     // Goalsフォルダかどうかをチェック
-    const isGoalsFolder = folderName.toLowerCase().includes('goals');
-    
+    // const isGoalsFolder = folderName.toLowerCase().includes('goals');
+    const isGoalsFolder = false;
     let videoFiles;
     let file;
     

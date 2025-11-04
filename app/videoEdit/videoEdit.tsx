@@ -425,8 +425,8 @@ export default function VideoEdit() {
                 </Box>
 
                 {/* フォルダ一覧 */}
-                                 {folders.map((folder) => {
-                     const isProcessing = processingFolders.has(folder.id);
+                {folders.map((folder) => {
+                    const isProcessing = processingFolders.has(folder.id);
                     
                     return (
                         <Paper key={folder.id} elevation={2} sx={{ mb: 2 }}>
@@ -534,8 +534,9 @@ export default function VideoEdit() {
                                     </Typography>
                                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', maxWidth: '100%' }}>
                                         {/* フォルダ名にGoalsが含まれているかチェック */}
-                                        {(folder.name.toLowerCase().includes('goals') ? goalsTaskTypes : taskTypes).map((taskType) => {
-                                                                                         // 複数ファイルがある場合は無効化
+                                        {/* {(folder.name.toLowerCase().includes('goals') ? goalsTaskTypes : taskTypes).map((taskType) => { */}
+                                        {taskTypes.map((taskType) => {
+// 複数ファイルがある場合は無効化
                                              const hasMultipleFiles = Boolean(folder.fileCount && folder.fileCount > 1);
                                              const hasNoFiles = Boolean(folder.fileCount === 0);
                                              const isUploading = folder.hasUploadingFolder;
@@ -545,7 +546,7 @@ export default function VideoEdit() {
                                             return (
                                                 <Tooltip
                                                     key={taskType.value}
-                                                                                                         title={
+                                                    title={
                                                          isDisabled
                                                              ? (hasMultipleFiles ? '複数ファイルがあります。1つのファイルのみ処理可能です。' : 
                                                                  hasNoFiles ? 'ファイルがありません。' :
