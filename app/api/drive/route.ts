@@ -3,12 +3,11 @@ import { google } from 'googleapis';
 
 // サービスアカウントの設定
 const SERVICE_ACCOUNT_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '';
-const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID || '';
-
+const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID2 || '';
+console.log('FOLDER_ID', FOLDER_ID);
 // サービスアカウント認証でGoogle Drive APIクライアントを初期化
 const getDriveClient = () => {
   try {
-
     const credentials = JSON.parse(SERVICE_ACCOUNT_KEY);
     const auth = new google.auth.GoogleAuth({
       credentials,
@@ -32,10 +31,14 @@ export async function GET(request: NextRequest) {
       const drive = getDriveClient();
 
       // 指定されたフォルダ内のフォルダ一覧を取得
+      // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
       const foldersResponse = await drive.files.list({
         q: `'${FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
         fields: "files(id,name,createdTime,modifiedTime,webViewLink,size)",
-        orderBy: "name"
+        orderBy: "name",
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
+        corpora: 'allDrives'
       });
 
       const folders = foldersResponse.data.files || [];
@@ -47,7 +50,10 @@ export async function GET(request: NextRequest) {
             const filesResponse = await drive.files.list({
               q: `'${folder.id}' in parents and trashed=false`,
               fields: "files(id,name,mimeType)",
-              orderBy: "name"
+              orderBy: "name",
+              supportsAllDrives: true,
+              includeItemsFromAllDrives: true,
+              corpora: 'allDrives'
             });
 
             const files = filesResponse.data.files || [];
@@ -118,7 +124,10 @@ export async function GET(request: NextRequest) {
         a.name.localeCompare(b.name, 'ja-JP', { numeric: true, sensitivity: 'base' })
       );
 
-      return NextResponse.json({ folders: sortedFolders });
+      return NextResponse.json({ 
+        folders: sortedFolders,
+        folderId: FOLDER_ID // デバッグ用
+      });
     } else if (action === 'checkUploading') {
       const folderId = searchParams.get('folderId');
       if (!folderId) {
@@ -128,9 +137,13 @@ export async function GET(request: NextRequest) {
       const drive = getDriveClient();
       
       // Uploadingフォルダの存在を確認
+      // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
       const response = await drive.files.list({
         q: `'${folderId}' in parents and name='Uploading' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
-        fields: 'files(id,name)'
+        fields: 'files(id,name)',
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
+        corpora: 'allDrives'
       });
       
       const uploadingFolders = response.data.files || [];

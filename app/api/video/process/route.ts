@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { initializeApp } from 'firebase/app';
-import { getStorage, ref, uploadBytes, deleteObject, listAll, getDownloadURL } from 'firebase/storage';
 
 // エラー情報を詳細に取得する関数
 const getDetailedError = (error: any) => {
@@ -131,7 +129,8 @@ const uploadVideoFromDrive = async(fileId: string, title: string, actDate: strin
         const drive = getDriveClient();
         const chunkResponse = await drive.files.get({
           fileId: fileId,
-          alt: 'media'
+          alt: 'media',
+          supportsAllDrives: true
         }, { 
           responseType: 'stream',
           headers: {
@@ -230,9 +229,11 @@ async function createUploadingFolder(drive: any, parentFolderId: string, folderN
       parents: [parentFolderId]
     };
     
+    // Shared Drive対応のため、supportsAllDrives を追加
     await drive.files.create({
       requestBody: folderMetadata,
-      fields: 'id'
+      fields: 'id',
+      supportsAllDrives: true
     });
     
     console.log('✅ Uploadingフォルダを作成しました');
@@ -245,23 +246,53 @@ async function createUploadingFolder(drive: any, parentFolderId: string, folderN
 async function deleteUploadingFolder(drive: any, parentFolderId: string) {
   try {
     // Uploadingフォルダを検索
+    // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
     const response = await drive.files.list({
       q: `'${parentFolderId}' in parents and name='Uploading' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
-      fields: 'files(id,name)'
+      fields: 'files(id,name)',
+      supportsAllDrives: true,
+      includeItemsFromAllDrives: true,
+      corpora: 'allDrives'
     });
     
     const uploadingFolders = response.data.files || [];
     
-    for (const folder of uploadingFolders) {
-      await drive.files.delete({
-        fileId: folder.id!
-      });
-      console.log(`🧹 Uploadingフォルダを削除しました: ${folder.name}`);
+    if (uploadingFolders.length === 0) {
+      console.log('ℹ️ 削除するUploadingフォルダが見つかりませんでした');
+      return;
     }
     
-    console.log('🧹 Uploadingフォルダを削除しました');
-  } catch (error) {
-    console.error('❌ Uploadingフォルダ削除エラー:', error);
+    console.log(`📁 削除対象のUploadingフォルダ数: ${uploadingFolders.length}`);
+    
+    for (const folder of uploadingFolders) {
+      try {
+        await drive.files.delete({
+          fileId: folder.id!,
+          supportsAllDrives: true
+        });
+        console.log(`🧹 Uploadingフォルダを削除しました: ${folder.name} (ID: ${folder.id})`);
+      } catch (deleteError: any) {
+        const detailedError = getDetailedError(deleteError);
+        console.error(`❌ フォルダ削除エラー (ID: ${folder.id}, Name: ${folder.name}):`, {
+          message: detailedError.message,
+          code: detailedError.code,
+          details: detailedError.details
+        });
+        // エラーが発生しても次のフォルダの削除を試みる
+      }
+    }
+    
+    console.log('🧹 Uploadingフォルダ削除処理が完了しました');
+  } catch (error: any) {
+    const detailedError = getDetailedError(error);
+    console.error('❌ Uploadingフォルダ削除エラー:', {
+      message: detailedError.message,
+      code: detailedError.code,
+      details: detailedError.details,
+      stack: detailedError.stack
+    });
+    // エラーを再スローして、呼び出し元で処理できるようにする
+    throw error;
   }
 }
 
@@ -269,9 +300,13 @@ async function deleteUploadingFolder(drive: any, parentFolderId: string) {
 async function createCompleteFolder(drive: any, parentFolderId: string, folderName: string) {
   try {
     // 既存のCompleteフォルダをチェック
+    // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
     const response = await drive.files.list({
       q: `'${parentFolderId}' in parents and name='Complete' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
-      fields: 'files(id,name)'
+      fields: 'files(id,name)',
+      supportsAllDrives: true,
+      includeItemsFromAllDrives: true,
+      corpora: 'allDrives'
     });
     
     const existingCompleteFolders = response.data.files || [];
@@ -287,9 +322,11 @@ async function createCompleteFolder(drive: any, parentFolderId: string, folderNa
       parents: [parentFolderId]
     };
     
+    // Shared Drive対応のため、supportsAllDrives を追加
     await drive.files.create({
       requestBody: folderMetadata,
-      fields: 'id'
+      fields: 'id',
+      supportsAllDrives: true
     });
     
     console.log('✅ Completeフォルダを作成しました');
@@ -327,10 +364,14 @@ export async function POST(request: NextRequest) {
       console.log('🎯 Goalsフォルダを検出、resultフォルダ内のファイルを取得します');
       
       // まずresultフォルダを検索
+      // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
       const resultFolderResponse = await drive.files.list({
         q: `'${folderId}' in parents and name='result' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
         fields: "files(id,name)",
-        orderBy: "name"
+        orderBy: "name",
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
+        corpora: 'allDrives'
       });
       
       const resultFolders = resultFolderResponse.data.files || [];
@@ -345,19 +386,27 @@ export async function POST(request: NextRequest) {
       console.log(`📁 resultフォルダID: ${resultFolderId}`);
       
       // resultフォルダ内の動画ファイルを取得
+      // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
       const filesResponse = await drive.files.list({
         q: `'${resultFolderId}' in parents and (mimeType contains 'video/' or mimeType contains 'application/octet-stream') and trashed=false`,
         fields: "files(id,name,mimeType,size,webContentLink)",
-        orderBy: "name"
+        orderBy: "name",
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
+        corpora: 'allDrives'
       });
       
       videoFiles = filesResponse.data.files || [];
     } else {
       // 通常のフォルダの場合、直接フォルダ内の動画ファイルを取得
+      // Shared Drive対応のため、supportsAllDrives と includeItemsFromAllDrives を追加
       const filesResponse = await drive.files.list({
         q: `'${folderId}' in parents and (mimeType contains 'video/' or mimeType contains 'application/octet-stream') and trashed=false`,
         fields: "files(id,name,mimeType,size,webContentLink)",
-        orderBy: "name"
+        orderBy: "name",
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
+        corpora: 'allDrives'
       });
       
       videoFiles = filesResponse.data.files || [];
@@ -383,9 +432,11 @@ export async function POST(request: NextRequest) {
     console.log(`⬇️ ファイル処理中: ${file.name}`);
     
     // ファイル情報を取得
+    // Shared Drive対応のため、supportsAllDrives を追加
     const fileInfo = await drive.files.get({
       fileId: file.id!,
-      fields: 'size'
+      fields: 'size',
+      supportsAllDrives: true
     });
     
     const fileSize = parseInt(fileInfo.data.size || '0');
