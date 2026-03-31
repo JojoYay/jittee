@@ -14,6 +14,12 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=24.10.0"
+  },
+  "resolutions": {
+    "next": "15.5.9"
+  },  
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
