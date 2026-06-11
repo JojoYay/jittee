@@ -2,8 +2,7 @@
 
 import { useLanguage } from '../contexts/LanguageContext'
 
-const DOWNLOAD_URL = 'https://github.com/JojoYay/localRecorder-releases/releases/latest'
-const GITHUB_URL = 'https://github.com/JojoYay/localRecorder-releases'
+const DOWNLOAD_URL = 'https://github.com/JojoYay/localRecorder-releases/releases/latest/download/LocalRecorder-portable.exe'
 
 function Icon({ path, className = 'w-6 h-6' }: { path: string; className?: string }) {
   return (
@@ -94,15 +93,6 @@ export default function LocalRecorderPage() {
                 >
                   <Icon path={ICONS.download} className="w-5 h-5" />
                   {t('lr.download')}
-                </a>
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border border-white/40 text-white font-semibold hover:bg-white/10 transition-colors"
-                >
-                  <Icon path={ICONS.github} className="w-5 h-5" />
-                  {t('lr.github')}
                 </a>
               </div>
               <p className="mt-4 text-sm text-cyan-100/80">{t('lr.downloadSub')}</p>
