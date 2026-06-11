@@ -22,5 +22,3 @@ env:
     secret: SERVER_URL
   - variable: GOOGLE_DRIVE_FOLDER_ID2
     secret: GOOGLE_DRIVE_FOLDER_ID2
-  - variable: BVS_FOLDER_ID
-    secret: BVS_FOLDER_ID
