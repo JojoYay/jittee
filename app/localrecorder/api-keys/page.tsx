@@ -82,30 +82,6 @@ function GoogleMock() {
   )
 }
 
-function NvidiaMock() {
-  return (
-    <svg viewBox="0 0 640 360" className="w-full h-auto rounded-xl border border-gray-200 shadow-sm bg-white" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NVIDIA Build API keys screen illustration">
-      <path d="M0 12a12 12 0 0 1 12-12h616a12 12 0 0 1 12 12v32H0z" fill="#f3f4f6" />
-      <circle cx="22" cy="22" r="6" fill="#f87171" />
-      <circle cx="42" cy="22" r="6" fill="#fbbf24" />
-      <circle cx="62" cy="22" r="6" fill="#34d399" />
-      <rect x="92" y="11" width="520" height="22" rx="11" fill="#ffffff" stroke="#e5e7eb" />
-      <text x="106" y="26" fontSize="13" fill="#6b7280" fontFamily="ui-monospace, monospace">build.nvidia.com  ›  Settings  ›  API Keys</text>
-      <text x="40" y="92" fontSize="13" fill="#9ca3af">Settings  ›  API Keys</text>
-      <text x="40" y="120" fontSize="16" fill="#111827" fontWeight="700">API Keys</text>
-      <rect x="40" y="138" width="214" height="46" rx="8" fill="#76b900" />
-      <text x="147" y="166" fontSize="14" fill="#ffffff" fontWeight="700" textAnchor="middle">Generate API Key</text>
-      <rect x="40" y="216" width="560" height="66" rx="8" fill="#f3f4f6" stroke="#e5e7eb" />
-      <text x="56" y="240" fontSize="11" fill="#6b7280">API key</text>
-      <text x="56" y="264" fontSize="15" fill="#111827" fontFamily="ui-monospace, monospace">nvapi-aBcDeFg••••••••••••••••</text>
-      <rect x="552" y="230" width="32" height="32" rx="6" fill="#ffffff" stroke="#d1d5db" />
-      <rect x="560" y="239" width="11" height="13" rx="2" fill="none" stroke="#6b7280" />
-      <rect x="565" y="234" width="11" height="13" rx="2" fill="#ffffff" stroke="#6b7280" />
-      <text x="40" y="316" fontSize="12" fill="#6b7280">Copy &amp; keep it secret (starts with “nvapi-”)</text>
-    </svg>
-  )
-}
-
 function MockFigure({ caption, children }: { caption: string; children: React.ReactNode }) {
   return (
     <figure className="mt-6">
@@ -168,8 +144,12 @@ export default function ApiKeysPage() {
           </div>
           <p className="mt-3 text-gray-600">{t('apikeys.nDesc')}</p>
           <Steps items={[t('apikeys.nStep1'), t('apikeys.nStep2'), t('apikeys.nStep3'), t('apikeys.nStep4')]} />
-          <MockFigure caption={t('apikeys.illustration')}>
-            <NvidiaMock />
+          <MockFigure caption={t('apikeys.nShot')}>
+            <img
+              src="/api/nvidia_deepseek.jpg"
+              alt="NVIDIA Build — Generate API Key on a model page"
+              className="w-full h-auto rounded-xl border border-gray-200 shadow-sm"
+            />
           </MockFigure>
           <p className="mt-5 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">{t('apikeys.nFree')}</p>
           <p className="mt-3 text-sm text-gray-700">
