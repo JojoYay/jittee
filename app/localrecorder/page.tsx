@@ -1,6 +1,7 @@
 'use client'
 
 import { useLanguage } from '../contexts/LanguageContext'
+import { sendGAEvent } from '@next/third-parties/google'
 
 const DOWNLOAD_URL = 'https://github.com/JojoYay/localRecorder-releases/releases/latest/download/LocalRecorder-portable.exe'
 const BUY_URL = 'https://jittee.lemonsqueezy.com/checkout/buy/5159d88a-6d95-4eb7-892d-5da590ed917c?logo=0'
@@ -34,6 +35,12 @@ const ICONS = {
 
 export default function LocalRecorderPage() {
   const { t } = useLanguage()
+
+  // GA4 funnel events: page_view (auto) -> file_download / begin_checkout
+  const trackDownload = (location: string) =>
+    sendGAEvent('event', 'file_download', { file_name: 'LocalRecorder-portable.exe', location })
+  const trackBuy = (location: string) =>
+    sendGAEvent('event', 'begin_checkout', { item_id: 'local_recorder_pro', location })
 
   const features = [
     { icon: ICONS.layers, title: 'lr.f1Title', desc: 'lr.f1Desc' },
@@ -91,6 +98,7 @@ export default function LocalRecorderPage() {
                   href={DOWNLOAD_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackDownload('hero')}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-white text-blue-700 font-semibold shadow-lg hover:bg-cyan-50 transition-colors"
                 >
                   <Icon path={ICONS.download} className="w-5 h-5" />
@@ -238,7 +246,7 @@ export default function LocalRecorderPage() {
                 <li className="flex justify-between border-b border-gray-100 pb-3"><span>{t('lr.rowMeetings')}</span><span className="font-medium text-gray-900">{t('lr.rowMeetingsFree')}</span></li>
                 <li className="flex justify-between"><span>{t('lr.rowWatermark')}</span><span className="font-medium text-gray-900">{t('lr.rowWatermarkFree')}</span></li>
               </ul>
-              <a href={DOWNLOAD_URL} target="_blank" rel="noopener noreferrer" className="mt-8 block text-center px-6 py-3 rounded-lg border border-primary-600 text-primary-600 font-semibold hover:bg-primary-50 transition-colors">
+              <a href={DOWNLOAD_URL} target="_blank" rel="noopener noreferrer" onClick={() => trackDownload('pricing_free')} className="mt-8 block text-center px-6 py-3 rounded-lg border border-primary-600 text-primary-600 font-semibold hover:bg-primary-50 transition-colors">
                 {t('lr.download')}
               </a>
             </div>
@@ -253,7 +261,7 @@ export default function LocalRecorderPage() {
                 <li className="flex justify-between border-b border-gray-100 pb-3"><span>{t('lr.rowMeetings')}</span><span className="font-medium text-gray-900">{t('lr.rowMeetingsPro')}</span></li>
                 <li className="flex justify-between"><span>{t('lr.rowWatermark')}</span><span className="font-medium text-gray-900">{t('lr.rowWatermarkPro')}</span></li>
               </ul>
-              <a href={BUY_URL} target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors">
+              <a href={BUY_URL} target="_blank" rel="noopener noreferrer" onClick={() => trackBuy('pricing_pro')} className="mt-8 inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors">
                 <Icon path={ICONS.creditCard} className="w-5 h-5" />
                 {t('lr.buyPro')}
               </a>
@@ -290,6 +298,7 @@ export default function LocalRecorderPage() {
             href={DOWNLOAD_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackDownload('footer_cta')}
             className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-white text-blue-700 font-bold text-lg shadow-lg hover:bg-cyan-50 transition-colors"
           >
             <Icon path={ICONS.download} className="w-6 h-6" />
