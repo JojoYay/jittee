@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useLanguage } from '../contexts/LanguageContext'
 import { sendGAEvent } from '@next/third-parties/google'
 
@@ -113,6 +114,12 @@ export default function LocalRecorderPage() {
                 </a>
               </div>
               <p className="mt-4 text-sm text-cyan-100/80">{t('lr.downloadSub')}</p>
+              <p className="mt-3 text-sm text-cyan-50">
+                {t('lr.apiKeyNote')}{' '}
+                <Link href="/localrecorder/api-keys" className="underline font-semibold hover:text-white">
+                  {t('lr.apiKeyLinkText')}
+                </Link>
+              </p>
             </div>
 
             <div className="flex justify-center md:justify-end">
