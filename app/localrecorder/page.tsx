@@ -79,6 +79,13 @@ export default function LocalRecorderPage() {
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
+              <div className="inline-block bg-white rounded-xl px-4 py-2.5 shadow-lg mb-6">
+                <img
+                  src="/localrecorder/LocalRecorder.png"
+                  alt="LocalRecorder"
+                  className="h-7 md:h-8 w-auto"
+                />
+              </div>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sm font-medium backdrop-blur">
                 <Icon path={ICONS.windows} className="w-4 h-4" />
                 {t('lr.badge')}
@@ -112,7 +119,7 @@ export default function LocalRecorderPage() {
               <div className="relative">
                 <div className="absolute -inset-6 bg-white/20 rounded-[2rem] blur-2xl" />
                 <img
-                  src="/localrecorder/icon.png"
+                  src="/localrecorder/localRecorderIcon.png"
                   alt="Local Recorder"
                   className="relative w-56 h-56 md:w-72 md:h-72 rounded-[2rem] shadow-2xl"
                 />
