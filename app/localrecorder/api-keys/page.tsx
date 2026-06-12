@@ -126,6 +126,13 @@ export default function ApiKeysPage() {
               className="w-full h-auto rounded-xl border border-gray-200 shadow-sm"
             />
           </MockFigure>
+          <MockFigure caption={t('apikeys.nSetupShot')}>
+            <img
+              src="/api/deepseek_setting.jpg"
+              alt="Local Recorder Custom (OpenAI-compat) tab filled in for NVIDIA"
+              className="w-full h-auto rounded-xl border border-gray-200 shadow-sm"
+            />
+          </MockFigure>
           <p className="mt-5 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">{t('apikeys.nFree')}</p>
           <p className="mt-3 text-sm text-gray-700">
             <span className="font-semibold">{t('apikeys.endpointLabel')}:</span> <Code url={BASE_URLS.nvidia} />
