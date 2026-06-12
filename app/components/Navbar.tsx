@@ -7,7 +7,10 @@ import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+
+  // RunRank is an external app; link to the locale-matched site (Japanese -> /ja, otherwise /en)
+  const runRankUrl = locale === 'ja' ? 'https://runrank.jittee.com/ja' : 'https://runrank.jittee.com/en'
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -55,6 +58,9 @@ export default function Navbar() {
                     <Link href="/easydb" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
                       EasyDB
                     </Link>
+                    <a href={runRankUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
+                      RunRank
+                    </a>
                   </div>
                 </div>
               </div>
@@ -150,6 +156,13 @@ export default function Navbar() {
             >
               EasyDB
             </Link>
+            <a
+              href={runRankUrl}
+              className="block pl-4 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              RunRank
+            </a>
           </div>
           <Link
             href="/contact"
