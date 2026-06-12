@@ -15,6 +15,7 @@ export const translations = {
     home: 'Home',
     strengths: 'Our Strengths',
     products: 'Products & Services',
+    download: 'Download',
     contact: 'Contact',
     
     // Footer
@@ -246,6 +247,7 @@ export const translations = {
     home: '首页',
     strengths: '我们的优势',
     products: '产品服务',
+    download: '下载',
     contact: '联系我们',
     
     // Footer
@@ -477,6 +479,7 @@ export const translations = {
     home: 'ホーム',
     strengths: '弊社の強み',
     products: '製品・サービス',
+    download: 'ダウンロード',
     contact: 'お問い合わせ',
     
     // Footer

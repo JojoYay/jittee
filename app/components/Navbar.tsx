@@ -40,6 +40,9 @@ export default function Navbar() {
               <Link href="/products" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('products')}
               </Link>
+              <Link href="/localrecorder" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                {t('download')}
+              </Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('contact')}
               </Link>
@@ -115,6 +118,13 @@ export default function Navbar() {
             onClick={() => setIsMenuOpen(false)}
           >
             {t('products')}
+          </Link>
+          <Link
+            href="/localrecorder"
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {t('download')}
           </Link>
           <Link
             href="/contact"
