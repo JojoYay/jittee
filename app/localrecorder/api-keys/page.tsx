@@ -53,35 +53,6 @@ function Code({ url }: { url: string }) {
   return <code className="px-2 py-1 rounded bg-gray-100 text-primary-700 text-sm font-mono break-all">{url}</code>
 }
 
-// Schematic browser-window illustrations of each key screen (not real screenshots).
-function GoogleMock() {
-  return (
-    <svg viewBox="0 0 640 360" className="w-full h-auto rounded-xl border border-gray-200 shadow-sm bg-white" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google AI Studio API key screen illustration">
-      <path d="M0 12a12 12 0 0 1 12-12h616a12 12 0 0 1 12 12v32H0z" fill="#f3f4f6" />
-      <circle cx="22" cy="22" r="6" fill="#f87171" />
-      <circle cx="42" cy="22" r="6" fill="#fbbf24" />
-      <circle cx="62" cy="22" r="6" fill="#34d399" />
-      <rect x="92" y="11" width="520" height="22" rx="11" fill="#ffffff" stroke="#e5e7eb" />
-      <text x="106" y="26" fontSize="13" fill="#6b7280" fontFamily="ui-monospace, monospace">aistudio.google.com/apikey</text>
-      <rect x="0" y="44" width="160" height="316" fill="#f9fafb" />
-      <rect x="12" y="64" width="136" height="30" rx="6" fill="#dbeafe" />
-      <text x="22" y="84" fontSize="13" fill="#1d4ed8" fontWeight="600">🔑 Get API key</text>
-      <text x="22" y="122" fontSize="13" fill="#9ca3af">Prompts</text>
-      <text x="22" y="152" fontSize="13" fill="#9ca3af">Tune</text>
-      <text x="188" y="88" fontSize="16" fill="#111827" fontWeight="700">Create an API key</text>
-      <rect x="188" y="106" width="206" height="46" rx="8" fill="#2563eb" />
-      <text x="291" y="134" fontSize="14" fill="#ffffff" fontWeight="600" textAnchor="middle">＋ Create API key</text>
-      <rect x="188" y="190" width="420" height="66" rx="8" fill="#f3f4f6" stroke="#e5e7eb" />
-      <text x="204" y="214" fontSize="11" fill="#6b7280">API key</text>
-      <text x="204" y="238" fontSize="15" fill="#111827" fontFamily="ui-monospace, monospace">AIzaSyD••••••••••••••••••••</text>
-      <rect x="560" y="204" width="32" height="32" rx="6" fill="#ffffff" stroke="#d1d5db" />
-      <rect x="568" y="213" width="11" height="13" rx="2" fill="none" stroke="#6b7280" />
-      <rect x="573" y="208" width="11" height="13" rx="2" fill="#ffffff" stroke="#6b7280" />
-      <text x="188" y="290" fontSize="12" fill="#6b7280">Copy &amp; keep it secret (starts with “AIza…”)</text>
-    </svg>
-  )
-}
-
 function MockFigure({ caption, children }: { caption: string; children: React.ReactNode }) {
   return (
     <figure className="mt-6">
@@ -124,8 +95,12 @@ export default function ApiKeysPage() {
           </div>
           <p className="mt-3 text-gray-600">{t('apikeys.gDesc')}</p>
           <Steps items={[t('apikeys.gStep1'), t('apikeys.gStep2'), t('apikeys.gStep3'), t('apikeys.gStep4')]} />
-          <MockFigure caption={t('apikeys.illustration')}>
-            <GoogleMock />
+          <MockFigure caption={t('apikeys.gShot')}>
+            <img
+              src="/api/google_ai_studio.jpg"
+              alt="Google AI Studio — Create API key"
+              className="w-full h-auto rounded-xl border border-gray-200 shadow-sm"
+            />
           </MockFigure>
           <p className="mt-5 text-sm text-gray-600 bg-gray-50 rounded-lg p-4">{t('apikeys.gFree')}</p>
           <p className="mt-3 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-4">⚠️ {t('apikeys.gNote')}</p>
