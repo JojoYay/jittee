@@ -9,6 +9,13 @@ runConfig:
   timeoutSeconds: 3600
   # Environment variables and secrets.
 env:
+  # Google Analytics (GA4) measurement ID — public value, inlined at build time.
+  # NEXT_PUBLIC_* must be available at BUILD so Next.js can embed it.
+  - variable: NEXT_PUBLIC_GA_ID
+    value: G-HE8GRTQ1DT
+    availability:
+      - BUILD
+      - RUNTIME
   # Google Drive API Configuration
   # Using Cloud Secret Manager for secure storage
   - variable: GOOGLE_SERVICE_ACCOUNT_KEY
