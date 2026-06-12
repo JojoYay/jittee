@@ -42,7 +42,7 @@ function Steps({ items }: { items: string[] }) {
           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-sm font-bold flex items-center justify-center">
             {i + 1}
           </span>
-          <span className="text-gray-700 leading-relaxed">{s}</span>
+          <span className="text-gray-700 leading-relaxed"><LRText text={s} /></span>
         </li>
       ))}
     </ol>
@@ -51,6 +51,25 @@ function Steps({ items }: { items: string[] }) {
 
 function Code({ url }: { url: string }) {
   return <code className="px-2 py-1 rounded bg-gray-100 text-primary-700 text-sm font-mono break-all">{url}</code>
+}
+
+// Renders text, turning every "Local Recorder" occurrence into a link to its LP.
+function LRText({ text }: { text: string }) {
+  const parts = text.split('Local Recorder')
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <Link href="/localrecorder" className="underline underline-offset-2 font-medium hover:opacity-75 transition-opacity">
+              Local Recorder
+            </Link>
+          )}
+        </span>
+      ))}
+    </>
+  )
 }
 
 function MockFigure({ caption, children }: { caption: string; children: React.ReactNode }) {
@@ -74,7 +93,7 @@ export default function ApiKeysPage() {
             {t('apikeys.back')}
           </Link>
           <h1 className="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight">{t('apikeys.title')}</h1>
-          <p className="mt-4 text-lg text-cyan-50/90 max-w-2xl">{t('apikeys.subtitle')}</p>
+          <p className="mt-4 text-lg text-cyan-50/90 max-w-2xl"><LRText text={t('apikeys.subtitle')} /></p>
           <span className="mt-5 inline-block px-3 py-1 rounded-full bg-white/15 text-sm backdrop-blur">
             {t('apikeys.asOf')}
           </span>
@@ -145,7 +164,7 @@ export default function ApiKeysPage() {
         {/* Other free options */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900">{t('apikeys.othersTitle')}</h2>
-          <p className="mt-2 text-gray-600">{t('apikeys.othersIntro')}</p>
+          <p className="mt-2 text-gray-600"><LRText text={t('apikeys.othersIntro')} /></p>
           <div className="mt-6 grid md:grid-cols-3 gap-5">
             <div className="rounded-xl border border-gray-200 p-5">
               <div className="flex items-center justify-between">
@@ -177,7 +196,7 @@ export default function ApiKeysPage() {
 
         {/* Setup in Local Recorder */}
         <div className="rounded-2xl bg-gray-50 p-7 md:p-9">
-          <h2 className="text-2xl font-bold text-gray-900">{t('apikeys.setupTitle')}</h2>
+          <h2 className="text-2xl font-bold text-gray-900"><LRText text={t('apikeys.setupTitle')} /></h2>
           <ul className="mt-5 space-y-3 text-gray-700">
             <li className="flex gap-3"><span className="text-primary-600 font-bold">•</span>{t('apikeys.setupGemini')}</li>
             <li className="flex gap-3"><span className="text-primary-600 font-bold">•</span>{t('apikeys.setupCompat')}</li>
@@ -189,7 +208,7 @@ export default function ApiKeysPage() {
           <h2 className="text-xl font-bold text-gray-900">🔒 {t('apikeys.noteTitle')}</h2>
           <ul className="mt-4 space-y-2 text-gray-600">
             <li className="flex gap-3"><span className="text-gray-400">—</span>{t('apikeys.note1')}</li>
-            <li className="flex gap-3"><span className="text-gray-400">—</span>{t('apikeys.note2')}</li>
+            <li className="flex gap-3"><span className="text-gray-400">—</span><span><LRText text={t('apikeys.note2')} /></span></li>
           </ul>
         </div>
 
