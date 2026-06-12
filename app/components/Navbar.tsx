@@ -40,9 +40,24 @@ export default function Navbar() {
               <Link href="/products" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('products')}
               </Link>
-              <Link href="/localrecorder" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                {t('download')}
-              </Link>
+              <div className="relative group">
+                <button className="inline-flex items-center gap-1 text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                  {t('download')}
+                  <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div className="absolute left-0 top-full pt-2 hidden group-hover:block z-50">
+                  <div className="w-48 bg-white rounded-md shadow-lg border border-gray-100 py-1">
+                    <Link href="/localrecorder" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
+                      Local Recorder
+                    </Link>
+                    <Link href="/easydb" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
+                      EasyDB
+                    </Link>
+                  </div>
+                </div>
+              </div>
               <Link href="/contact" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('contact')}
               </Link>
@@ -119,13 +134,23 @@ export default function Navbar() {
           >
             {t('products')}
           </Link>
-          <Link
-            href="/localrecorder"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {t('download')}
-          </Link>
+          <div className="px-3 pt-2">
+            <p className="px-0 py-1 text-base font-medium text-gray-900">{t('download')}</p>
+            <Link
+              href="/localrecorder"
+              className="block pl-4 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Local Recorder
+            </Link>
+            <Link
+              href="/easydb"
+              className="block pl-4 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              EasyDB
+            </Link>
+          </div>
           <Link
             href="/contact"
             className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
