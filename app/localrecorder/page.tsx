@@ -3,6 +3,7 @@
 import { useLanguage } from '../contexts/LanguageContext'
 
 const DOWNLOAD_URL = 'https://github.com/JojoYay/localRecorder-releases/releases/latest/download/LocalRecorder-portable.exe'
+const BUY_URL = 'https://jittee.lemonsqueezy.com/checkout/buy/5159d88a-6d95-4eb7-892d-5da590ed917c?logo=0'
 
 function Icon({ path, className = 'w-6 h-6' }: { path: string; className?: string }) {
   return (
@@ -27,6 +28,7 @@ const ICONS = {
   shield: 'M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z',
   windows: 'M3 5.25 10.5 4.2v7.05H3V5.25Zm0 13.5L10.5 19.8v-7.05H3v6Zm9-15.3L21 2.25v9H12V3.45Zm0 17.1L21 21.75v-9.75H12v8.55Z',
   download: 'M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3',
+  creditCard: 'M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z',
   github: 'M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.014-1.7-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.087.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10Z',
 }
 
@@ -251,8 +253,9 @@ export default function LocalRecorderPage() {
                 <li className="flex justify-between border-b border-gray-100 pb-3"><span>{t('lr.rowMeetings')}</span><span className="font-medium text-gray-900">{t('lr.rowMeetingsPro')}</span></li>
                 <li className="flex justify-between"><span>{t('lr.rowWatermark')}</span><span className="font-medium text-gray-900">{t('lr.rowWatermarkPro')}</span></li>
               </ul>
-              <a href={DOWNLOAD_URL} target="_blank" rel="noopener noreferrer" className="mt-8 block text-center px-6 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors">
-                {t('lr.download')}
+              <a href={BUY_URL} target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors">
+                <Icon path={ICONS.creditCard} className="w-5 h-5" />
+                {t('lr.buyPro')}
               </a>
               <p className="mt-3 text-xs text-gray-500 text-center">{t('lr.proNote')}</p>
             </div>
