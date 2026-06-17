@@ -5,7 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 import { sendGAEvent } from '@next/third-parties/google'
 
 const DOWNLOAD_URL = 'https://github.com/JojoYay/localRecorder-releases/releases/latest/download/LocalRecorder-portable.exe'
-const BUY_URL = 'https://jittee.lemonsqueezy.com/checkout/buy/5159d88a-6d95-4eb7-892d-5da590ed917c?logo=0'
+const BUY_URL = 'https://jittee.lemonsqueezy.com/checkout/buy/826e50e8-695a-4f10-b19f-c6c7a107f509?logo=0'
 
 function Icon({ path, className = 'w-6 h-6' }: { path: string; className?: string }) {
   return (
