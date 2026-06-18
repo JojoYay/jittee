@@ -61,6 +61,9 @@ export default function Navbar() {
                     <a href={runRankUrl} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
                       RunRank
                     </a>
+                    <Link href="/spotmyshot" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
+                      SpotMyShot
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -163,6 +166,13 @@ export default function Navbar() {
             >
               RunRank
             </a>
+            <Link
+              href="/spotmyshot"
+              className="block pl-4 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              SpotMyShot
+            </Link>
           </div>
           <Link
             href="/contact"
