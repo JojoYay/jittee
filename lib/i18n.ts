@@ -342,6 +342,8 @@ export const translations = {
       forPhotographersDesc: 'No more paying for storage or giving work away for nothing. Upload freely and earn from your photos at prices you control.',
       forParticipantsTitle: 'For participants',
       forParticipantsDesc: 'Search by your face or bib number and get only the photos you’re in — no more scrolling through thousands.',
+      forOrganizersTitle: 'For event organizers',
+      forOrganizersDesc: 'We can provide a dedicated photo site for your event — participants instantly find their photos by face or bib number, and photographers sell or share. A ready-made way to add value to your race or event.',
       ctaTitle: 'Interested in SpotMyShot?',
       ctaDesc: 'Whether you shoot events or organize them, get in touch to learn more.',
       ctaButton: 'Contact us'
@@ -680,6 +682,8 @@ export const translations = {
       forPhotographersDesc: '无需为存储烦恼，也不必白白送出作品。自由上传，以你设定的价格从照片中获得收入。',
       forParticipantsTitle: '致参与者',
       forParticipantsDesc: '按人脸或号码布搜索，只获取你出现的照片——无需翻看成千上万张。',
+      forOrganizersTitle: '致赛事主办方',
+      forOrganizersDesc: '我们可为您的赛事提供专属照片网站——参与者按人脸或号码布即时找到自己的照片，摄影师可销售或免费提供。为您的赛事或活动轻松增添价值，开箱即用。',
       ctaTitle: '对 SpotMyShot 感兴趣吗？',
       ctaDesc: '无论你是摄影师还是活动主办方，欢迎联系我们了解更多。',
       ctaButton: '联系我们'
@@ -1018,6 +1022,8 @@ export const translations = {
       forPhotographersDesc: '容量に悩まされず、ただ無料で配るだけでもない。自由にアップロードし、自分で決めた価格で写真から収益を得られます。',
       forParticipantsTitle: '参加者の方へ',
       forParticipantsDesc: '顔やゼッケン番号で検索すれば、自分が写った写真だけが手に入ります。数千枚をスクロールする必要はありません。',
+      forOrganizersTitle: '大会運営者の方へ',
+      forOrganizersDesc: '大会運営用の写真サイトをご提供できます。参加者は顔やゼッケン番号で自分の写真をすぐに見つけられ、カメラマンは販売も無料提供も可能。大会の付加価値と参加者体験を高める、すぐ使える仕組みです。',
       ctaTitle: 'SpotMyShot にご興味がありますか？',
       ctaDesc: '撮影する方も、大会を主催する方も、まずはお気軽にお問い合わせください。',
       ctaButton: 'お問い合わせ'
