@@ -26,7 +26,8 @@ const ICONS = {
 }
 
 export default function SpotMyShotPage() {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const mangaSrc = locale === 'ja' ? '/spotmyshot/manga-ja.svg' : '/spotmyshot/manga-en.svg'
 
   const problems = [
     { icon: ICONS.database, title: 'sms.p1Title', desc: 'sms.p1Desc' },
@@ -104,6 +105,18 @@ export default function SpotMyShotPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('sms.solutionTitle')}</h2>
           <p className="text-lg text-white/90 leading-relaxed">{t('sms.solutionDesc')}</p>
+        </div>
+      </section>
+
+      {/* ===== Comic ===== */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-10">{t('sms.comicTitle')}</h2>
+          <img
+            src={mangaSrc}
+            alt={t('sms.comicTitle')}
+            className="w-full h-auto rounded-xl border border-gray-100 shadow-sm"
+          />
         </div>
       </section>
 
