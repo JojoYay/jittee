@@ -28,6 +28,7 @@ const ICONS = {
 export default function SpotMyShotPage() {
   const { t, locale } = useLanguage()
   const mangaSrc = locale === 'ja' ? '/spotmyshot/manga-ja.svg' : '/spotmyshot/manga-en.svg'
+  const more = locale === 'ja' ? '詳しく見る →' : locale === 'zh' ? '了解更多 →' : 'Learn more →'
 
   const problems = [
     { icon: ICONS.database, title: 'sms.p1Title', desc: 'sms.p1Desc' },
@@ -148,6 +149,7 @@ export default function SpotMyShotPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{t('sms.forPhotographersTitle')}</h3>
               <p className="text-gray-600 leading-relaxed">{t('sms.forPhotographersDesc')}</p>
+              <Link href="/spotmyshot/photographers" className="mt-5 inline-block text-blue-600 font-semibold hover:underline">{more}</Link>
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
               <div className="w-14 h-14 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-5">
@@ -155,6 +157,7 @@ export default function SpotMyShotPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{t('sms.forParticipantsTitle')}</h3>
               <p className="text-gray-600 leading-relaxed">{t('sms.forParticipantsDesc')}</p>
+              <Link href="/spotmyshot/participants" className="mt-5 inline-block text-orange-600 font-semibold hover:underline">{more}</Link>
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
               <div className="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-5">
@@ -162,6 +165,7 @@ export default function SpotMyShotPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{t('sms.forOrganizersTitle')}</h3>
               <p className="text-gray-600 leading-relaxed">{t('sms.forOrganizersDesc')}</p>
+              <Link href="/spotmyshot/organizers" className="mt-5 inline-block text-blue-600 font-semibold hover:underline">{more}</Link>
             </div>
           </div>
         </div>
