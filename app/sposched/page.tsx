@@ -16,6 +16,7 @@ interface Feature {
   desc: string
   bullets: string[]
   shots: { src: string; label: string }[]
+  comingSoon?: string // 近日提供バッジ (スクショ無しの装飾表示)
 }
 interface Copy {
   heroTagline: string
@@ -74,6 +75,13 @@ const COPY: Record<string, Copy> = {
         bullets: ['公式アカウントを友だち追加するだけで登録完了', '未払いの催促・イベント告知をLINEでプッシュ', 'リッチメニューからアプリへすぐアクセス'],
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE設定' }],
       },
+      {
+        title: '写真・動画の共有',
+        desc: '試合や練習の写真・動画をアップロードして、チームで共有・ダウンロードできます。',
+        bullets: ['イベントごとのアルバムを自動作成', 'メンバーがアップロード、リンクを知っていれば誰でも閲覧・ダウンロード', '有料プランなら100GBまで無料'],
+        shots: [],
+        comingSoon: '近日提供',
+      },
     ],
     pricingTitle: '料金',
     pricingFreeBadge: '初回 3か月 無料',
@@ -123,6 +131,13 @@ const COPY: Record<string, Copy> = {
         bullets: ['Members register just by adding your official account', 'Push payment reminders & announcements via LINE', 'Quick access to the app from the rich menu'],
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE settings' }],
       },
+      {
+        title: 'Photo & video sharing',
+        desc: 'Upload photos and videos from matches and practices, and share/download them as a team.',
+        bullets: ['Albums created automatically per event', 'Members upload; anyone with the link can view & download', '100GB included free with the paid plan'],
+        shots: [],
+        comingSoon: 'Coming soon',
+      },
     ],
     pricingTitle: 'Pricing',
     pricingFreeBadge: 'First 3 months free',
@@ -171,6 +186,13 @@ const COPY: Record<string, Copy> = {
         desc: '轻松发送催缴与活动通知，可与 LINE 官方账号联动。',
         bullets: ['加官方账号为好友即可完成注册', '通过 LINE 推送催缴与活动通知', '从丰富菜单快速进入应用'],
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE 设置' }],
+      },
+      {
+        title: '照片与视频共享',
+        desc: '上传比赛和训练的照片与视频，团队共享、随时下载。',
+        bullets: ['按活动自动创建相册', '成员上传，知道链接的人即可查看与下载', '付费方案免费提供 100GB'],
+        shots: [],
+        comingSoon: '即将推出',
       },
     ],
     pricingTitle: '价格',
@@ -261,17 +283,28 @@ export default function SpoSchedPage() {
         <div className="space-y-16 sm:space-y-24 py-10">
           {c.features.map((f, i) => (
             <div key={i} className={`flex flex-col ${i % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10`}>
-              {/* Screenshots */}
+              {/* Screenshots (無ければ装飾ボックス) */}
               <div className="flex justify-center gap-6 flex-1">
-                {f.shots.map((s) => (
+                {f.shots.length > 0 ? f.shots.map((s) => (
                   <PhoneShot key={s.src} src={s.src} label={s.label} onOpen={() => setModal({ src: s.src, title: s.label })} />
-                ))}
+                )) : (
+                  <div className="rounded-[2rem] bg-gradient-to-br from-orange-100 to-teal-100 shadow-inner flex flex-col items-center justify-center gap-3"
+                    style={{ width: 210, height: 430 }}>
+                    <span className="text-5xl">📸</span>
+                    <span className="text-5xl">🎥</span>
+                  </div>
+                )}
               </div>
               {/* Text */}
               <div className="flex-1">
                 <div className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full mb-3">
                   {String(i + 1).padStart(2, '0')}
                 </div>
+                {f.comingSoon && (
+                  <span className="ml-2 inline-block bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
+                    {f.comingSoon}
+                  </span>
+                )}
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{f.title}</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">{f.desc}</p>
                 <ul className="space-y-2">
