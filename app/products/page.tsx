@@ -1,8 +1,34 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import ImageModal from '../components/ImageModal'
 import { useLanguage } from '../contexts/LanguageContext'
+
+// SpoSched (スポスケ) 製品カードのコピー (3言語)。詳細は /sposched
+const SPO: Record<string, { badge: string; tagline: string; desc: string; points: string[]; cta: string }> = {
+  ja: {
+    badge: '注目の製品',
+    tagline: 'スポーツ団体の運営を、もっとシンプルに。',
+    desc: '出欠・清算・会計・LINE連携をひとつのアプリに。チーム運営の“面倒”をまとめて解決するSaaSです。',
+    points: ['スケジュール & 出欠', '清算（割り勘）', '会計', 'LINE連携 & リマインド'],
+    cta: '詳しく見る',
+  },
+  en: {
+    badge: 'Featured',
+    tagline: 'Running your sports club, made simple.',
+    desc: 'Attendance, settlement, accounting and LINE — all in one app. A SaaS that removes the hassle of running a team.',
+    points: ['Schedule & Attendance', 'Settlement', 'Accounting', 'LINE integration & reminders'],
+    cta: 'Learn more',
+  },
+  zh: {
+    badge: '主打产品',
+    tagline: '让体育团体的运营，更简单。',
+    desc: '考勤、结算、记账、LINE 联动，集于一个应用。为团队运营去除“麻烦”的 SaaS。',
+    points: ['日程与考勤', '结算（分摊）', '记账', 'LINE 联动与提醒'],
+    cta: '了解更多',
+  },
+}
 
 export default function ProductsPage() {
   const [modalImage, setModalImage] = useState<{
@@ -10,7 +36,8 @@ export default function ProductsPage() {
     alt: string
     title: string
   } | null>(null)
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const spo = SPO[locale] ?? SPO.ja
 
   const openModal = (src: string, alt: string, title: string) => {
     setModalImage({ src, alt, title })
@@ -31,6 +58,35 @@ export default function ProductsPage() {
             {t('productsSubtitle')}
           </p>
         </div>
+
+        {/* SpoSched (スポスケ) — 注目の製品カード。詳細は /sposched */}
+        <Link href="/sposched" className="block mb-12 group">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-orange-500 via-amber-500 to-teal-500 text-white p-8 sm:p-10 transition-transform group-hover:scale-[1.01]">
+            <span className="inline-block bg-white/25 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">★ {spo.badge}</span>
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="flex-shrink-0">
+                <div className="bg-white/95 rounded-2xl px-6 py-4 inline-flex shadow">
+                  <img src="/sposched/logo_sposched.png" alt="SpoSched" className="h-12 sm:h-16 w-auto" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2 drop-shadow">{spo.tagline}</h2>
+                <p className="text-white/95 mb-4 max-w-2xl">{spo.desc}</p>
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {spo.points.map((p, i) => (
+                    <span key={i} className="bg-white/20 rounded-full px-3 py-1 text-sm font-medium">{p}</span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center gap-1 bg-white text-orange-600 font-bold px-6 py-2.5 rounded-full shadow group-hover:bg-orange-50 transition-colors">
+                  {spo.cta}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </Link>
 
         {/* メインソリューション */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
