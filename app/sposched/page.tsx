@@ -76,11 +76,10 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE設定' }],
       },
       {
-        title: '写真・動画の共有',
-        desc: '試合や練習の写真・動画をアップロードして、チームで共有・ダウンロードできます。',
-        bullets: ['イベントごとのアルバムを自動作成', 'メンバーがアップロード、リンクを知っていれば誰でも閲覧・ダウンロード', '有料プランなら100GBまで無料'],
+        title: 'SpotMyShot連携（メディアストレージ）',
+        desc: '写真共有サービス SpotMyShot との連携で、イベントの写真・動画をみんなでアップロードして共有できます。',
+        bullets: ['イベントごとのアルバムを自動作成、メンバー全員がアップロード可能', '画像の劣化なくアップロード（原本のまま保存・ダウンロード）', '100GBまで無料。リンクを知っていれば誰でも閲覧・ダウンロード'],
         shots: [],
-        comingSoon: '近日提供',
       },
     ],
     pricingTitle: '料金',
@@ -132,11 +131,10 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE settings' }],
       },
       {
-        title: 'Photo & video sharing',
-        desc: 'Upload photos and videos from matches and practices, and share/download them as a team.',
-        bullets: ['Albums created automatically per event', 'Members upload; anyone with the link can view & download', '100GB included free with the paid plan'],
+        title: 'SpotMyShot integration (media storage)',
+        desc: 'Upload and share event photos & videos as a team — powered by SpotMyShot, our photo-sharing service.',
+        bullets: ['Albums created automatically per event; every member can upload', 'No quality loss — originals are stored and downloaded as-is', 'Up to 100GB free; anyone with the link can view & download'],
         shots: [],
-        comingSoon: 'Coming soon',
       },
     ],
     pricingTitle: 'Pricing',
@@ -188,11 +186,10 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE 设置' }],
       },
       {
-        title: '照片与视频共享',
-        desc: '上传比赛和训练的照片与视频，团队共享、随时下载。',
-        bullets: ['按活动自动创建相册', '成员上传，知道链接的人即可查看与下载', '付费方案免费提供 100GB'],
+        title: 'SpotMyShot 联动（媒体存储）',
+        desc: '与照片共享服务 SpotMyShot 联动，活动的照片和视频可以大家一起上传、共享。',
+        bullets: ['按活动自动创建相册，全体成员均可上传', '上传不压缩画质（按原图保存与下载）', '免费提供 100GB；知道链接的人即可查看与下载'],
         shots: [],
-        comingSoon: '即将推出',
       },
     ],
     pricingTitle: '价格',
@@ -288,9 +285,11 @@ export default function SpoSchedPage() {
                 {f.shots.length > 0 ? f.shots.map((s) => (
                   <PhoneShot key={s.src} src={s.src} label={s.label} onOpen={() => setModal({ src: s.src, title: s.label })} />
                 )) : (
-                  <div className="rounded-[2rem] bg-gradient-to-br from-orange-100 to-teal-100 shadow-inner flex flex-col items-center justify-center gap-3"
+                  <div className="rounded-[2rem] bg-gradient-to-br from-orange-100 to-teal-100 shadow-inner flex flex-col items-center justify-center gap-4 px-4"
                     style={{ width: 210, height: 430 }}>
                     <span className="text-5xl">📸</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/spotmyshot/spotMyShot_logo.png" alt="SpotMyShot" className="w-full h-auto" />
                     <span className="text-5xl">🎥</span>
                   </div>
                 )}
