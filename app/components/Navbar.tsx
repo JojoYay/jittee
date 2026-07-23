@@ -67,9 +67,6 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-              <Link href="/sposched" className="text-orange-600 hover:text-orange-700 px-4 py-2 rounded-md text-sm font-bold transition-colors">
-                SpoSched
-              </Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('contact')}
               </Link>
@@ -177,13 +174,6 @@ export default function Navbar() {
               SpotMyShot
             </Link>
           </div>
-          <Link
-            href="/sposched"
-            className="block px-3 py-2 rounded-md text-base font-bold text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            SpoSched
-          </Link>
           <Link
             href="/contact"
             className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
