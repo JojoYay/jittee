@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import ImageModal from '../components/ImageModal'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -10,6 +10,17 @@ import { useLanguage } from '../contexts/LanguageContext'
  * コピーはこのページ内に閉じて持つ (locale で出し分け)。サイト共通の
  * LanguageSwitcher(Navbar) で言語が切り替わる。実スクショは public/sposched/。
  */
+
+// Cloudflare Turnstile (無料の人間判定)。サイトキーは公開情報。
+// 空文字の間はウィジェットを出さず、サーバー側の検証もスキップされる (段階導入)
+const TURNSTILE_SITE_KEY = ''
+
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    turnstile?: any
+  }
+}
 
 interface Feature {
   title: string
@@ -273,6 +284,27 @@ export default function SpoSchedPage() {
   const [trialWebsite, setTrialWebsite] = useState('') // honeypot (人間は入力しない)
   const [trialState, setTrialState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [trialErrorMsg, setTrialErrorMsg] = useState('')
+  // Turnstile: 判定トークン (未設定キーなら空のまま送る)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const turnstileRef = useRef<HTMLDivElement>(null)
+  const turnstileWidgetId = useRef<string | null>(null)
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY || !turnstileRef.current) return
+    const render = () => {
+      if (!window.turnstile || !turnstileRef.current || turnstileWidgetId.current !== null) return
+      turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+      })
+    }
+    if (window.turnstile) { render(); return }
+    const script = document.createElement('script')
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+    script.async = true
+    script.onload = render
+    document.head.appendChild(script)
+  }, [])
 
   const submitTrial = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -283,17 +315,26 @@ export default function SpoSchedPage() {
       const res = await fetch('https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/trial-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: trialName, email: trialEmail, contact: trialContact, website: trialWebsite }),
+        body: JSON.stringify({ name: trialName, email: trialEmail, contact: trialContact, website: trialWebsite, turnstileToken }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
         setTrialErrorMsg(typeof data.error === 'string' ? data.error : '')
         setTrialState('error')
+        // トークンは使い切りのため、失敗したら再判定させる
+        if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId.current !== null) {
+          window.turnstile.reset(turnstileWidgetId.current)
+          setTurnstileToken('')
+        }
         return
       }
       setTrialState('done')
     } catch {
       setTrialState('error')
+      if (TURNSTILE_SITE_KEY && window.turnstile && turnstileWidgetId.current !== null) {
+        window.turnstile.reset(turnstileWidgetId.current)
+        setTurnstileToken('')
+      }
     }
   }
 
@@ -436,10 +477,13 @@ export default function SpoSchedPage() {
               <input type="text" value={trialWebsite} onChange={e => setTrialWebsite(e.target.value)}
                 tabIndex={-1} autoComplete="off" aria-hidden="true"
                 className="absolute -left-[9999px] h-0 w-0 opacity-0" placeholder="website" />
+              {TURNSTILE_SITE_KEY && (
+                <div ref={turnstileRef} className="flex justify-center" />
+              )}
               {trialState === 'error' && (
                 <p className="text-sm text-red-600 font-medium">{trialErrorMsg || c.trialFail}</p>
               )}
-              <button type="submit" disabled={trialState === 'sending'}
+              <button type="submit" disabled={trialState === 'sending' || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
                 className="w-full bg-orange-500 text-white font-bold py-3 rounded-full shadow hover:bg-orange-600 transition-colors disabled:opacity-60">
                 {trialState === 'sending' ? c.trialSending : c.trialSubmit}
               </button>
