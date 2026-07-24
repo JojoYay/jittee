@@ -68,7 +68,7 @@ const COPY: Record<string, Copy> = {
         title: '会計',
         desc: '団体が“今いくらプールしているか”。残高と入出金の履歴をまとめて管理。',
         bullets: ['入金・支出を記録して残高を自動計算', '清算の入金も自動で会計に反映', '団体のプール金額がいつでも分かる'],
-        shots: [{ src: '/sposched/Cashbook.png', label: '会計（台帳）' }],
+        shots: [{ src: '/sposched/Cashbook.png', label: '会計（台帳）' }, { src: '/sposched/account2.png', label: '記帳' }],
       },
       {
         title: 'LINE連携 & リマインド',
@@ -124,7 +124,7 @@ const COPY: Record<string, Copy> = {
         title: 'Accounting',
         desc: 'Know exactly how much the club has pooled — balance and full history in one place.',
         bullets: ['Record income & expenses; balance auto-calculated', 'Settlement income flows into the ledger automatically', 'Always know the club’s pooled balance'],
-        shots: [{ src: '/sposched/Cashbook.png', label: 'Ledger' }],
+        shots: [{ src: '/sposched/Cashbook.png', label: 'Ledger' }, { src: '/sposched/account2.png', label: 'New entry' }],
       },
       {
         title: 'LINE integration & reminders',
@@ -180,7 +180,7 @@ const COPY: Record<string, Copy> = {
         title: '记账',
         desc: '团体目前共有多少资金，余额与收支记录统一管理。',
         bullets: ['记录收入与支出，自动计算余额', '结算收入自动计入账本', '随时掌握团体的资金余额'],
-        shots: [{ src: '/sposched/Cashbook.png', label: '账本' }],
+        shots: [{ src: '/sposched/Cashbook.png', label: '账本' }, { src: '/sposched/account2.png', label: '记账' }],
       },
       {
         title: 'LINE 联动与提醒',
@@ -217,11 +217,12 @@ function PhoneShot({ src, label, onOpen }: { src: string; label: string; onOpen:
       <button
         onClick={onOpen}
         className="rounded-[2rem] border-[6px] border-gray-800 bg-gray-800 shadow-xl overflow-hidden hover:scale-[1.02] transition-transform"
-        style={{ width: 210 }}
+        // 狭い画面では2枚並びがはみ出さないよう縮小 (2枚 + 余白が常に収まる幅)
+        style={{ width: 'min(210px, 42vw)' }}
         aria-label={label}
       >
         {err ? (
-          <div className="bg-gradient-to-br from-orange-50 to-teal-50 flex items-center justify-center text-gray-400 text-sm" style={{ height: 430, width: 198 }}>
+          <div className="w-full aspect-[198/430] bg-gradient-to-br from-orange-50 to-teal-50 flex items-center justify-center text-gray-400 text-sm">
             {label}
           </div>
         ) : (
@@ -290,12 +291,12 @@ export default function SpoSchedPage() {
           {c.features.map((f, i) => (
             <div key={i} className={`flex flex-col ${i % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10`}>
               {/* Screenshots (無ければ装飾ボックス) */}
-              <div className="flex justify-center gap-6 flex-1">
+              <div className="flex justify-center gap-3 sm:gap-6 flex-1">
                 {f.shots.length > 0 ? f.shots.map((s) => (
                   <PhoneShot key={s.src} src={s.src} label={s.label} onOpen={() => setModal({ src: s.src, title: s.label })} />
                 )) : (
-                  <div className="rounded-[2rem] bg-gradient-to-br from-orange-100 to-teal-100 shadow-inner flex flex-col items-center justify-center gap-4 px-4"
-                    style={{ width: 210, height: 430 }}>
+                  <div className="rounded-[2rem] bg-gradient-to-br from-orange-100 to-teal-100 shadow-inner flex flex-col items-center justify-center gap-4 px-4 aspect-[210/430]"
+                    style={{ width: 'min(210px, 42vw)' }}>
                     <span className="text-5xl">📸</span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/spotmyshot/spotMyShot_logo.png" alt="SpotMyShot" className="w-full h-auto" />
