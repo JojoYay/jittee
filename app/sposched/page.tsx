@@ -35,6 +35,7 @@ interface Copy {
   pricingNote: string
   proofTitle: string; proofDesc: string
   ctaTitle: string; ctaDesc: string; ctaButton: string
+  helpLink: string
 }
 
 const COPY: Record<string, Copy> = {
@@ -92,6 +93,7 @@ const COPY: Record<string, Copy> = {
     ctaTitle: 'まずは3か月、無料で。',
     ctaDesc: '導入のご相談・お問い合わせはお気軽にどうぞ。',
     ctaButton: 'お問い合わせ',
+    helpLink: '📖 使い方・初期設定ガイド',
   },
   en: {
     heroTagline: 'Running your sports club, made simple.',
@@ -147,6 +149,7 @@ const COPY: Record<string, Copy> = {
     ctaTitle: 'Try it free for 3 months.',
     ctaDesc: 'Get in touch — we’re happy to help you get started.',
     ctaButton: 'Contact us',
+    helpLink: '📖 Setup & how-to guide',
   },
   zh: {
     heroTagline: '让体育团体的运营，更简单。',
@@ -202,6 +205,7 @@ const COPY: Record<string, Copy> = {
     ctaTitle: '先免费试用 3 个月。',
     ctaDesc: '欢迎咨询，我们乐意协助您快速上手。',
     ctaButton: '联系我们',
+    helpLink: '📖 使用与初始设置指南',
   },
 }
 
@@ -247,6 +251,11 @@ export default function SpoSchedPage() {
           <Link href="/contact" className="inline-block bg-white text-orange-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-orange-50 transition-colors">
             {c.ctaPrimary}
           </Link>
+          <div className="mt-4">
+            <Link href="/sposched/help" className="text-sm text-white/90 underline underline-offset-4 hover:text-white">
+              {c.helpLink}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -354,6 +363,11 @@ export default function SpoSchedPage() {
           <Link href="/contact" className="inline-block bg-white text-teal-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-teal-50 transition-colors">
             {c.ctaButton}
           </Link>
+          <div className="mt-4">
+            <Link href="/sposched/help" className="text-sm text-white/90 underline underline-offset-4 hover:text-white">
+              {c.helpLink}
+            </Link>
+          </div>
         </div>
       </section>
 
