@@ -170,7 +170,7 @@ const COPY: Record<string, Copy> = {
       {
         title: '结算',
         desc: '支持活动参加费、每月月费等各类结算。谁该付多少、是否已付，一目了然。',
-        bbullets: ['支持多种付款模式：按次付费、每月月费、年费等', '付款使用 PayNow，采用“记录已付款事实”的方式，零手续费', '轻松管理已付/未付，并可一键催款'],
+        bullets: ['支持多种付款模式：按次付费、每月月费、年费等', '付款使用 PayNow，采用“记录已付款事实”的方式，零手续费', '轻松管理已付/未付，并可一键催款'],
         shots: [{ src: '/sposched/PaymentTable.png', label: '干事结算界面' }, { src: '/sposched/payment.png', label: '成员付款' }],
       },
       {
