@@ -13,7 +13,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 
 // Cloudflare Turnstile (無料の人間判定)。サイトキーは公開情報。
 // 空文字の間はウィジェットを出さず、サーバー側の検証もスキップされる (段階導入)
-const TURNSTILE_SITE_KEY = ''
+const TURNSTILE_SITE_KEY = '0x4AAAAAAD8rM9xgBtGkDMYZ'
 
 declare global {
   interface Window {
