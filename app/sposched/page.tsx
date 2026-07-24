@@ -30,8 +30,7 @@ interface Copy {
   features: Feature[]
   pricingTitle: string
   pricingFreeBadge: string
-  pricingMonthly: string; pricingPerMonth: string
-  pricingYearlyLabel: string; pricingYearly: string; pricingYearlyNote: string
+  pricingDesc: string
   pricingNote: string
   proofTitle: string; proofDesc: string
   ctaTitle: string; ctaDesc: string; ctaButton: string
@@ -59,15 +58,15 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/calendar.png', label: 'カレンダー' }, { src: '/sposched/calendar2.png', label: '出欠一覧' }],
       },
       {
-        title: '清算（割り勘）',
-        desc: '“誰がいくら払う？”“支払い済み／未払い？”がすぐ分かる。イベントごとに自動で清算。',
-        bullets: ['参加費をイベントごとに自動で割り勘', '支払済／未払いが一覧でわかる', 'メンバーはPayNowで支払い→スクショで完了'],
+        title: '清算',
+        desc: '参加費や月々の月謝などの清算をサポート。“誰がいくら払う？”“支払い済み？”がすぐ分かります。',
+        bullets: ['イベントごとの都度払いから、毎月の月謝・年会費まで様々な支払いパターンに対応', '支払いはPayNow。「支払った事実」を管理する方式なので手数料はゼロ', '支払い済み／未払いの管理と、支払いの催促がかんたん'],
         shots: [{ src: '/sposched/PaymentTable.png', label: '幹事の清算画面' }, { src: '/sposched/payment.png', label: 'メンバーの支払い' }],
       },
       {
         title: '会計',
         desc: '団体が“今いくらプールしているか”。残高と入出金の履歴をまとめて管理。',
-        bullets: ['入金・支出を記録して残高を自動計算', '清算の入金も自動で会計に反映', '団体のプール金額がいつでも分かる'],
+        bullets: ['入金・支出を記録して残高を自動計算', '清算の入金も自動で会計に反映', '月謝の管理や、スタジオなど場所代の定期的な記帳もこちらで', '団体のプール金額がいつでも分かる'],
         shots: [{ src: '/sposched/Cashbook.png', label: '会計（台帳）' }, { src: '/sposched/account2.png', label: '記帳' }],
       },
       {
@@ -85,8 +84,7 @@ const COPY: Record<string, Copy> = {
     ],
     pricingTitle: '料金',
     pricingFreeBadge: '初回 3か月 無料',
-    pricingMonthly: 'S$20', pricingPerMonth: '/ 月',
-    pricingYearlyLabel: '年払い', pricingYearly: 'S$200 / 年', pricingYearlyNote: '2か月分お得',
+    pricingDesc: '料金はチームの規模や利用形態に合わせてご案内しています。まずはお気軽にご連絡ください。',
     pricingNote: 'PayNow対応。まずは3か月無料でお試しください。',
     proofTitle: '導入実績',
     proofDesc: 'シンガポールのサッカーサークルを中心に、多くのチームにご利用いただいています。',
@@ -115,15 +113,15 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/calendar.png', label: 'Calendar' }, { src: '/sposched/calendar2.png', label: 'Attendance list' }],
       },
       {
-        title: 'Settlement (split the bill)',
-        desc: 'Instantly see who owes how much and who’s paid or unpaid. Auto-settled per event.',
-        bullets: ['Fees split automatically per event', 'See paid / unpaid at a glance', 'Members pay via PayNow → upload a screenshot to finish'],
+        title: 'Settlement',
+        desc: 'Supports settling event fees and monthly dues alike — instantly see who owes what and who has paid.',
+        bullets: ['Handles many payment patterns: pay-per-event, monthly dues, annual fees', 'Payments via PayNow — we track the fact of payment, so there are zero processing fees', 'Easily manage paid / unpaid and send payment reminders'],
         shots: [{ src: '/sposched/PaymentTable.png', label: 'Organizer view' }, { src: '/sposched/payment.png', label: 'Member payment' }],
       },
       {
         title: 'Accounting',
         desc: 'Know exactly how much the club has pooled — balance and full history in one place.',
-        bullets: ['Record income & expenses; balance auto-calculated', 'Settlement income flows into the ledger automatically', 'Always know the club’s pooled balance'],
+        bullets: ['Record income & expenses; balance auto-calculated', 'Settlement income flows into the ledger automatically', 'Manage monthly dues and recurring costs like studio or venue rent here too', 'Always know the club’s pooled balance'],
         shots: [{ src: '/sposched/Cashbook.png', label: 'Ledger' }, { src: '/sposched/account2.png', label: 'New entry' }],
       },
       {
@@ -141,8 +139,7 @@ const COPY: Record<string, Copy> = {
     ],
     pricingTitle: 'Pricing',
     pricingFreeBadge: 'First 3 months free',
-    pricingMonthly: 'S$20', pricingPerMonth: '/ month',
-    pricingYearlyLabel: 'Yearly', pricingYearly: 'S$200 / year', pricingYearlyNote: '2 months off',
+    pricingDesc: 'Pricing depends on your team size and how you use SpoSched. Get in touch and we will walk you through it.',
     pricingNote: 'PayNow supported. Try it free for 3 months.',
     proofTitle: 'Trusted by teams',
     proofDesc: 'Used by many teams, especially soccer circles across Singapore.',
@@ -171,15 +168,15 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/calendar.png', label: '日历' }, { src: '/sposched/calendar2.png', label: '出席名单' }],
       },
       {
-        title: '结算（分摊）',
-        desc: '谁该付多少、是否已付，一目了然。按活动自动结算。',
-        bullets: ['按活动自动分摊参加费', '已付／未付一览无余', '成员用 PayNow 付款 → 上传截图即完成'],
+        title: '结算',
+        desc: '支持活动参加费、每月月费等各类结算。谁该付多少、是否已付，一目了然。',
+        bbullets: ['支持多种付款模式：按次付费、每月月费、年费等', '付款使用 PayNow，采用“记录已付款事实”的方式，零手续费', '轻松管理已付/未付，并可一键催款'],
         shots: [{ src: '/sposched/PaymentTable.png', label: '干事结算界面' }, { src: '/sposched/payment.png', label: '成员付款' }],
       },
       {
         title: '记账',
         desc: '团体目前共有多少资金，余额与收支记录统一管理。',
-        bullets: ['记录收入与支出，自动计算余额', '结算收入自动计入账本', '随时掌握团体的资金余额'],
+        bullets: ['记录收入与支出，自动计算余额', '结算收入自动计入账本', '月费管理、工作室/场地租金等定期记账也在这里完成', '随时掌握团体的资金余额'],
         shots: [{ src: '/sposched/Cashbook.png', label: '账本' }, { src: '/sposched/account2.png', label: '记账' }],
       },
       {
@@ -197,8 +194,7 @@ const COPY: Record<string, Copy> = {
     ],
     pricingTitle: '价格',
     pricingFreeBadge: '前 3 个月免费',
-    pricingMonthly: 'S$20', pricingPerMonth: '/ 月',
-    pricingYearlyLabel: '年付', pricingYearly: 'S$200 / 年', pricingYearlyNote: '省 2 个月',
+    pricingDesc: '价格根据团队规模与使用方式提供。请先与我们联系。',
     pricingNote: '支持 PayNow。先免费试用 3 个月。',
     proofTitle: '客户实绩',
     proofDesc: '以新加坡的足球社团为主，众多团队正在使用。',
@@ -336,14 +332,10 @@ export default function SpoSchedPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">{c.pricingTitle}</h2>
           <div className="relative bg-gradient-to-br from-orange-50 to-teal-50 rounded-2xl shadow-lg p-8 text-center border border-orange-100">
             <span className="inline-block bg-orange-500 text-white text-sm font-bold px-4 py-1 rounded-full mb-6">🎁 {c.pricingFreeBadge}</span>
-            <div className="flex items-end justify-center gap-1 mb-2">
-              <span className="text-5xl font-extrabold text-gray-900">{c.pricingMonthly}</span>
-              <span className="text-xl text-gray-500 mb-1">{c.pricingPerMonth}</span>
-            </div>
-            <div className="text-gray-700 font-medium mb-6">
-              {c.pricingYearlyLabel}: <span className="font-bold">{c.pricingYearly}</span>
-              <span className="ml-2 inline-block bg-teal-100 text-teal-700 text-xs font-bold px-2 py-0.5 rounded-full">{c.pricingYearlyNote}</span>
-            </div>
+            <p className="text-lg text-gray-800 font-medium mb-6 max-w-xl mx-auto">{c.pricingDesc}</p>
+            <Link href="/contact" className="inline-block bg-orange-500 text-white font-bold px-8 py-3 rounded-full shadow hover:bg-orange-600 transition-colors mb-4">
+              {c.ctaButton}
+            </Link>
             <p className="text-sm text-gray-500">{c.pricingNote}</p>
           </div>
         </div>
