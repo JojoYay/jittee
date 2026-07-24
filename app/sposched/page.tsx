@@ -35,6 +35,10 @@ interface Copy {
   proofTitle: string; proofDesc: string
   ctaTitle: string; ctaDesc: string; ctaButton: string
   helpLink: string
+  trialTitle: string; trialDesc: string
+  trialName: string; trialEmail: string; trialContact: string
+  trialSubmit: string; trialSending: string
+  trialDone: string; trialFail: string
 }
 
 const COPY: Record<string, Copy> = {
@@ -92,6 +96,15 @@ const COPY: Record<string, Copy> = {
     ctaDesc: '導入のご相談・お問い合わせはお気軽にどうぞ。',
     ctaButton: 'お問い合わせ',
     helpLink: '📖 使い方・初期設定ガイド',
+    trialTitle: '3か月無料体験に申し込む',
+    trialDesc: '登録いただいたメールアドレスに、チーム開設用のURLと説明をお送りします (30日有効)。開設から3か月間、全機能を無料でお使いいただけます。',
+    trialName: 'お名前',
+    trialEmail: 'メールアドレス',
+    trialContact: '連絡先 (電話・LINE等)',
+    trialSubmit: '無料体験を申し込む',
+    trialSending: '送信中...',
+    trialDone: 'お申し込みありがとうございます！開設用URLをメールでお送りしました (届かない場合は迷惑メールフォルダをご確認ください)。',
+    trialFail: '送信に失敗しました。時間をおいて再度お試しいただくか、お問い合わせください。',
   },
   en: {
     heroTagline: 'Running your sports club, made simple.',
@@ -147,6 +160,15 @@ const COPY: Record<string, Copy> = {
     ctaDesc: 'Get in touch — we’re happy to help you get started.',
     ctaButton: 'Contact us',
     helpLink: '📖 Setup & how-to guide',
+    trialTitle: 'Sign up for the 3-month free trial',
+    trialDesc: 'We will email you a team-creation URL with instructions (valid 30 days). All features are free for 3 months after you create your team.',
+    trialName: 'Name',
+    trialEmail: 'Email address',
+    trialContact: 'Contact (phone / LINE, etc.)',
+    trialSubmit: 'Start free trial',
+    trialSending: 'Sending...',
+    trialDone: 'Thank you! We have emailed you the team-creation URL (check your spam folder if it does not arrive).',
+    trialFail: 'Failed to send. Please try again later or contact us.',
   },
   zh: {
     heroTagline: '让体育团体的运营，更简单。',
@@ -202,6 +224,15 @@ const COPY: Record<string, Copy> = {
     ctaDesc: '欢迎咨询，我们乐意协助您快速上手。',
     ctaButton: '联系我们',
     helpLink: '📖 使用与初始设置指南',
+    trialTitle: '申请 3 个月免费体验',
+    trialDesc: '我们将把创建团队的 URL 和说明发送到您登记的邮箱 (30 天有效)。创建后 3 个月内可免费使用全部功能。',
+    trialName: '姓名',
+    trialEmail: '电子邮箱',
+    trialContact: '联系方式 (电话 / LINE 等)',
+    trialSubmit: '申请免费体验',
+    trialSending: '发送中...',
+    trialDone: '感谢您的申请！创建团队的 URL 已发送到您的邮箱 (如未收到请检查垃圾邮件)。',
+    trialFail: '发送失败。请稍后重试或与我们联系。',
   },
 }
 
@@ -234,6 +265,37 @@ export default function SpoSchedPage() {
   const { locale } = useLanguage()
   const c = COPY[locale] ?? COPY.ja
   const [modal, setModal] = useState<{ src: string; title: string } | null>(null)
+  // 3か月無料体験フォーム: SpoSched本番の Edge Function trial-signup が
+  // 開設チケットを発行し、申込者へ案内メール + 運営へ通知を送る
+  const [trialName, setTrialName] = useState('')
+  const [trialEmail, setTrialEmail] = useState('')
+  const [trialContact, setTrialContact] = useState('')
+  const [trialWebsite, setTrialWebsite] = useState('') // honeypot (人間は入力しない)
+  const [trialState, setTrialState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
+  const [trialErrorMsg, setTrialErrorMsg] = useState('')
+
+  const submitTrial = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (trialState === 'sending') return
+    setTrialState('sending')
+    setTrialErrorMsg('')
+    try {
+      const res = await fetch('https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/trial-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trialName, email: trialEmail, contact: trialContact, website: trialWebsite }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setTrialErrorMsg(typeof data.error === 'string' ? data.error : '')
+        setTrialState('error')
+        return
+      }
+      setTrialState('done')
+    } catch {
+      setTrialState('error')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -245,9 +307,9 @@ export default function SpoSchedPage() {
           </div>
           <h1 className="text-2xl sm:text-4xl font-bold mb-4 drop-shadow">{c.heroTagline}</h1>
           <p className="text-base sm:text-lg text-white/95 max-w-2xl mx-auto mb-8">{c.heroDesc}</p>
-          <Link href="/contact" className="inline-block bg-white text-orange-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-orange-50 transition-colors">
+          <a href="#trial" className="inline-block bg-white text-orange-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-orange-50 transition-colors">
             {c.ctaPrimary}
-          </Link>
+          </a>
           <div className="mt-4">
             <Link href="/sposched/help" className="text-sm text-white/90 underline underline-offset-4 hover:text-white">
               {c.helpLink}
@@ -338,6 +400,51 @@ export default function SpoSchedPage() {
             </Link>
             <p className="text-sm text-gray-500">{c.pricingNote}</p>
           </div>
+        </div>
+      </section>
+
+      {/* 3か月無料体験の申し込みフォーム */}
+      <section id="trial" className="bg-white">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">{c.trialTitle}</h2>
+          <p className="text-gray-600 text-center mb-8">{c.trialDesc}</p>
+          {trialState === 'done' ? (
+            <div className="bg-teal-50 border border-teal-200 text-teal-800 rounded-xl p-6 text-center font-medium">
+              ✅ {c.trialDone}
+            </div>
+          ) : (
+            <form onSubmit={submitTrial} className="bg-gradient-to-br from-orange-50 to-teal-50 rounded-2xl shadow p-6 sm:p-8 space-y-4 border border-orange-100">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">{c.trialName} *</label>
+                <input type="text" required maxLength={100} value={trialName}
+                  onChange={e => setTrialName(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">{c.trialEmail} *</label>
+                <input type="email" required maxLength={200} value={trialEmail}
+                  onChange={e => setTrialEmail(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">{c.trialContact} *</label>
+                <input type="text" required maxLength={200} value={trialContact}
+                  onChange={e => setTrialContact(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" />
+              </div>
+              {/* honeypot: ボット対策の不可視フィールド */}
+              <input type="text" value={trialWebsite} onChange={e => setTrialWebsite(e.target.value)}
+                tabIndex={-1} autoComplete="off" aria-hidden="true"
+                className="absolute -left-[9999px] h-0 w-0 opacity-0" placeholder="website" />
+              {trialState === 'error' && (
+                <p className="text-sm text-red-600 font-medium">{trialErrorMsg || c.trialFail}</p>
+              )}
+              <button type="submit" disabled={trialState === 'sending'}
+                className="w-full bg-orange-500 text-white font-bold py-3 rounded-full shadow hover:bg-orange-600 transition-colors disabled:opacity-60">
+                {trialState === 'sending' ? c.trialSending : c.trialSubmit}
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
