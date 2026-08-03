@@ -1,12 +1,37 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { useLanguage } from '../../contexts/LanguageContext'
 
 /**
  * SpoSched 使い方・初期設定ガイド (/sposched/help) — 3言語 (ja/en/zh)。
- * 構成: できること → 運用の全体像 → 初期設定ガイド → 各ページの使い方
+ * 構成: できること → 運用の全体像 → 初期設定ガイド → 各ページの使い方 → AI連携(MCP)
  */
+
+// SpoSched の MCP サーバー (Supabase Edge Function)。ChatGPT/Claude にコネクタとして追加する
+const MCP_URL = 'https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/mcp'
+
+/** MCP サーバー URL のコピー欄 */
+function CopyableUrl({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <div className="flex items-stretch gap-2 flex-wrap">
+      <code className="flex-1 min-w-[12rem] break-all bg-gray-900 text-teal-200 text-xs sm:text-sm rounded-lg px-4 py-3 font-mono">{url}</code>
+      <button
+        type="button"
+        onClick={() => {
+          navigator.clipboard?.writeText(url)
+          setCopied(true)
+          setTimeout(() => setCopied(false), 1500)
+        }}
+        className="shrink-0 bg-orange-500 text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+      >
+        {copied ? '✓ Copied' : 'Copy'}
+      </button>
+    </div>
+  )
+}
 
 interface Step { title: string; body: string[] }
 interface PageRef { name: string; role?: string; desc: string }
@@ -29,6 +54,17 @@ interface HelpCopy {
   pagesIntro: string
   pages: PageRef[]
   roleKanji: string
+  // AI 連携 (MCP)
+  aiTitle: string
+  aiIntro: string
+  aiEndpointLabel: string
+  aiRequirementsTitle: string
+  aiRequirements: string[]
+  aiClients: { name: string; steps: string[] }[]
+  aiExamplesTitle: string
+  aiExamples: string[]
+  aiCaveatsTitle: string
+  aiCaveats: string[]
   ctaTitle: string
   ctaButton: string
 }
@@ -44,6 +80,7 @@ const COPY: Record<string, HelpCopy> = {
       { id: 'flow', label: '運用の全体像' },
       { id: 'setup', label: '初期設定ガイド' },
       { id: 'pages', label: '各ページの使い方' },
+      { id: 'ai', label: 'AI連携（MCP）' },
     ],
     overviewTitle: 'SpoSchedでできること',
     overviewBullets: [
@@ -141,6 +178,46 @@ const COPY: Record<string, HelpCopy> = {
       { name: 'プロフィール', desc: '表示名・PayNow先・子供の登録、LINE連携、表示言語の切替。' },
     ],
     roleKanji: '幹事',
+    aiTitle: 'AI連携（MCP）— ChatGPT / Claude から操作する',
+    aiIntro: 'SpoSched は MCP（Model Context Protocol）に対応しています。お使いの ChatGPT や Claude に SpoSched の MCP サーバーを接続すると、「来週末の試合、空きがあれば出席を〇にして」のように、普段の言葉でイベント作成・出欠登録・状況確認などを操作できます。',
+    aiEndpointLabel: 'SpoSched MCP サーバーの URL',
+    aiRequirementsTitle: '事前に必要なもの',
+    aiRequirements: [
+      'SpoSched のアカウント（いずれかの団体に参加済み）',
+      'MCP（コネクタ）に対応した ChatGPT または Claude。プランによっては有料プランや管理者の許可が必要な場合があります',
+      '上記の MCP サーバー URL',
+    ],
+    aiClients: [
+      { name: 'ChatGPT の場合', steps: [
+        '設定 → アプリ（Apps）→ 詳細設定（Advanced Settings）を開く',
+        '「開発者モード（Developer Mode）」をオンにする',
+        '「アプリを追加（Add App）」を選ぶ',
+        '上の MCP サーバー URL を入力する',
+        'SpoSched のアカウントでログイン（認証）する',
+        '「来週末の試合、空きがあれば出席を〇にして」などと話しかけて動作を確認',
+      ] },
+      { name: 'Claude の場合', steps: [
+        '設定（歯車アイコン）を開く',
+        'コネクタ（Connectors）→「カスタムコネクタを追加（Add Custom Connector）」を選ぶ',
+        '上の MCP サーバー URL を貼り付ける',
+        '表示に従って SpoSched のアカウントでログインする',
+        'アクセス権限を許可して「保存（Save）」',
+        'サンプルの指示を送って接続を確認',
+      ] },
+    ],
+    aiExamplesTitle: '話しかけ方の例',
+    aiExamples: [
+      '来週末のサッカーって参加可能かな？まだ空きがあれば出席を〇にしておいて',
+      '新しいイベントを水曜に、ピッチAで19時から。あとはいつもの条件で作って',
+      '今週のイベントで、まだ支払いが済んでいない人を教えて',
+      '来月の出欠状況をまとめて',
+    ],
+    aiCaveatsTitle: '注意点',
+    aiCaveats: [
+      '画面の名称や場所は、ChatGPT / Claude のバージョン・地域・プランによって多少異なります。',
+      '接続には SpoSched アカウントでの認証と権限の許可が必要です（許可した範囲の操作のみ行われます）。',
+      'Gemini は現状 Web 版では MCP に非対応です（CLI 等での利用は可能）。',
+    ],
     ctaTitle: '導入のご相談・ご質問はお気軽にどうぞ',
     ctaButton: 'お問い合わせ',
   },
@@ -154,6 +231,7 @@ const COPY: Record<string, HelpCopy> = {
       { id: 'flow', label: 'How it works' },
       { id: 'setup', label: 'Initial setup guide' },
       { id: 'pages', label: 'Page-by-page guide' },
+      { id: 'ai', label: 'AI integration (MCP)' },
     ],
     overviewTitle: 'What SpoSched does',
     overviewBullets: [
@@ -251,6 +329,46 @@ const COPY: Record<string, HelpCopy> = {
       { name: 'Profile', desc: 'Display name, PayNow details, children, LINE link, display language.' },
     ],
     roleKanji: 'Organizer',
+    aiTitle: 'AI integration (MCP) — operate from ChatGPT / Claude',
+    aiIntro: 'SpoSched supports MCP (Model Context Protocol). Connect the SpoSched MCP server to the ChatGPT or Claude you already use, and you can create events, set RSVPs and check status in plain language — for example, “If there\'s a spot in next weekend\'s game, mark me as attending.”',
+    aiEndpointLabel: 'SpoSched MCP server URL',
+    aiRequirementsTitle: 'What you need first',
+    aiRequirements: [
+      'A SpoSched account (already a member of a team)',
+      'A ChatGPT or Claude that supports MCP (connectors). Depending on the plan, a paid plan or admin approval may be required',
+      'The MCP server URL above',
+    ],
+    aiClients: [
+      { name: 'For ChatGPT', steps: [
+        'Open Settings → Apps → Advanced Settings',
+        'Turn on Developer Mode',
+        'Choose Add App',
+        'Enter the MCP server URL above',
+        'Log in (authenticate) with your SpoSched account',
+        'Test by asking, e.g. “If there\'s a spot in next weekend\'s game, mark me as attending”',
+      ] },
+      { name: 'For Claude', steps: [
+        'Open Settings (gear icon)',
+        'Go to Connectors → Add Custom Connector',
+        'Paste the MCP server URL above',
+        'Log in with your SpoSched account when prompted',
+        'Allow the access permissions and click Save',
+        'Send a sample instruction to confirm the connection',
+      ] },
+    ],
+    aiExamplesTitle: 'Example prompts',
+    aiExamples: [
+      'Can I make it to next weekend\'s game? If there\'s still a spot, set my attendance to attending.',
+      'Create a new event on Wednesday, Pitch A from 7pm — everything else as usual.',
+      'Who still hasn\'t paid for this week\'s event?',
+      'Summarize next month\'s attendance.',
+    ],
+    aiCaveatsTitle: 'Notes',
+    aiCaveats: [
+      'Menu names and locations vary somewhat by ChatGPT / Claude version, region and plan.',
+      'Connecting requires authenticating with your SpoSched account and granting permissions (only the scopes you allow are used).',
+      'Gemini currently has no MCP support in its web interface (CLI usage is possible).',
+    ],
     ctaTitle: 'Questions about getting started? Get in touch.',
     ctaButton: 'Contact us',
   },
@@ -264,6 +382,7 @@ const COPY: Record<string, HelpCopy> = {
       { id: 'flow', label: '运营全景' },
       { id: 'setup', label: '初始设置指南' },
       { id: 'pages', label: '各页面使用方法' },
+      { id: 'ai', label: 'AI 联动（MCP）' },
     ],
     overviewTitle: 'SpoSched 能做什么',
     overviewBullets: [
@@ -359,6 +478,46 @@ const COPY: Record<string, HelpCopy> = {
       { name: '个人资料', desc: '显示名、PayNow、孩子登记、LINE 关联、显示语言切换。' },
     ],
     roleKanji: '干事',
+    aiTitle: 'AI 联动（MCP）— 从 ChatGPT / Claude 操作',
+    aiIntro: 'SpoSched 支持 MCP（Model Context Protocol）。把 SpoSched 的 MCP 服务器连接到你常用的 ChatGPT 或 Claude，就能用日常的话创建活动、登记出席、查询状态——例如“下周末的比赛如果还有空位，就把我设为出席”。',
+    aiEndpointLabel: 'SpoSched MCP 服务器 URL',
+    aiRequirementsTitle: '事先需要准备',
+    aiRequirements: [
+      'SpoSched 账号（已加入某个团队）',
+      '支持 MCP（连接器）的 ChatGPT 或 Claude；视方案而定，可能需要付费方案或管理员授权',
+      '上面的 MCP 服务器 URL',
+    ],
+    aiClients: [
+      { name: 'ChatGPT', steps: [
+        '打开 设置 → 应用（Apps）→ 高级设置（Advanced Settings）',
+        '开启“开发者模式（Developer Mode）”',
+        '选择“添加应用（Add App）”',
+        '输入上面的 MCP 服务器 URL',
+        '用 SpoSched 账号登录（认证）',
+        '试着说“下周末的比赛如果还有空位就把我设为出席”来确认',
+      ] },
+      { name: 'Claude', steps: [
+        '打开 设置（齿轮图标）',
+        '进入 连接器（Connectors）→“添加自定义连接器（Add Custom Connector）”',
+        '粘贴上面的 MCP 服务器 URL',
+        '按提示用 SpoSched 账号登录',
+        '允许访问权限并点击“保存（Save）”',
+        '发送一条示例指令确认连接',
+      ] },
+    ],
+    aiExamplesTitle: '示例说法',
+    aiExamples: [
+      '下周末的比赛我能参加吗？如果还有空位，就把我的出席设为○。',
+      '周三在 A 场地晚上7点创建一个新活动，其余照常。',
+      '本周的活动里还有谁没付款？',
+      '汇总下个月的出席情况。',
+    ],
+    aiCaveatsTitle: '注意事项',
+    aiCaveats: [
+      '菜单名称与位置会因 ChatGPT / Claude 的版本、地区和方案而略有不同。',
+      '连接需要用 SpoSched 账号认证并授予权限（仅在你允许的范围内操作）。',
+      'Gemini 目前在网页版不支持 MCP（可通过 CLI 使用）。',
+    ],
     ctaTitle: '关于导入的咨询，欢迎随时联系。',
     ctaButton: '联系我们',
   },
@@ -460,6 +619,73 @@ export default function SpoSchedHelpPage() {
                 <p className="text-sm text-gray-600 leading-relaxed">{p.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* AI連携 (MCP) */}
+        <section id="ai" className="scroll-mt-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">🤖 {c.aiTitle}</h2>
+          <div className="bg-white rounded-xl shadow p-6 space-y-6">
+            <p className="text-gray-600">{c.aiIntro}</p>
+
+            {/* endpoint URL */}
+            <div>
+              <p className="text-sm font-bold text-gray-900 mb-2">{c.aiEndpointLabel}</p>
+              <CopyableUrl url={MCP_URL} />
+            </div>
+
+            {/* requirements */}
+            <div>
+              <p className="text-sm font-bold text-gray-900 mb-2">{c.aiRequirementsTitle}</p>
+              <ul className="space-y-2">
+                {c.aiRequirements.map((r, i) => (
+                  <li key={i} className="flex items-start text-gray-700 text-sm sm:text-base">
+                    <span className="text-teal-500 mr-2 mt-0.5">✓</span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* per-client steps */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {c.aiClients.map((cl, i) => (
+                <div key={i} className="bg-gray-50 rounded-xl border border-gray-100 p-5">
+                  <h3 className="font-bold text-gray-900 mb-3">{cl.name}</h3>
+                  <ol className="space-y-2.5">
+                    {cl.steps.map((s, j) => (
+                      <li key={j} className="flex items-start text-gray-700 text-sm">
+                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-[11px] font-bold flex items-center justify-center mr-2.5 mt-0.5">{j + 1}</span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              ))}
+            </div>
+
+            {/* example prompts */}
+            <div>
+              <p className="text-sm font-bold text-gray-900 mb-2">{c.aiExamplesTitle}</p>
+              <ul className="space-y-2">
+                {c.aiExamples.map((e, i) => (
+                  <li key={i} className="text-gray-700 text-sm bg-gradient-to-r from-orange-50 to-teal-50 border border-gray-100 rounded-lg px-4 py-2.5">“{e}”</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* caveats */}
+            <div>
+              <p className="text-sm font-bold text-gray-900 mb-2">{c.aiCaveatsTitle}</p>
+              <ul className="space-y-1.5">
+                {c.aiCaveats.map((n, i) => (
+                  <li key={i} className="text-sm text-gray-500 flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>{n}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
