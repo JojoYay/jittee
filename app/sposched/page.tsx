@@ -39,6 +39,13 @@ interface Copy {
   solutionTitle: string; solutionDesc: string
   featuresTitle: string
   features: Feature[]
+  // AI 統合 (新機能)
+  aiBadge: string
+  aiTitle: string
+  aiDesc: string
+  aiBullets: string[]
+  aiExamples: { user: string; ai: string }[]
+  aiNote: string
   pricingTitle: string
   pricingFreeBadge: string
   pricingDesc: string
@@ -97,6 +104,19 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/media.png', label: '写真・動画ページ' }, { src: '/sposched/media2.png', label: 'チームアルバム' }],
       },
     ],
+    aiBadge: '新機能',
+    aiTitle: '話しかけるだけ。あとはAIにおまかせ。',
+    aiDesc: '出欠の登録も、イベントの作成も、メニューを探す必要はありません。SpoSched は MCP に対応。普段お使いの ChatGPT や Claude から話しかけるだけで、SpoSched を直接操作できます。',
+    aiBullets: [
+      '空き状況を確認して、出欠を自動で登録',
+      '「いつもの条件で」——過去の設定を引き継いでイベント作成',
+      '操作を覚える必要なし。使い慣れた ChatGPT / Claude から頼むだけ',
+    ],
+    aiExamples: [
+      { user: '来週末のサッカーって参加可能かな？まだ空きがあれば出席を〇にしておいて', ai: '来週末の試合、まだ空きがありました。あなたの出欠を「〇（参加）」で登録しておきました ✅' },
+      { user: '新しいイベントを水曜に行うので、ピッチAで19時から。あとはいつもの条件で作って', ai: '水曜 19:00〜 ピッチA でイベントを作成しました。定員・参加費はいつも通りの設定にしています ✅' },
+    ],
+    aiNote: 'お使いの ChatGPT / Claude に SpoSched（MCPサーバー）を接続すれば、すぐに使えます。',
     pricingTitle: '料金',
     pricingFreeBadge: '初回 3か月 無料',
     pricingDesc: '料金はチームの規模や利用形態に合わせてご案内しています。まずはお気軽にご連絡ください。',
@@ -161,6 +181,19 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/media.png', label: 'Media page' }, { src: '/sposched/media2.png', label: 'Team album' }],
       },
     ],
+    aiBadge: 'NEW',
+    aiTitle: 'Just ask — let AI handle the rest.',
+    aiDesc: 'Registering attendance or creating an event — no need to hunt through menus. SpoSched speaks MCP: connect it to the ChatGPT or Claude you already use, and just say what you want.',
+    aiBullets: [
+      'Checks availability and sets your RSVP automatically',
+      '“Same as usual” — creates events carrying over past settings',
+      'Nothing to learn — just ask from the ChatGPT or Claude you already use',
+    ],
+    aiExamples: [
+      { user: 'Can I make it to next weekend’s game? If there’s still a spot, set my attendance to attending.', ai: 'Next weekend’s game still had spots — I’ve set your RSVP to “attending” ✅' },
+      { user: 'We’ve got a new event on Wednesday — Pitch A, from 7pm, everything else as usual.', ai: 'Created an event: Wed 7:00pm at Pitch A, with your usual capacity and fee ✅' },
+    ],
+    aiNote: 'Connect SpoSched (MCP server) to your ChatGPT / Claude — then just ask.',
     pricingTitle: 'Pricing',
     pricingFreeBadge: 'First 3 months free',
     pricingDesc: 'Pricing depends on your team size and how you use SpoSched. Get in touch and we will walk you through it.',
@@ -225,6 +258,19 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/media.png', label: '照片·视频页面' }, { src: '/sposched/media2.png', label: '团队相册' }],
       },
     ],
+    aiBadge: '新功能',
+    aiTitle: '只需开口，其余交给 AI。',
+    aiDesc: '登记出席、创建活动，都无需在菜单里翻找。SpoSched 支持 MCP：连接到你常用的 ChatGPT 或 Claude，用日常的话说出来即可。',
+    aiBullets: [
+      '自动查看空位并登记你的出席',
+      '“照常设置”—— 沿用以往条件创建活动',
+      '无需学习操作，用你常用的 ChatGPT / Claude 直接说即可',
+    ],
+    aiExamples: [
+      { user: '下周末的比赛我能参加吗？如果还有空位，就把我的出席设为○。', ai: '下周末的比赛还有空位，已把你的出席登记为「○（参加）」✅' },
+      { user: '周三有个新活动，A 场地，晚上7点开始，其余照常。', ai: '已创建活动：周三 19:00 A 场地，名额与费用沿用以往设置 ✅' },
+    ],
+    aiNote: '把 SpoSched（MCP 服务器）连接到你的 ChatGPT / Claude，即可开始使用。',
     pricingTitle: '价格',
     pricingFreeBadge: '前 3 个月免费',
     pricingDesc: '价格根据团队规模与使用方式提供。请先与我们联系。',
@@ -380,6 +426,55 @@ export default function SpoSchedPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">{c.solutionTitle}</h2>
           <p className="text-gray-600">{c.solutionDesc}</p>
+        </div>
+      </section>
+
+      {/* AI 統合 (新機能) — チャット風モックアップ。スクショ不要で自己完結 */}
+      <section className="bg-gradient-to-br from-orange-50 via-white to-teal-50 border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div className="flex flex-col md:flex-row items-center gap-10 lg:gap-14">
+            {/* Text */}
+            <div className="flex-1">
+              <span className="inline-flex items-center gap-1.5 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">✨ {c.aiBadge}</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{c.aiTitle}</h2>
+              <p className="text-gray-600 leading-relaxed mb-5">{c.aiDesc}</p>
+              <ul className="space-y-2 mb-5">
+                {c.aiBullets.map((b, j) => (
+                  <li key={j} className="flex items-start text-gray-700">
+                    <span className="text-teal-500 mr-2 mt-0.5">✓</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm text-gray-500">{c.aiNote}</p>
+            </div>
+            {/* Chat mockup */}
+            <div className="flex-1 w-full max-w-md">
+              <div className="bg-gray-50 rounded-3xl border border-gray-200 shadow-xl p-5 sm:p-6">
+                <div className="flex items-center gap-2 pb-4 mb-4 border-b border-gray-200">
+                  <span className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-teal-500 text-white flex items-center justify-center text-base shrink-0">🤖</span>
+                  <div className="leading-tight">
+                    <div className="font-bold text-gray-700 text-sm">SpoSched</div>
+                    <div className="text-[11px] text-gray-400">ChatGPT · Claude · MCP</div>
+                  </div>
+                  <span className="ml-auto w-2.5 h-2.5 rounded-full bg-green-400" aria-hidden="true" />
+                </div>
+                <div className="space-y-6">
+                  {c.aiExamples.map((ex, i) => (
+                    <div key={i} className="space-y-2">
+                      <div className="flex justify-end">
+                        <div className="max-w-[85%] bg-orange-500 text-white rounded-2xl rounded-br-sm px-4 py-2.5 text-sm shadow">{ex.user}</div>
+                      </div>
+                      <div className="flex justify-start items-end gap-2">
+                        <span className="w-6 h-6 rounded-full bg-teal-500 text-white flex items-center justify-center text-xs shrink-0">🤖</span>
+                        <div className="max-w-[85%] bg-white border border-gray-200 text-gray-700 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm shadow-sm">{ex.ai}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
