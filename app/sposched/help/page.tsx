@@ -37,7 +37,7 @@ interface HelpCopy {
   aiEndpointDesc: string
   aiRequirementsTitle: string
   aiRequirements: string[]
-  aiClients: { name: string; steps: string[] }[]
+  aiClients: { name: string; steps: string[]; note?: string }[]
   aiExamplesTitle: string
   aiExamples: string[]
   aiCaveatsTitle: string
@@ -174,7 +174,7 @@ const COPY: Record<string, HelpCopy> = {
         'コピーした MCP サーバー URL を入力する',
         'SpoSched のアカウントでログイン（認証）する',
         '「来週末の試合、空きがあれば出席を〇にして」などと話しかけて動作を確認',
-      ] },
+      ], note: 'ChatGPT では、この接続機能（MCPサーバー）が「プラグイン（Plugin）」と表示される場合があります。' },
       { name: 'Claude の場合', steps: [
         'SpoSched の「プロフィール」から、あなたの団体の MCP サーバー URL をコピーしておく',
         '設定（歯車アイコン）を開く',
@@ -328,7 +328,7 @@ const COPY: Record<string, HelpCopy> = {
         'Enter the MCP server URL you copied',
         'Log in (authenticate) with your SpoSched account',
         'Test by asking, e.g. “If there\'s a spot in next weekend\'s game, mark me as attending”',
-      ] },
+      ], note: 'In ChatGPT, this connection feature (MCP server) may appear as a “Plugin”.' },
       { name: 'For Claude', steps: [
         'Copy your team\'s MCP server URL from “Profile” in SpoSched',
         'Open Settings (gear icon)',
@@ -480,7 +480,7 @@ const COPY: Record<string, HelpCopy> = {
         '输入你复制的 MCP 服务器 URL',
         '用 SpoSched 账号登录（认证）',
         '试着说“下周末的比赛如果还有空位就把我设为出席”来确认',
-      ] },
+      ], note: '在 ChatGPT 中，此连接功能（MCP 服务器）可能显示为“插件（Plugin）”。' },
       { name: 'Claude', steps: [
         '先在 SpoSched 的“个人资料”中复制你所属团队的 MCP 服务器 URL',
         '打开 设置（齿轮图标）',
@@ -646,6 +646,7 @@ export default function SpoSchedHelpPage() {
                       </li>
                     ))}
                   </ol>
+                  {cl.note && <p className="mt-3 text-xs text-gray-500 leading-relaxed">💡 {cl.note}</p>}
                 </div>
               ))}
             </div>
