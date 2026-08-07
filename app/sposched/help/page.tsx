@@ -1,37 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
 import { useLanguage } from '../../contexts/LanguageContext'
 
 /**
  * SpoSched 使い方・初期設定ガイド (/sposched/help) — 3言語 (ja/en/zh)。
  * 構成: できること → 運用の全体像 → 初期設定ガイド → 各ページの使い方 → AI連携(MCP)
+ * MCP サーバー URL は団体ごとに異なるため、アプリの「プロフィール」から取得する方式。
  */
-
-// SpoSched の MCP サーバー (Supabase Edge Function)。ChatGPT/Claude にコネクタとして追加する
-const MCP_URL = 'https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/mcp'
-
-/** MCP サーバー URL のコピー欄 */
-function CopyableUrl({ url }: { url: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <div className="flex items-stretch gap-2 flex-wrap">
-      <code className="flex-1 min-w-[12rem] break-all bg-gray-900 text-teal-200 text-xs sm:text-sm rounded-lg px-4 py-3 font-mono">{url}</code>
-      <button
-        type="button"
-        onClick={() => {
-          navigator.clipboard?.writeText(url)
-          setCopied(true)
-          setTimeout(() => setCopied(false), 1500)
-        }}
-        className="shrink-0 bg-orange-500 text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-      >
-        {copied ? '✓ Copied' : 'Copy'}
-      </button>
-    </div>
-  )
-}
 
 interface Step { title: string; body: string[] }
 interface PageRef { name: string; role?: string; desc: string }
@@ -58,6 +34,7 @@ interface HelpCopy {
   aiTitle: string
   aiIntro: string
   aiEndpointLabel: string
+  aiEndpointDesc: string
   aiRequirementsTitle: string
   aiRequirements: string[]
   aiClients: { name: string; steps: string[] }[]
@@ -180,26 +157,29 @@ const COPY: Record<string, HelpCopy> = {
     roleKanji: '幹事',
     aiTitle: 'AI連携（MCP）— ChatGPT / Claude から操作する',
     aiIntro: 'SpoSched は MCP（Model Context Protocol）に対応しています。お使いの ChatGPT や Claude に SpoSched の MCP サーバーを接続すると、「来週末の試合、空きがあれば出席を〇にして」のように、普段の言葉でイベント作成・出欠登録・状況確認などを操作できます。',
-    aiEndpointLabel: 'SpoSched MCP サーバーの URL',
+    aiEndpointLabel: 'まずは、自分の MCP サーバー URL を取得',
+    aiEndpointDesc: 'MCP サーバーの URL は団体ごとに異なります。SpoSched アプリの「プロフィール」画面に、あなたの団体専用の URL が表示されるので、それをコピーしてください。',
     aiRequirementsTitle: '事前に必要なもの',
     aiRequirements: [
       'SpoSched のアカウント（いずれかの団体に参加済み）',
       'MCP（コネクタ）に対応した ChatGPT または Claude。プランによっては有料プランや管理者の許可が必要な場合があります',
-      '上記の MCP サーバー URL',
+      '自分の団体の MCP サーバー URL（SpoSched の「プロフィール」から取得）',
     ],
     aiClients: [
       { name: 'ChatGPT の場合', steps: [
+        'SpoSched の「プロフィール」から、あなたの団体の MCP サーバー URL をコピーしておく',
         '設定 → アプリ（Apps）→ 詳細設定（Advanced Settings）を開く',
         '「開発者モード（Developer Mode）」をオンにする',
         '「アプリを追加（Add App）」を選ぶ',
-        '上の MCP サーバー URL を入力する',
+        'コピーした MCP サーバー URL を入力する',
         'SpoSched のアカウントでログイン（認証）する',
         '「来週末の試合、空きがあれば出席を〇にして」などと話しかけて動作を確認',
       ] },
       { name: 'Claude の場合', steps: [
+        'SpoSched の「プロフィール」から、あなたの団体の MCP サーバー URL をコピーしておく',
         '設定（歯車アイコン）を開く',
         'コネクタ（Connectors）→「カスタムコネクタを追加（Add Custom Connector）」を選ぶ',
-        '上の MCP サーバー URL を貼り付ける',
+        'コピーした MCP サーバー URL を貼り付ける',
         '表示に従って SpoSched のアカウントでログインする',
         'アクセス権限を許可して「保存（Save）」',
         'サンプルの指示を送って接続を確認',
@@ -331,26 +311,29 @@ const COPY: Record<string, HelpCopy> = {
     roleKanji: 'Organizer',
     aiTitle: 'AI integration (MCP) — operate from ChatGPT / Claude',
     aiIntro: 'SpoSched supports MCP (Model Context Protocol). Connect the SpoSched MCP server to the ChatGPT or Claude you already use, and you can create events, set RSVPs and check status in plain language — for example, “If there\'s a spot in next weekend\'s game, mark me as attending.”',
-    aiEndpointLabel: 'SpoSched MCP server URL',
+    aiEndpointLabel: 'First, get your own MCP server URL',
+    aiEndpointDesc: 'The MCP server URL is different for each team. Your team\'s own URL is shown on the “Profile” screen in the SpoSched app — copy it from there.',
     aiRequirementsTitle: 'What you need first',
     aiRequirements: [
       'A SpoSched account (already a member of a team)',
       'A ChatGPT or Claude that supports MCP (connectors). Depending on the plan, a paid plan or admin approval may be required',
-      'The MCP server URL above',
+      'Your team\'s MCP server URL (copied from “Profile” in SpoSched)',
     ],
     aiClients: [
       { name: 'For ChatGPT', steps: [
+        'Copy your team\'s MCP server URL from “Profile” in SpoSched',
         'Open Settings → Apps → Advanced Settings',
         'Turn on Developer Mode',
         'Choose Add App',
-        'Enter the MCP server URL above',
+        'Enter the MCP server URL you copied',
         'Log in (authenticate) with your SpoSched account',
         'Test by asking, e.g. “If there\'s a spot in next weekend\'s game, mark me as attending”',
       ] },
       { name: 'For Claude', steps: [
+        'Copy your team\'s MCP server URL from “Profile” in SpoSched',
         'Open Settings (gear icon)',
         'Go to Connectors → Add Custom Connector',
-        'Paste the MCP server URL above',
+        'Paste the MCP server URL you copied',
         'Log in with your SpoSched account when prompted',
         'Allow the access permissions and click Save',
         'Send a sample instruction to confirm the connection',
@@ -480,26 +463,29 @@ const COPY: Record<string, HelpCopy> = {
     roleKanji: '干事',
     aiTitle: 'AI 联动（MCP）— 从 ChatGPT / Claude 操作',
     aiIntro: 'SpoSched 支持 MCP（Model Context Protocol）。把 SpoSched 的 MCP 服务器连接到你常用的 ChatGPT 或 Claude，就能用日常的话创建活动、登记出席、查询状态——例如“下周末的比赛如果还有空位，就把我设为出席”。',
-    aiEndpointLabel: 'SpoSched MCP 服务器 URL',
+    aiEndpointLabel: '首先，获取你自己的 MCP 服务器 URL',
+    aiEndpointDesc: 'MCP 服务器 URL 因团队而异。你所属团队专属的 URL 会显示在 SpoSched 应用的“个人资料”页面，请从那里复制。',
     aiRequirementsTitle: '事先需要准备',
     aiRequirements: [
       'SpoSched 账号（已加入某个团队）',
       '支持 MCP（连接器）的 ChatGPT 或 Claude；视方案而定，可能需要付费方案或管理员授权',
-      '上面的 MCP 服务器 URL',
+      '你所属团队的 MCP 服务器 URL（在 SpoSched 的“个人资料”中获取）',
     ],
     aiClients: [
       { name: 'ChatGPT', steps: [
+        '先在 SpoSched 的“个人资料”中复制你所属团队的 MCP 服务器 URL',
         '打开 设置 → 应用（Apps）→ 高级设置（Advanced Settings）',
         '开启“开发者模式（Developer Mode）”',
         '选择“添加应用（Add App）”',
-        '输入上面的 MCP 服务器 URL',
+        '输入你复制的 MCP 服务器 URL',
         '用 SpoSched 账号登录（认证）',
         '试着说“下周末的比赛如果还有空位就把我设为出席”来确认',
       ] },
       { name: 'Claude', steps: [
+        '先在 SpoSched 的“个人资料”中复制你所属团队的 MCP 服务器 URL',
         '打开 设置（齿轮图标）',
         '进入 连接器（Connectors）→“添加自定义连接器（Add Custom Connector）”',
-        '粘贴上面的 MCP 服务器 URL',
+        '粘贴你复制的 MCP 服务器 URL',
         '按提示用 SpoSched 账号登录',
         '允许访问权限并点击“保存（Save）”',
         '发送一条示例指令确认连接',
@@ -628,10 +614,10 @@ export default function SpoSchedHelpPage() {
           <div className="bg-white rounded-xl shadow p-6 space-y-6">
             <p className="text-gray-600">{c.aiIntro}</p>
 
-            {/* endpoint URL */}
-            <div>
-              <p className="text-sm font-bold text-gray-900 mb-2">{c.aiEndpointLabel}</p>
-              <CopyableUrl url={MCP_URL} />
+            {/* endpoint URL — per-team, obtained from the SpoSched profile */}
+            <div className="bg-orange-50 border border-orange-100 rounded-lg p-4">
+              <p className="text-sm font-bold text-gray-900 mb-1">📍 {c.aiEndpointLabel}</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{c.aiEndpointDesc}</p>
             </div>
 
             {/* requirements */}
