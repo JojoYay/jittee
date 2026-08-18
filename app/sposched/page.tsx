@@ -63,7 +63,7 @@ const COPY: Record<string, Copy> = {
   ja: {
     heroTagline: 'スポーツ団体の運営を、もっとシンプルに。',
     heroDesc: '出欠の確認から集金・会計まで。チーム運営の“面倒”を、ひとつのアプリに。',
-    ctaPrimary: '3か月無料ではじめる',
+    ctaPrimary: '1か月無料ではじめる',
     problemsTitle: 'スポーツ団体の運営、こんな悩みはありませんか？',
     problem1Title: '出欠確認が煩雑',
     problem1Desc: '「次はいつ・どこで、誰が来る？何人？」の確認が毎回大変。連絡がバラバラで、集計もひと苦労。',
@@ -118,17 +118,17 @@ const COPY: Record<string, Copy> = {
     ],
     aiNote: 'お使いの ChatGPT / Claude に SpoSched（MCPサーバー）を接続すれば、すぐに使えます。',
     pricingTitle: '料金',
-    pricingFreeBadge: '初回 3か月 無料',
+    pricingFreeBadge: '初回 1か月 無料',
     pricingDesc: '料金はチームの規模や利用形態に合わせてご案内しています。まずはお気軽にご連絡ください。',
-    pricingNote: 'PayNow対応。まずは3か月無料でお試しください。',
+    pricingNote: 'PayNow対応。まずは1か月無料でお試しください。',
     proofTitle: '導入実績',
     proofDesc: 'シンガポールのサッカーサークルを中心に、多くのチームにご利用いただいています。',
-    ctaTitle: 'まずは3か月、無料で。',
+    ctaTitle: 'まずは1か月、無料で。',
     ctaDesc: '導入のご相談・お問い合わせはお気軽にどうぞ。',
     ctaButton: 'お問い合わせ',
     helpLink: '📖 使い方・初期設定ガイド',
-    trialTitle: '3か月無料体験に申し込む',
-    trialDesc: '登録いただいたメールアドレスに、チーム開設用のURLと説明をお送りします (30日有効)。開設から3か月間、全機能を無料でお使いいただけます。',
+    trialTitle: '1か月無料体験に申し込む',
+    trialDesc: '登録いただいたメールアドレスに、チーム開設用のURLと説明をお送りします (30日有効)。開設から1か月間、全機能を無料でお使いいただけます。',
     trialName: 'お名前',
     trialEmail: 'メールアドレス',
     trialContact: '連絡先 (電話・LINE等)',
@@ -140,7 +140,7 @@ const COPY: Record<string, Copy> = {
   en: {
     heroTagline: 'Running your sports club, made simple.',
     heroDesc: 'From attendance to collecting money and accounting — put the hassle of team management into one app.',
-    ctaPrimary: 'Start 3 months free',
+    ctaPrimary: 'Start 1 month free',
     problemsTitle: 'Managing a sports club? Sound familiar?',
     problem1Title: 'Attendance is a hassle',
     problem1Desc: '“When, where, who’s coming, how many?” — checking every time is tiring, and tallying scattered replies is even worse.',
@@ -195,17 +195,17 @@ const COPY: Record<string, Copy> = {
     ],
     aiNote: 'Connect SpoSched (MCP server) to your ChatGPT / Claude — then just ask.',
     pricingTitle: 'Pricing',
-    pricingFreeBadge: 'First 3 months free',
+    pricingFreeBadge: 'First month free',
     pricingDesc: 'Pricing depends on your team size and how you use SpoSched. Get in touch and we will walk you through it.',
-    pricingNote: 'PayNow supported. Try it free for 3 months.',
+    pricingNote: 'PayNow supported. Try it free for 1 month.',
     proofTitle: 'Trusted by teams',
     proofDesc: 'Used by many teams, especially soccer circles across Singapore.',
-    ctaTitle: 'Try it free for 3 months.',
+    ctaTitle: 'Try it free for 1 month.',
     ctaDesc: 'Get in touch — we’re happy to help you get started.',
     ctaButton: 'Contact us',
     helpLink: '📖 Setup & how-to guide',
-    trialTitle: 'Sign up for the 3-month free trial',
-    trialDesc: 'We will email you a team-creation URL with instructions (valid 30 days). All features are free for 3 months after you create your team.',
+    trialTitle: 'Sign up for the 1-month free trial',
+    trialDesc: 'We will email you a team-creation URL with instructions (valid 30 days). All features are free for 1 month after you create your team.',
     trialName: 'Name',
     trialEmail: 'Email address',
     trialContact: 'Contact (phone / LINE, etc.)',
@@ -322,7 +322,7 @@ export default function SpoSchedPage() {
   const { locale } = useLanguage()
   const c = COPY[locale] ?? COPY.ja
   const [modal, setModal] = useState<{ src: string; title: string } | null>(null)
-  // 3か月無料体験フォーム: SpoSched本番の Edge Function trial-signup が
+  // 1か月無料体験フォーム: SpoSched本番の Edge Function trial-signup が
   // 開設チケットを発行し、申込者へ案内メール + 運営へ通知を送る
   const [trialName, setTrialName] = useState('')
   const [trialEmail, setTrialEmail] = useState('')
@@ -539,7 +539,7 @@ export default function SpoSchedPage() {
         </div>
       </section>
 
-      {/* 3か月無料体験の申し込みフォーム */}
+      {/* 1か月無料体験の申し込みフォーム */}
       <section id="trial" className="bg-white">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">{c.trialTitle}</h2>
