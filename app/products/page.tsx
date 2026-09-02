@@ -78,12 +78,14 @@ export default function ProductsPage() {
 
         {/* SpoSched (スポスケ) — 注目の製品カード。詳細は /sposched */}
         <Link href="/sposched" className="block mb-12 group">
-          <div className="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-orange-500 via-amber-500 to-teal-500 text-white p-8 sm:p-10 transition-transform group-hover:scale-[1.01]">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-[#0F1A2B] via-[#1E3350] to-[#0F1A2B] text-white p-8 sm:p-10 transition-transform group-hover:scale-[1.01]">
             <span className="inline-block bg-white/25 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">★ {spo.badge}</span>
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <div className="flex-shrink-0">
-                <div className="bg-white/95 rounded-2xl px-6 py-4 inline-flex shadow">
-                  <img src="/sposched/logo_sposched.png" alt="SpoSched" className="h-12 sm:h-16 w-auto" />
+                <div className="inline-flex items-center gap-3">
+                  <img src="/sposched/mark.svg" alt="" aria-hidden="true"
+                       className="h-12 sm:h-16 w-auto rounded-xl shadow" />
+                  <span className="text-2xl sm:text-3xl font-extrabold tracking-tight">SpoSched</span>
                 </div>
               </div>
               <div className="flex-1">
@@ -94,7 +96,7 @@ export default function ProductsPage() {
                     <span key={i} className="bg-white/20 rounded-full px-3 py-1 text-sm font-medium">{p}</span>
                   ))}
                 </div>
-                <span className="inline-flex items-center gap-1 bg-white text-orange-600 font-bold px-6 py-2.5 rounded-full shadow group-hover:bg-orange-50 transition-colors">
+                <span className="inline-flex items-center gap-1 bg-[#F0B429] text-[#0F1A2B] font-bold px-6 py-2.5 rounded-full shadow group-hover:bg-[#F7C64F] transition-colors">
                   {spo.cta}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />

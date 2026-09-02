@@ -306,7 +306,7 @@ function PhoneShot({ src, label, onOpen }: { src: string; label: string; onOpen:
         aria-label={label}
       >
         {err ? (
-          <div className="w-full aspect-[198/430] bg-gradient-to-br from-orange-50 to-teal-50 flex items-center justify-center text-gray-400 text-sm">
+          <div className="w-full aspect-[198/430] bg-gradient-to-br from-slate-50 to-amber-50 flex items-center justify-center text-gray-400 text-sm">
             {label}
           </div>
         ) : (
@@ -387,14 +387,16 @@ export default function SpoSchedPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-orange-500 via-amber-500 to-teal-500 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0F1A2B] via-[#1E3350] to-[#0F1A2B] text-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-          <div className="bg-white/95 rounded-2xl shadow-xl inline-flex px-8 py-6 mb-8">
-            <img src="/sposched/logo_sposched.png" alt="SpoSched" className="h-14 sm:h-20 w-auto" />
+          <div className="inline-flex items-center gap-4 mb-8">
+            <img src="/sposched/mark.svg" alt="" aria-hidden="true"
+                 className="h-16 sm:h-20 w-auto rounded-2xl shadow-xl" />
+            <span className="text-4xl sm:text-5xl font-extrabold tracking-tight">SpoSched</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-bold mb-4 drop-shadow">{c.heroTagline}</h1>
           <p className="text-base sm:text-lg text-white/95 max-w-2xl mx-auto mb-8">{c.heroDesc}</p>
-          <a href="#trial" className="inline-block bg-white text-orange-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-orange-50 transition-colors">
+          <a href="#trial" className="inline-block bg-[#F0B429] text-[#0F1A2B] font-bold px-8 py-3 rounded-full shadow-lg hover:bg-[#F7C64F] transition-colors">
             {c.ctaPrimary}
           </a>
           <div className="mt-4">
@@ -430,18 +432,18 @@ export default function SpoSchedPage() {
       </section>
 
       {/* AI 統合 (新機能) — チャット風モックアップ。スクショ不要で自己完結 */}
-      <section className="bg-gradient-to-br from-orange-50 via-white to-teal-50 border-b border-gray-100">
+      <section className="bg-gradient-to-br from-slate-50 via-white to-amber-50 border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="flex flex-col md:flex-row items-center gap-10 lg:gap-14">
             {/* Text */}
             <div className="flex-1">
-              <span className="inline-flex items-center gap-1.5 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">✨ {c.aiBadge}</span>
+              <span className="inline-flex items-center gap-1.5 bg-[#1E3350] text-white text-xs font-bold px-3 py-1 rounded-full mb-4">✨ {c.aiBadge}</span>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{c.aiTitle}</h2>
               <p className="text-gray-600 leading-relaxed mb-5">{c.aiDesc}</p>
               <ul className="space-y-2 mb-5">
                 {c.aiBullets.map((b, j) => (
                   <li key={j} className="flex items-start text-gray-700">
-                    <span className="text-teal-500 mr-2 mt-0.5">✓</span>
+                    <span className="text-[#DBA31F] mr-2 mt-0.5">✓</span>
                     <span>{b}</span>
                   </li>
                 ))}
@@ -452,7 +454,7 @@ export default function SpoSchedPage() {
             <div className="flex-1 w-full max-w-md">
               <div className="bg-gray-50 rounded-3xl border border-gray-200 shadow-xl p-5 sm:p-6">
                 <div className="flex items-center gap-2 pb-4 mb-4 border-b border-gray-200">
-                  <span className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-teal-500 text-white flex items-center justify-center text-base shrink-0">🤖</span>
+                  <span className="w-8 h-8 rounded-full bg-[#0F1A2B] text-white flex items-center justify-center text-base shrink-0">🤖</span>
                   <div className="leading-tight">
                     <div className="font-bold text-gray-700 text-sm">SpoSched</div>
                     <div className="text-[11px] text-gray-400">ChatGPT · Claude · MCP</div>
@@ -463,10 +465,10 @@ export default function SpoSchedPage() {
                   {c.aiExamples.map((ex, i) => (
                     <div key={i} className="space-y-2">
                       <div className="flex justify-end">
-                        <div className="max-w-[85%] bg-orange-500 text-white rounded-2xl rounded-br-sm px-4 py-2.5 text-sm shadow">{ex.user}</div>
+                        <div className="max-w-[85%] bg-[#1E3350] text-white rounded-2xl rounded-br-sm px-4 py-2.5 text-sm shadow">{ex.user}</div>
                       </div>
                       <div className="flex justify-start items-end gap-2">
-                        <span className="w-6 h-6 rounded-full bg-teal-500 text-white flex items-center justify-center text-xs shrink-0">🤖</span>
+                        <span className="w-6 h-6 rounded-full bg-[#0F1A2B] text-white flex items-center justify-center text-xs shrink-0">🤖</span>
                         <div className="max-w-[85%] bg-white border border-gray-200 text-gray-700 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm shadow-sm">{ex.ai}</div>
                       </div>
                     </div>
@@ -489,7 +491,7 @@ export default function SpoSchedPage() {
                 {f.shots.length > 0 ? f.shots.map((s) => (
                   <PhoneShot key={s.src} src={s.src} label={s.label} onOpen={() => setModal({ src: s.src, title: s.label })} />
                 )) : (
-                  <div className="rounded-[2rem] bg-gradient-to-br from-orange-100 to-teal-100 shadow-inner flex flex-col items-center justify-center gap-4 px-4 aspect-[210/430]"
+                  <div className="rounded-[2rem] bg-gradient-to-br from-slate-100 to-amber-100 shadow-inner flex flex-col items-center justify-center gap-4 px-4 aspect-[210/430]"
                     style={{ width: 'min(210px, 42vw)' }}>
                     <span className="text-5xl">📸</span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -500,11 +502,11 @@ export default function SpoSchedPage() {
               </div>
               {/* Text */}
               <div className="flex-1">
-                <div className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full mb-3">
+                <div className="inline-block bg-amber-100 text-[#0F1A2B] text-xs font-bold px-3 py-1 rounded-full mb-3">
                   {String(i + 1).padStart(2, '0')}
                 </div>
                 {f.comingSoon && (
-                  <span className="ml-2 inline-block bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
+                  <span className="ml-2 inline-block bg-[#1E3350] text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
                     {f.comingSoon}
                   </span>
                 )}
@@ -513,7 +515,7 @@ export default function SpoSchedPage() {
                 <ul className="space-y-2">
                   {f.bullets.map((b, j) => (
                     <li key={j} className="flex items-start text-gray-700">
-                      <span className="text-teal-500 mr-2 mt-0.5">✓</span>
+                      <span className="text-[#DBA31F] mr-2 mt-0.5">✓</span>
                       <span>{b}</span>
                     </li>
                   ))}
@@ -528,10 +530,10 @@ export default function SpoSchedPage() {
       <section className="bg-white border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">{c.pricingTitle}</h2>
-          <div className="relative bg-gradient-to-br from-orange-50 to-teal-50 rounded-2xl shadow-lg p-8 text-center border border-orange-100">
-            <span className="inline-block bg-orange-500 text-white text-sm font-bold px-4 py-1 rounded-full mb-6">🎁 {c.pricingFreeBadge}</span>
+          <div className="relative bg-gradient-to-br from-slate-50 to-amber-50 rounded-2xl shadow-lg p-8 text-center border border-slate-200">
+            <span className="inline-block bg-[#F0B429] text-[#0F1A2B] text-sm font-bold px-4 py-1 rounded-full mb-6">🎁 {c.pricingFreeBadge}</span>
             <p className="text-lg text-gray-800 font-medium mb-6 max-w-xl mx-auto">{c.pricingDesc}</p>
-            <Link href="/contact" className="inline-block bg-orange-500 text-white font-bold px-8 py-3 rounded-full shadow hover:bg-orange-600 transition-colors mb-4">
+            <Link href="/contact" className="inline-block bg-[#F0B429] text-[#0F1A2B] font-bold px-8 py-3 rounded-full shadow hover:bg-[#DBA31F] transition-colors mb-4">
               {c.ctaButton}
             </Link>
             <p className="text-sm text-gray-500">{c.pricingNote}</p>
@@ -545,28 +547,28 @@ export default function SpoSchedPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">{c.trialTitle}</h2>
           <p className="text-gray-600 text-center mb-8">{c.trialDesc}</p>
           {trialState === 'done' ? (
-            <div className="bg-teal-50 border border-teal-200 text-teal-800 rounded-xl p-6 text-center font-medium">
+            <div className="bg-amber-50 border border-amber-200 text-[#0F1A2B] rounded-xl p-6 text-center font-medium">
               ✅ {c.trialDone}
             </div>
           ) : (
-            <form onSubmit={submitTrial} className="bg-gradient-to-br from-orange-50 to-teal-50 rounded-2xl shadow p-6 sm:p-8 space-y-4 border border-orange-100">
+            <form onSubmit={submitTrial} className="bg-gradient-to-br from-slate-50 to-amber-50 rounded-2xl shadow p-6 sm:p-8 space-y-4 border border-slate-200">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">{c.trialName} *</label>
                 <input type="text" required maxLength={100} value={trialName}
                   onChange={e => setTrialName(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" />
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white" />
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">{c.trialEmail} *</label>
                 <input type="email" required maxLength={200} value={trialEmail}
                   onChange={e => setTrialEmail(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" />
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white" />
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">{c.trialContact} *</label>
                 <input type="text" required maxLength={200} value={trialContact}
                   onChange={e => setTrialContact(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" />
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white" />
               </div>
               {/* honeypot: ボット対策の不可視フィールド */}
               <input type="text" value={trialWebsite} onChange={e => setTrialWebsite(e.target.value)}
@@ -579,7 +581,7 @@ export default function SpoSchedPage() {
                 <p className="text-sm text-red-600 font-medium">{trialErrorMsg || c.trialFail}</p>
               )}
               <button type="submit" disabled={trialState === 'sending' || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
-                className="w-full bg-orange-500 text-white font-bold py-3 rounded-full shadow hover:bg-orange-600 transition-colors disabled:opacity-60">
+                className="w-full bg-[#F0B429] text-[#0F1A2B] font-bold py-3 rounded-full shadow hover:bg-[#DBA31F] transition-colors disabled:opacity-60">
                 {trialState === 'sending' ? c.trialSending : c.trialSubmit}
               </button>
             </form>
@@ -595,11 +597,11 @@ export default function SpoSchedPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-br from-teal-500 to-orange-500 text-white">
+      <section className="bg-gradient-to-br from-[#0F1A2B] to-[#1E3350] text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">{c.ctaTitle}</h2>
           <p className="text-white/95 mb-8">{c.ctaDesc}</p>
-          <Link href="/contact" className="inline-block bg-white text-teal-600 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-teal-50 transition-colors">
+          <Link href="/contact" className="inline-block bg-[#F0B429] text-[#0F1A2B] font-bold px-8 py-3 rounded-full shadow-lg hover:bg-[#F7C64F] transition-colors">
             {c.ctaButton}
           </Link>
           <div className="mt-4">
