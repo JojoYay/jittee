@@ -516,7 +516,7 @@ export default function SpoSchedHelpPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-br from-orange-500 via-amber-500 to-teal-500 text-white">
+      <section className="bg-gradient-to-br from-[#0F1A2B] via-[#1E3350] to-[#0F1A2B] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <Link href="/sposched" className="text-white/80 text-sm hover:text-white">{c.backToIntro}</Link>
           <h1 className="text-2xl sm:text-3xl font-bold mt-3 mb-3 drop-shadow">{c.title}</h1>
@@ -544,7 +544,7 @@ export default function SpoSchedHelpPage() {
             <ul className="space-y-2.5">
               {c.overviewBullets.map((b, i) => (
                 <li key={i} className="flex items-start text-gray-700">
-                  <span className="text-teal-500 mr-2 mt-0.5">✓</span>
+                  <span className="text-[#DBA31F] mr-2 mt-0.5">✓</span>
                   <span>{b}</span>
                 </li>
               ))}
@@ -560,7 +560,7 @@ export default function SpoSchedHelpPage() {
             <ol className="space-y-3">
               {c.flowSteps.map((s, i) => (
                 <li key={i} className="flex items-start text-gray-700">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-700 text-xs font-bold flex items-center justify-center mr-3 mt-0.5">{i + 1}</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#0F1A2B] text-white text-xs font-bold flex items-center justify-center mr-3 mt-0.5">{i + 1}</span>
                   <span>{s}</span>
                 </li>
               ))}
@@ -615,7 +615,7 @@ export default function SpoSchedHelpPage() {
             <p className="text-gray-600">{c.aiIntro}</p>
 
             {/* endpoint URL — per-team, obtained from the SpoSched profile */}
-            <div className="bg-orange-50 border border-orange-100 rounded-lg p-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <p className="text-sm font-bold text-gray-900 mb-1">📍 {c.aiEndpointLabel}</p>
               <p className="text-sm text-gray-700 leading-relaxed">{c.aiEndpointDesc}</p>
             </div>
@@ -626,7 +626,7 @@ export default function SpoSchedHelpPage() {
               <ul className="space-y-2">
                 {c.aiRequirements.map((r, i) => (
                   <li key={i} className="flex items-start text-gray-700 text-sm sm:text-base">
-                    <span className="text-teal-500 mr-2 mt-0.5">✓</span>
+                    <span className="text-[#DBA31F] mr-2 mt-0.5">✓</span>
                     <span>{r}</span>
                   </li>
                 ))}
@@ -641,7 +641,7 @@ export default function SpoSchedHelpPage() {
                   <ol className="space-y-2.5">
                     {cl.steps.map((s, j) => (
                       <li key={j} className="flex items-start text-gray-700 text-sm">
-                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-[11px] font-bold flex items-center justify-center mr-2.5 mt-0.5">{j + 1}</span>
+                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#0F1A2B] text-white text-[11px] font-bold flex items-center justify-center mr-2.5 mt-0.5">{j + 1}</span>
                         <span>{s}</span>
                       </li>
                     ))}
@@ -656,7 +656,7 @@ export default function SpoSchedHelpPage() {
               <p className="text-sm font-bold text-gray-900 mb-2">{c.aiExamplesTitle}</p>
               <ul className="space-y-2">
                 {c.aiExamples.map((e, i) => (
-                  <li key={i} className="text-gray-700 text-sm bg-gradient-to-r from-orange-50 to-teal-50 border border-gray-100 rounded-lg px-4 py-2.5">“{e}”</li>
+                  <li key={i} className="text-gray-700 text-sm bg-gradient-to-r from-slate-50 to-amber-50 border border-gray-100 rounded-lg px-4 py-2.5">“{e}”</li>
                 ))}
               </ul>
             </div>
@@ -677,9 +677,9 @@ export default function SpoSchedHelpPage() {
         </section>
 
         {/* CTA */}
-        <section className="text-center bg-gradient-to-br from-teal-500 to-orange-500 text-white rounded-2xl p-8">
+        <section className="text-center bg-gradient-to-br from-[#0F1A2B] to-[#1E3350] text-white rounded-2xl p-8">
           <p className="font-bold mb-4">{c.ctaTitle}</p>
-          <Link href="/contact" className="inline-block bg-white text-teal-600 font-bold px-8 py-3 rounded-full shadow hover:bg-teal-50 transition-colors">
+          <Link href="/contact" className="inline-block bg-[#F0B429] text-[#0F1A2B] font-bold px-8 py-3 rounded-full shadow hover:bg-[#F7C64F] transition-colors">
             {c.ctaButton}
           </Link>
         </section>
