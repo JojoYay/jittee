@@ -98,6 +98,26 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE設定' }, { src: '/sposched/LineLogin.png', label: 'LINEログイン' }],
       },
       {
+        title: 'チーム分け & フォーメーション',
+        desc: '参加者をチームに分けて、フォーメーションまで決められます。紅白戦の組み分けから、対戦相手がいる試合の並びまで。',
+        bullets: [
+          'チーム数を選んで「自動配置」を押すだけ。幹事をばらけさせる・子供を含めるなどの条件を選べます（実力で均す条件は、実力をプロフィール項目に持たせている団体で出ます）',
+          'フォーメーションは名前を付けて何枚でも保存。前半・後半で丸ごと入れ替える形もそのまま残せます',
+          'AIと連動。ポジションや経験年数などをプロフィール項目として自由に設定しておけば、それに沿った分け方をAIに頼めます',
+        ],
+        shots: [{ src: '/sposched/Team2.png', label: 'チーム分け' }, { src: '/sposched/Team.png', label: 'フォーメーション' }],
+      },
+      {
+        title: 'AIマネージャー',
+        desc: 'アプリの中にマネージャーがいます。メニューを探さず、話しかけるだけで調べたり動かしたりできます。',
+        bullets: [
+          '「今週末は何人来る？」「未払いの人は？」——聞けばその場で答えます',
+          '開いている画面を踏まえて答えます。カレンダーを見ていればその日のことを話します',
+          '次にやることを提案します。イベントが無ければ「作りましょう」と声をかけます',
+        ],
+        shots: [{ src: '/sposched/AIManager1.png', label: 'AIマネージャー' }, { src: '/sposched/AIManager2.png', label: '画面を見ながら相談' }],
+      },
+      {
         title: 'SpotMyShot連携（メディアストレージ）',
         desc: '写真共有サービス SpotMyShot との連携で、イベントの写真・動画をみんなでアップロードして共有できます。',
         bullets: ['イベントごとのアルバムを自動作成、メンバー全員がアップロード可能', '画像の劣化なくアップロード（原本のまま保存・ダウンロード）', '100GBまで無料。リンクを知っていれば誰でも閲覧・ダウンロード'],
@@ -175,6 +195,26 @@ const COPY: Record<string, Copy> = {
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE settings' }, { src: '/sposched/LineLogin.png', label: 'LINE login' }],
       },
       {
+        title: 'Teams & formations',
+        desc: 'Split attendees into teams and set the formation — from casual scrimmages to a lineup against a real opponent.',
+        bullets: [
+          'Pick the number of teams and press Auto assign. Choose the conditions: spread organizers, include kids — and balance by ability if your team keeps ability in its profile fields.',
+          'Save as many named formations as you like — keep a first-half and a second-half lineup side by side.',
+          'Works with the AI. Set up any profile fields you want (position, years of experience) and ask the AI to split the teams accordingly.',
+        ],
+        shots: [{ src: '/sposched/Team2.png', label: 'Teams' }, { src: '/sposched/Team.png', label: 'Formation' }],
+      },
+      {
+        title: 'AI manager',
+        desc: 'There is a manager inside the app. Just talk to it — no menu hunting.',
+        bullets: [
+          '"How many are coming this weekend?" "Who still owes money?" — ask and it answers on the spot.',
+          'It answers with the screen you are on in mind: open the calendar and it talks about that day.',
+          'It suggests what to do next — with no upcoming event, it offers to create one.',
+        ],
+        shots: [{ src: '/sposched/AIManager1.png', label: 'AI manager' }, { src: '/sposched/AIManager2.png', label: 'Ask while you work' }],
+      },
+      {
         title: 'SpotMyShot integration (media storage)',
         desc: 'Upload and share event photos & videos as a team — powered by SpotMyShot, our photo-sharing service.',
         bullets: ['Albums created automatically per event; every member can upload', 'No quality loss — originals are stored and downloaded as-is', 'Up to 100GB free; anyone with the link can view & download'],
@@ -250,6 +290,26 @@ const COPY: Record<string, Copy> = {
         desc: '轻松发送催缴与活动通知，可与 LINE 官方账号联动。',
         bullets: ['加官方账号为好友即可完成注册', '通过 LINE 推送催缴与活动通知', '从丰富菜单快速进入应用'],
         shots: [{ src: '/sposched/line-setting.png', label: 'LINE 设置' }, { src: '/sposched/LineLogin.png', label: 'LINE 登录' }],
+      },
+      {
+        title: '分队 & 阵型',
+        desc: '把参加者分成队伍，还能定好阵型。从队内对抗到对外比赛的排布都可以。',
+        bullets: [
+          '选好队伍数量，按一下「自动分配」即可。可选条件：分散干事、包含儿童；若团体在个人资料中记录了实力，还可按实力平衡。',
+          '阵型可以命名并保存任意多套，上半场与下半场的整体换人也能各自留存。',
+          '与AI联动。把位置、球龄等自由设定为个人资料项目后，就可以让AI按这些条件分队。',
+        ],
+        shots: [{ src: '/sposched/Team2.png', label: '分队' }, { src: '/sposched/Team.png', label: '阵型' }],
+      },
+      {
+        title: 'AI 经理',
+        desc: '应用里就有一位经理。不用找菜单，直接说话就能查询和操作。',
+        bullets: [
+          '「这周末来几个人？」「谁还没付款？」——问了就当场回答。',
+          '会结合你正在看的画面回答。打开日历时，就聊那一天的事。',
+          '会提示接下来该做什么。没有活动时，会主动提议创建。',
+        ],
+        shots: [{ src: '/sposched/AIManager1.png', label: 'AI 经理' }, { src: '/sposched/AIManager2.png', label: '边看边问' }],
       },
       {
         title: 'SpotMyShot 联动（媒体存储）',
