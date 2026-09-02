@@ -112,6 +112,7 @@ const COPY: Record<string, Copy> = {
         desc: 'アプリの中にマネージャーがいます。メニューを探さず、話しかけるだけで調べたり動かしたりできます。',
         bullets: [
           '「今週末は何人来る？」「未払いの人は？」——聞けばその場で答えます',
+          '「プロフィールの希望ポジションを見て、今のチームを振り分けて」——調べるだけでなく、そのまま実行までできます',
           '開いている画面を踏まえて答えます。カレンダーを見ていればその日のことを話します',
           '次にやることを提案します。イベントが無ければ「作りましょう」と声をかけます',
         ],
@@ -209,6 +210,7 @@ const COPY: Record<string, Copy> = {
         desc: 'There is a manager inside the app. Just talk to it — no menu hunting.',
         bullets: [
           '"How many are coming this weekend?" "Who still owes money?" — ask and it answers on the spot.',
+          '"Split the current teams using the preferred positions in the member profiles" — it does not just look things up, it carries the change out.',
           'It answers with the screen you are on in mind: open the calendar and it talks about that day.',
           'It suggests what to do next — with no upcoming event, it offers to create one.',
         ],
@@ -306,6 +308,7 @@ const COPY: Record<string, Copy> = {
         desc: '应用里就有一位经理。不用找菜单，直接说话就能查询和操作。',
         bullets: [
           '「这周末来几个人？」「谁还没付款？」——问了就当场回答。',
+          '「参考个人资料里的意向位置，把现在的队伍重新分一下」——不只是查询，还能直接执行。',
           '会结合你正在看的画面回答。打开日历时，就聊那一天的事。',
           '会提示接下来该做什么。没有活动时，会主动提议创建。',
         ],
