@@ -85,7 +85,7 @@ export default function ProductsPage() {
                 <div className="inline-flex items-center gap-3">
                   <img src="/sposched/mark.svg" alt="" aria-hidden="true"
                        className="h-12 sm:h-16 w-auto rounded-xl shadow" />
-                  <span className="text-2xl sm:text-3xl font-extrabold tracking-tight">SpoSched</span>
+                  <span className="text-2xl sm:text-3xl font-extrabold tracking-tight">Spo<span className="text-white/60">Sched</span></span>
                 </div>
               </div>
               <div className="flex-1">

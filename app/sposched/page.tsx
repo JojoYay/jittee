@@ -392,7 +392,7 @@ export default function SpoSchedPage() {
           <div className="inline-flex items-center gap-4 mb-8">
             <img src="/sposched/mark.svg" alt="" aria-hidden="true"
                  className="h-16 sm:h-20 w-auto rounded-2xl shadow-xl" />
-            <span className="text-4xl sm:text-5xl font-extrabold tracking-tight">SpoSched</span>
+            <span className="text-4xl sm:text-5xl font-extrabold tracking-tight">Spo<span className="text-white/60">Sched</span></span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-bold mb-4 drop-shadow">{c.heroTagline}</h1>
           <p className="text-base sm:text-lg text-white/95 max-w-2xl mx-auto mb-8">{c.heroDesc}</p>
