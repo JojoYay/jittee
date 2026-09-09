@@ -54,3 +54,4 @@ temp/*
 
 # Contains embedded API credentials — never commit
 public/api/deepseek_generated.jpg
+.stripe_live_key
