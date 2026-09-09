@@ -12,10 +12,10 @@ We do **not** sell VPN bandwidth. Traffic runs on the customer's OCI instance.
 
 | SKU | Price | Includes |
 |-----|-------|----------|
-| `MinorWire_app` | USD 10 | App license + self-serve guide (IAM policy snippet, OCID checklist, provision flow) |
-| `MinorWire_setup` | USD 100 | App + live assisted setup (screen share through IAM key creation, first VPN up, first device config) |
+| `MinorWire_app` | SGD 10 | App license + self-serve guide (IAM policy snippet, OCID checklist, provision flow) |
+| `MinorWire_setup` | SGD 100 | App + live assisted setup (screen share through IAM key creation, first VPN up, first device config) |
 
-Suggested upsell: buy app ($10), then upgrade to assisted for +$90.
+Currency: **SGD**. Suggested upsell: buy app (S$10), then upgrade to assisted for +S$90.
 
 No monthly VPN fee in MVP. Optional later: support subscription.
 
@@ -37,7 +37,7 @@ No monthly VPN fee in MVP. Optional later: support subscription.
 
 ## Flows
 
-### Self-serve ($10)
+### Self-serve (S$10)
 
 1. Pay Stripe → download app / unlock license
 2. Customer creates IAM user + policy (copy-paste from in-app guide)
@@ -45,7 +45,7 @@ No monthly VPN fee in MVP. Optional later: support subscription.
 4. App runs provision + health check
 5. App creates peers / QR / `.conf` per device
 
-### Assisted ($100)
+### Assisted (S$100)
 
 Same outcome; Jittee walks steps 2–5 in one session (time-box in offer, e.g. 60 minutes, 2 devices).
 
@@ -62,8 +62,15 @@ Same outcome; Jittee walks steps 2–5 in one session (time-box in offer, e.g. 6
 - Clear ToS: quality depends on customer's Always Free limits; stop/start from OCI console can change ephemeral public IP
 - Customer owns the OCI bill and Free Tier eligibility
 
+## Deliverable form (current)
+
+Sales: jittee.com `/minorwire` → Stripe PayNow (SGD).  
+Body: **Node.js CLI** (not a GUI installer yet) + IAM guide.  
+Device VPN: official WireGuard apps via `.conf` / QR.  
+Fulfillment MVP: email CLI package after payment (auto-download later).
+
 ## Repo plan (later)
 
-- `MinorWire` app (desktop-first: Windows; then macOS)
-- Optional tiny license API + Stripe webhook
-- This site: marketing at `/MinorWire`
+- Windows/macOS GUI shell around the same provisioner
+- Optional tiny license API + Stripe webhook (auto unlock)
+- This site: marketing + checkout at `/minorwire`
