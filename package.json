@@ -19,7 +19,7 @@
   },
   "resolutions": {
     "next": "15.5.9"
-  },  
+  },
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -37,6 +37,8 @@
     "next": "^15.4.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "resend": "^6.26.0",
+    "stripe": "^22.6.1",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

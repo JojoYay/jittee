@@ -29,3 +29,25 @@ env:
     secret: SERVER_URL
   - variable: GOOGLE_DRIVE_FOLDER_ID2
     secret: GOOGLE_DRIVE_FOLDER_ID2
+  # MinorWire Stripe fulfillment
+  # Also create secret STRIPE_SECRET_KEY (sk_live_...) then add:
+  #   - variable: STRIPE_SECRET_KEY
+  #     secret: STRIPE_SECRET_KEY
+  #     availability: [RUNTIME]
+  # and: firebase apphosting:secrets:grantaccess STRIPE_SECRET_KEY -b jittee
+  - variable: STRIPE_WEBHOOK_SECRET
+    secret: STRIPE_WEBHOOK_SECRET
+    availability:
+      - RUNTIME
+  - variable: MINORWIRE_DOWNLOAD_SECRET
+    secret: MINORWIRE_DOWNLOAD_SECRET
+    availability:
+      - RUNTIME
+  - variable: MINORWIRE_PUBLIC_BASE_URL
+    value: https://jittee.com
+    availability:
+      - RUNTIME
+  - variable: MINORWIRE_MAIL_BCC
+    value: info@jittee.com
+    availability:
+      - RUNTIME

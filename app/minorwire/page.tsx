@@ -66,14 +66,14 @@ const COPY: Record<string, Copy> = {
       'MinorWire は、あなたの Oracle Cloud 上に WireGuard を自動構築し、公式 WireGuard アプリ用の設定（.conf / QR）を発行するツールキットです。回線はあなたのもの。私たちはセットアップ手段を売ります。',
     ctaApp: 'ツールキット S$10（PayNow）',
     ctaSetup: '一緒に設定 S$100（PayNow）',
-    ctaNote: '決済は Stripe PayNow のみ。購入後、このページに戻り次の案内が表示されます。',
+    ctaNote: '決済は Stripe PayNow のみ。支払い後に ZIP ダウンロードページへ移動し、メールでもリンクを送ります。',
     formTitle: 'いま売っているものの形',
     formDesc:
       'Windows のきれいな GUI アプリはまだありません。MVP は Node.js の CLI（コマンドライン）です。端末の接続自体は、公式 WireGuard アプリに設定ファイルを入れる方式です。',
     formPoints: [
       '販売ページ: jittee.com/minorwire（このページ）',
       '支払い: Stripe PayNow（S$10 / S$100）',
-      '本体: MinorWire CLI（provision / bootstrap / peer）',
+      '本体: MinorWire CLI（provision / bootstrap / peer）ZIP 自動配布',
       '接続用アプリ: 公式 WireGuard（Windows / Android / iOS / Mac）',
       'GUI アプリ: 今後。今は CLI + 手順書で同等の結果を出せます',
     ],
@@ -125,7 +125,7 @@ const COPY: Record<string, Copy> = {
     faqs: [
       {
         q: 'ダウンロードできるアプリはありますか？',
-        a: 'いまは GUI インストーラはありません。購入後に CLI 一式と手順をお渡しします（メール案内）。接続用は公式 WireGuard アプリを使います。',
+        a: 'GUI インストーラはありません。支払い完了後に CLI の ZIP をダウンロード（とメール）します。接続は公式 WireGuard アプリを使います。',
       },
       {
         q: '月額のVPN利用料はありますか？',
@@ -144,10 +144,10 @@ const COPY: Record<string, Copy> = {
     finalDesc: 'PayNow で購入できます。GUI アプリは後続リリース予定です。',
     paidAppTitle: 'お支払いありがとうございます（セルフ）',
     paidAppBody:
-      'いまは自動ダウンロード画面がありません。お支払い時のメールアドレスを添えて info@jittee.com へご連絡ください。CLI 一式と手順をお送りします。',
+      '決済後は thanks ページから ZIP をすぐダウンロードできます。メール配信が有効な場合は同じリンクも届きます。',
     paidSetupTitle: 'お支払いありがとうございます（サポート付き）',
     paidSetupBody:
-      '日程調整のため、お支払い時のメールアドレスを添えて info@jittee.com へご連絡ください。画面共有でセットアップを進めます。',
+      'ZIP は thanks ページ（とメール）からダウンロードできます。日程調整は info@jittee.com までご連絡ください。',
     paidMailCta: 'メールで連絡する',
   },
   en: {
@@ -157,14 +157,14 @@ const COPY: Record<string, Copy> = {
       'MinorWire is a toolkit that provisions WireGuard on your Oracle Always Free tenancy and issues .conf / QR configs for the official WireGuard apps. You keep the pipe — we sell the setup path.',
     ctaApp: 'Toolkit S$10 (PayNow)',
     ctaSetup: 'Assisted setup S$100 (PayNow)',
-    ctaNote: 'Stripe PayNow only. After payment you return here for next steps.',
+    ctaNote: 'Stripe PayNow only. After payment you get a ZIP download page; email link is sent when mail is configured.',
     formTitle: 'What you are buying today',
     formDesc:
       'There is no polished Windows GUI yet. The MVP is a Node.js CLI. Device connections use the official WireGuard apps with imported configs.',
     formPoints: [
       'Sales page: jittee.com/minorwire (this page)',
       'Payment: Stripe PayNow (S$10 / S$100)',
-      'Product: MinorWire CLI (provision / bootstrap / peer)',
+      'Product: MinorWire CLI ZIP (auto download after payment)',
       'Clients: official WireGuard (Windows / Android / iOS / Mac)',
       'GUI app: later — CLI + guide already produce the same outcome',
     ],
@@ -216,7 +216,7 @@ const COPY: Record<string, Copy> = {
     faqs: [
       {
         q: 'Is there a downloadable app?',
-        a: 'Not a GUI installer yet. After payment we email the CLI package and guide. Connections use the official WireGuard apps.',
+        a: 'Not a GUI installer. After payment you download the CLI ZIP (and receive an email link). Connections use the official WireGuard apps.',
       },
       {
         q: 'Is there a monthly VPN fee?',
@@ -235,10 +235,10 @@ const COPY: Record<string, Copy> = {
     finalDesc: 'Buy with PayNow. A GUI app is planned for a later release.',
     paidAppTitle: 'Thanks for your payment (self-serve)',
     paidAppBody:
-      'There is no auto-download page yet. Email info@jittee.com with the address used at checkout and we will send the CLI package and guide.',
+      'Use the thanks page download button for the CLI ZIP. The same link is emailed when mail delivery is enabled.',
     paidSetupTitle: 'Thanks for your payment (assisted)',
     paidSetupBody:
-      'Email info@jittee.com with the address used at checkout so we can schedule the screen-share setup.',
+      'Download the ZIP from the thanks page (and email). Then contact info@jittee.com to schedule the screen-share session.',
     paidMailCta: 'Email us',
   },
   zh: {
@@ -248,14 +248,14 @@ const COPY: Record<string, Copy> = {
       'MinorWire 是在你自己的 Oracle Always Free 上部署 WireGuard，并为官方 WireGuard 应用签发 .conf / 二维码的工具包。线路属于你——我们出售安装路径。',
     ctaApp: '工具包 S$10（PayNow）',
     ctaSetup: '协助安装 S$100（PayNow）',
-    ctaNote: '仅支持 Stripe PayNow。付款后会回到本页查看下一步。',
+    ctaNote: '仅支持 Stripe PayNow。付款后进入 ZIP 下载页；配置邮件后也会发送链接。',
     formTitle: '现在卖的是什么形态',
     formDesc:
       '还没有精致的 Windows GUI。MVP 是 Node.js CLI。设备连接使用官方 WireGuard 应用导入配置。',
     formPoints: [
       '销售页：jittee.com/minorwire（本页）',
       '支付：Stripe PayNow（S$10 / S$100）',
-      '本体：MinorWire CLI（provision / bootstrap / peer）',
+      '本体：MinorWire CLI ZIP（付款后自动下载）',
       '客户端：官方 WireGuard（Windows / Android / iOS / Mac）',
       'GUI 应用：后续提供——目前 CLI + 说明即可达到同样结果',
     ],
@@ -297,7 +297,7 @@ const COPY: Record<string, Copy> = {
     faqs: [
       {
         q: '有可下载的应用吗？',
-        a: '目前没有 GUI 安装包。付款后我们会邮件发送 CLI 与说明。连接使用官方 WireGuard。',
+        a: '没有 GUI 安装包。付款后可下载 CLI ZIP（并收到邮件链接）。连接使用官方 WireGuard。',
       },
       {
         q: '有没有按月的 VPN 费用？',
@@ -315,10 +315,9 @@ const COPY: Record<string, Copy> = {
     finalTitle: '可先协助安装，也可自助开始。',
     finalDesc: '可用 PayNow 购买。GUI 应用计划后续发布。',
     paidAppTitle: '感谢付款（自助）',
-    paidAppBody:
-      '目前没有自动下载页。请用结账时的邮箱联系 info@jittee.com，我们会发送 CLI 与说明。',
+    paidAppBody: '请在 thanks 页面下载 CLI ZIP。启用邮件后也会收到同样的链接。',
     paidSetupTitle: '感谢付款（协助安装）',
-    paidSetupBody: '请用结账时的邮箱联系 info@jittee.com，以便安排远程协助。',
+    paidSetupBody: '请下载 ZIP，并邮件联系 info@jittee.com 安排远程协助。',
     paidMailCta: '发邮件',
   },
 }
