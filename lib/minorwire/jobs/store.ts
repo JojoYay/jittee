@@ -2,9 +2,32 @@ import { initializeApp, getApps, cert, type App } from 'firebase-admin/app'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import type { JobPhase, JobPublicStatus } from '../provision/types'
 
+function resolveProjectId(): string {
+  if (process.env.GCLOUD_PROJECT) return process.env.GCLOUD_PROJECT
+  if (process.env.GOOGLE_CLOUD_PROJECT) return process.env.GOOGLE_CLOUD_PROJECT
+  if (process.env.FIREBASE_CONFIG) {
+    try {
+      const id = (JSON.parse(process.env.FIREBASE_CONFIG) as { projectId?: string }).projectId
+      if (id) return id
+    } catch {
+      /* ignore */
+    }
+  }
+  return 'jittee-corporate-site'
+}
+
 function initAdmin(): App {
   if (getApps().length) return getApps()[0]!
-  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY
+  const projectId = resolveProjectId()
+
+  // App Hosting / Cloud Run: use ADC for same-project Firestore.
+  // GOOGLE_SERVICE_ACCOUNT_KEY is a Drive SA from another GCP project and must not
+  // be used as the Firebase Admin credential here.
+  if (process.env.K_SERVICE || process.env.FIREBASE_CONFIG) {
+    return initializeApp({ projectId })
+  }
+
+  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY?.replace(/^\uFEFF/, '').trim()
   if (raw) {
     const sa = JSON.parse(raw) as {
       project_id: string
@@ -15,11 +38,11 @@ function initAdmin(): App {
       credential: cert({
         projectId: sa.project_id,
         clientEmail: sa.client_email,
-        privateKey: sa.private_key,
+        privateKey: sa.private_key.replace(/\\n/g, '\n'),
       }),
     })
   }
-  return initializeApp()
+  return initializeApp({ projectId })
 }
 
 function db() {

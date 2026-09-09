@@ -23,13 +23,20 @@ export async function GET(req: NextRequest) {
     if (!sku) {
       return NextResponse.json({ error: 'Unknown purchase' }, { status: 403 })
     }
-    const job = await findActiveJobForSession(sessionId)
+    let job = null
+    try {
+      const found = await findActiveJobForSession(sessionId)
+      job = found ? toPublicStatus(found) : null
+    } catch (jobErr) {
+      console.error('[minorwire/session] job lookup failed', jobErr)
+      // Payment is verified; allow wizard even if Firestore is temporarily unavailable.
+    }
     return NextResponse.json({
       ok: true,
       sessionId,
       sku,
       email: customerEmailFromSession(session),
-      job: job ? toPublicStatus(job) : null,
+      job,
     })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed'
