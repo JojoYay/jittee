@@ -19,24 +19,33 @@ export type MinorWireSku = 'minorwire_app' | 'minorwire_setup'
 
 const clients: Partial<Record<StripeMode, Stripe>> = {}
 
+function cleanSecret(value: string | undefined): string | undefined {
+  if (!value) return undefined
+  // PowerShell Set-Content -Encoding utf8 often adds a UTF-8 BOM; strip it.
+  return value.replace(/^\uFEFF/, '').trim() || undefined
+}
+
 function secretForMode(mode: StripeMode): string {
   if (mode === 'test') {
+    const fromDedicated = cleanSecret(process.env.STRIPE_SECRET_KEY_TEST)
+    const fromShared = cleanSecret(process.env.STRIPE_SECRET_KEY)
     const testKey =
-      process.env.STRIPE_SECRET_KEY_TEST ||
-      (process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_') ||
-      process.env.STRIPE_SECRET_KEY?.startsWith('rk_test_') ||
-      process.env.STRIPE_SECRET_KEY?.startsWith('rkcs_test_')
-        ? process.env.STRIPE_SECRET_KEY
+      fromDedicated ||
+      (fromShared?.startsWith('sk_test_') ||
+      fromShared?.startsWith('rk_test_') ||
+      fromShared?.startsWith('rkcs_test_')
+        ? fromShared
         : undefined)
     if (!testKey) throw new Error('STRIPE_SECRET_KEY_TEST is not set')
     return testKey
   }
 
+  const fromDedicated = cleanSecret(process.env.STRIPE_SECRET_KEY_LIVE)
+  const fromShared = cleanSecret(process.env.STRIPE_SECRET_KEY)
   const liveKey =
-    process.env.STRIPE_SECRET_KEY_LIVE ||
-    (process.env.STRIPE_SECRET_KEY?.startsWith('sk_live_') ||
-    process.env.STRIPE_SECRET_KEY?.startsWith('rk_live_')
-      ? process.env.STRIPE_SECRET_KEY
+    fromDedicated ||
+    (fromShared?.startsWith('sk_live_') || fromShared?.startsWith('rk_live_')
+      ? fromShared
       : undefined)
   if (!liveKey) throw new Error('STRIPE_SECRET_KEY_LIVE or STRIPE_SECRET_KEY (live) is not set')
   return liveKey
