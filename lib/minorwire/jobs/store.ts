@@ -86,18 +86,30 @@ export async function getJob(id: string): Promise<JobRecord | null> {
   return snap.data() as JobRecord
 }
 
-export async function findActiveJobForSession(sessionId: string): Promise<JobRecord | null> {
+export async function findJobsForSession(sessionId: string): Promise<JobRecord[]> {
   const snap = await db()
     .collection(COLLECTION)
     .where('sessionId', '==', sessionId)
-    .limit(10)
+    .limit(20)
     .get()
-  const rows = snap.docs.map((d) => d.data() as JobRecord)
+  return snap.docs
+    .map((d) => d.data() as JobRecord)
+    .sort((a, b) => b.createdAt - a.createdAt)
+}
+
+export async function findActiveJobForSession(sessionId: string): Promise<JobRecord | null> {
+  const rows = await findJobsForSession(sessionId)
   return (
     rows.find((j) => j.phase !== 'done' && j.phase !== 'error') ??
-    rows.sort((a, b) => b.createdAt - a.createdAt)[0] ??
+    rows.find((j) => j.phase === 'done') ??
+    rows[0] ??
     null
   )
+}
+
+export async function findCompletedJobForSession(sessionId: string): Promise<JobRecord | null> {
+  const rows = await findJobsForSession(sessionId)
+  return rows.find((j) => j.phase === 'done') ?? null
 }
 
 export function toPublicStatus(job: JobRecord): JobPublicStatus {

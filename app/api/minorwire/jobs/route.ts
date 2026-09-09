@@ -6,6 +6,7 @@ import type { OciCredentials } from '@/lib/minorwire/provision/types'
 import {
   createJobDoc,
   findActiveJobForSession,
+  findCompletedJobForSession,
   toPublicStatus,
 } from '@/lib/minorwire/jobs/store'
 
@@ -49,13 +50,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unknown purchase' }, { status: 403 })
     }
 
+    // One successful provision per Stripe Checkout session (one paid server).
+    const completed = await findCompletedJobForSession(sessionId)
+    if (completed) {
+      return NextResponse.json({
+        job: toPublicStatus(completed),
+        locked: true,
+        message: 'This purchase already provisioned one server. Buy again for another instance.',
+      })
+    }
+
     const existing = await findActiveJobForSession(sessionId)
     if (existing && existing.phase !== 'done' && existing.phase !== 'error') {
       return NextResponse.json({ job: toPublicStatus(existing) })
     }
-    if (existing?.phase === 'done' && existing.peerConf) {
-      return NextResponse.json({ job: toPublicStatus(existing) })
-    }
+    // phase === error: allow one retry under the same paid session
 
     const creds: OciCredentials = {
       region: body.region ?? '',

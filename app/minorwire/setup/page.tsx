@@ -176,6 +176,10 @@ function SetupInner() {
                 {running && <p className="mt-3 text-sm text-[#5a6f64]">Working… this can take several minutes.</p>}
                 {job.phase === 'done' && job.peerConf && (
                   <div className="mt-4">
+                    <p className="text-sm text-[#5a6f64] mb-3">
+                      This purchase covers one server. For another instance, buy again on the
+                      MinorWire page.
+                    </p>
                     <p className="font-semibold mb-2">
                       WireGuard config ({job.peerName || 'device'}) — import into the official app
                     </p>
