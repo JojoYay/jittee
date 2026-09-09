@@ -11,8 +11,8 @@ const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] })
 function ThanksInner() {
   const params = useSearchParams()
   const sessionId = params.get('session_id')
-  const downloadHref = sessionId
-    ? `/api/minorwire/download?session_id=${encodeURIComponent(sessionId)}`
+  const setupHref = sessionId
+    ? `/minorwire/setup?session_id=${encodeURIComponent(sessionId)}`
     : null
 
   return (
@@ -23,24 +23,25 @@ function ThanksInner() {
         </p>
         <h1 className={`${syne.className} text-4xl font-extrabold mb-4`}>Payment received</h1>
         <p className="text-[#3a4f44] leading-relaxed mb-8">
-          Download the CLI toolkit below. A copy of the download link is also emailed when mail
-          delivery is configured. Assisted-setup buyers: email{' '}
+          Continue to the setup wizard. Paste your least-privilege OCI API key; we provision WireGuard
+          on your Always Free tenancy and give you a config for the official WireGuard app. Assisted
+          setup buyers: email{' '}
           <a className="underline" href="mailto:info@jittee.com">
             info@jittee.com
           </a>{' '}
-          to schedule the screen-share session.
+          to schedule screen-share after (or during) setup.
         </p>
 
-        {downloadHref ? (
+        {setupHref ? (
           <a
-            href={downloadHref}
+            href={setupHref}
             className="inline-flex px-6 py-3.5 rounded-md bg-[#1d3d2e] text-white font-semibold hover:bg-[#14201a] transition-colors"
           >
-            Download minorwire-cli.zip
+            Open setup wizard
           </a>
         ) : (
           <p className="text-red-700">
-            Missing session id. Open the link from your Stripe receipt or contact info@jittee.com.
+            Missing session id. Open the link from your receipt email or contact info@jittee.com.
           </p>
         )}
 

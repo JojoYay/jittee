@@ -1,50 +1,17 @@
-# MinorWire fulfillment (Stripe + SpoSched Resend)
+# MinorWire fulfillment (hosted wizard)
 
 ## Flow
 
 1. Customer pays via PayNow Payment Link
 2. Stripe redirects to `/minorwire/thanks?session_id={CHECKOUT_SESSION_ID}`
-3. Thanks page download hits `/api/minorwire/download?session_id=...` (verifies paid session)
-4. Webhook `checkout.session.completed` calls SpoSched Supabase Edge Function
-   `minorwire-fulfillment`, which sends email with the **same Resend keys** as
-   `/sposched` trial signup (`RESEND_API_KEY` / `RESEND_FROM`)
-5. BCC: `info@jittee.com`, `mobilejoz@gmail.com`, `johji_yamada@jittee.com`
+3. Customer opens `/minorwire/setup?session_id=...` and pastes least-privilege OCI credentials
+4. `POST /api/minorwire/jobs` verifies Stripe payment, creates a Firestore job (no PEM stored)
+5. Internal `POST /api/minorwire/jobs/[id]/run` provisions on App Hosting (OCI + SSH)
+6. UI polls job status and shows `.conf` for official WireGuard
+7. Webhook emails the setup wizard URL (SpoSched Resend Edge Function)
 
-## Secrets
+## Secrets / env
 
-### Firebase App Hosting (`jittee`)
-
-| Secret | Purpose |
-|--------|---------|
-| `STRIPE_SECRET_KEY` | Live secret key |
-| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret |
-| `MINORWIRE_DOWNLOAD_SECRET` | HMAC for email download tokens |
-| `MINORWIRE_FULFILLMENT_SECRET` | Shared auth for mail Edge Function |
-
-Runtime env in `apphosting.yaml`:
-
-- `MINORWIRE_PUBLIC_BASE_URL=https://jittee.com`
-- `MINORWIRE_MAIL_ENDPOINT=https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/minorwire-fulfillment`
-
-### SpoSched Supabase (`yyeleqhfbbjnscaddutx`)
-
-Already used by trial-signup:
-
-- `RESEND_API_KEY`
-- `RESEND_FROM` (e.g. `SpoSched <noreply@jittee.com>`)
-
-Also set:
-
-- `MINORWIRE_FULFILLMENT_SECRET` (same value as Firebase)
-
-Deploy function:
-
-```bash
-cd ShootLiff
-npx supabase functions deploy minorwire-fulfillment --no-verify-jwt --project-ref yyeleqhfbbjnscaddutx
-```
-
-## Package ZIP
-
-`private/minorwire/minorwire-cli.zip` is the customer package (no `node_modules`).
-Rebuild from the MinorWire repo when shipping CLI changes.
+Firebase App Hosting already holds Stripe + fulfillment secrets. Job runner reuses
+`MINORWIRE_FULFILLMENT_SECRET` (or `MINORWIRE_DOWNLOAD_SECRET`) as
+`x-minorwire-job-secret`. Firestore uses `GOOGLE_SERVICE_ACCOUNT_KEY` / ADC.

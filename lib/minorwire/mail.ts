@@ -10,7 +10,7 @@ const DEFAULT_ENDPOINT =
 export async function sendMinorWireFulfillmentEmail(opts: {
   to: string
   sku: MinorWireSku
-  downloadUrl: string
+  setupUrl: string
 }): Promise<{ sent: boolean; reason?: string }> {
   const secret = process.env.MINORWIRE_FULFILLMENT_SECRET
   if (!secret) {
@@ -27,7 +27,7 @@ export async function sendMinorWireFulfillmentEmail(opts: {
     body: JSON.stringify({
       to: opts.to,
       sku: opts.sku,
-      downloadUrl: opts.downloadUrl,
+      setupUrl: opts.setupUrl,
     }),
   })
 

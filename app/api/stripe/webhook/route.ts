@@ -4,7 +4,6 @@ import {
   getStripe,
   resolveCheckoutSku,
 } from '@/lib/minorwire/stripe'
-import { createDownloadToken } from '@/lib/minorwire/downloadToken'
 import { sendMinorWireFulfillmentEmail } from '@/lib/minorwire/mail'
 
 export const runtime = 'nodejs'
@@ -46,11 +45,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: 'no_email' })
     }
 
-    const token = createDownloadToken(session.id)
     const base = process.env.MINORWIRE_PUBLIC_BASE_URL || 'https://jittee.com'
-    const downloadUrl = `${base}/api/minorwire/download?token=${encodeURIComponent(token)}`
+    const setupUrl = `${base}/minorwire/setup?session_id=${encodeURIComponent(session.id)}`
 
-    const mail = await sendMinorWireFulfillmentEmail({ to: email, sku, downloadUrl })
+    const mail = await sendMinorWireFulfillmentEmail({ to: email, sku, setupUrl })
     return NextResponse.json({ ok: true, sku, emailed: mail.sent, reason: mail.reason })
   }
 

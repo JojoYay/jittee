@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'MinorWire | Jittee',
   description:
-    'Provision WireGuard on your Oracle Cloud Always Free tenancy. Buy the CLI toolkit via PayNow; connect with official WireGuard apps.',
+    'Provision WireGuard on your Oracle Always Free tenancy in the browser. PayNow, paste a least-privilege OCI key, get a .conf for official WireGuard.',
 }
 
 export default function MinorWireLayout({ children }: { children: React.ReactNode }) {

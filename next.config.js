@@ -11,6 +11,8 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  serverExternalPackages: ['oci-common', 'oci-core', 'oci-identity', 'ssh2', 'firebase-admin'],
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig
+ 

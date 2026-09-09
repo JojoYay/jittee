@@ -33,17 +33,17 @@ const SPO: Record<string, { badge: string; tagline: string; desc: string; points
 // 製品カード (SpotMyShot / Local Recorder)。各詳細ページへ遷移
 const APPS: Record<string, { name: string; href: string; img: string; desc: string }[]> = {
   ja: [
-    { name: 'MinorWire', href: '/minorwire', img: '', desc: 'Oracle Always Free 上に自分の WireGuard VPN を自動構築。CLI で設定を発行。' },
+    { name: 'MinorWire', href: '/minorwire', img: '', desc: 'Oracle Always Free 上に自分の WireGuard VPN をブラウザから自動構築。' },
     { name: 'SpotMyShot', href: '/spotmyshot', img: '/spotmyshot/spotMyShot_icon.png', desc: 'スポーツ大会の写真をシェア＆販売。顔・ゼッケンから自分の写真をすぐ検索できます。' },
     { name: 'Local Recorder', href: '/localrecorder', img: '/localrecorder/localRecorderIcon.png', desc: 'Teams / Zoom / ブラウザ会議をPCでローカル録画し、AIが議事録を自動作成 (Windows)。' },
   ],
   en: [
-    { name: 'MinorWire', href: '/minorwire', img: '', desc: 'Auto-provision WireGuard on your Oracle Always Free tenancy. Issue device configs via CLI.' },
+    { name: 'MinorWire', href: '/minorwire', img: '', desc: 'Auto-provision WireGuard on your Oracle Always Free tenancy from the browser.' },
     { name: 'SpotMyShot', href: '/spotmyshot', img: '/spotmyshot/spotMyShot_icon.png', desc: 'Share & sell photos from sports events. Find your shots instantly by face or bib number.' },
     { name: 'Local Recorder', href: '/localrecorder', img: '/localrecorder/localRecorderIcon.png', desc: 'Record Teams / Zoom / browser meetings locally on your PC; AI writes the minutes (Windows).' },
   ],
   zh: [
-    { name: 'MinorWire', href: '/minorwire', img: '', desc: '在你的 Oracle Always Free 上自动部署 WireGuard，并用 CLI 签发各设备配置。' },
+    { name: 'MinorWire', href: '/minorwire', img: '', desc: '在浏览器中于 Oracle Always Free 上自动部署 WireGuard。' },
     { name: 'SpotMyShot', href: '/spotmyshot', img: '/spotmyshot/spotMyShot_icon.png', desc: '分享与销售体育赛事照片。用人脸或号码布即可快速找到自己的照片。' },
     { name: 'Local Recorder', href: '/localrecorder', img: '/localrecorder/localRecorderIcon.png', desc: '在电脑本地录制 Teams / Zoom / 浏览器会议，AI 自动生成会议记录（Windows）。' },
   ],
