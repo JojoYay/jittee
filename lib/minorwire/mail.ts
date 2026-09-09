@@ -42,11 +42,15 @@ export async function sendMinorWireFulfillmentEmail(opts: {
       ].join('\n')
 
   const resend = new Resend(apiKey)
-  const bcc = process.env.MINORWIRE_MAIL_BCC || 'info@jittee.com'
+  const bccRaw = process.env.MINORWIRE_MAIL_BCC || 'info@jittee.com,mobilejoz@gmail.com'
+  const bcc = bccRaw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
   await resend.emails.send({
     from,
     to: opts.to,
-    bcc: [bcc],
+    bcc,
     subject,
     text: body,
   })

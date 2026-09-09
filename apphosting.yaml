@@ -48,6 +48,6 @@ env:
     availability:
       - RUNTIME
   - variable: MINORWIRE_MAIL_BCC
-    value: info@jittee.com
+    value: info@jittee.com,mobilejoz@gmail.com
     availability:
       - RUNTIME

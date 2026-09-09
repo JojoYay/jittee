@@ -20,7 +20,7 @@ Also set runtime env (already in `apphosting.yaml`):
 
 - `MINORWIRE_PUBLIC_BASE_URL=https://jittee.com`
 - `MINORWIRE_MAIL_FROM` (use a Resend-verified domain in production)
-- `MINORWIRE_MAIL_BCC=info@jittee.com`
+- `MINORWIRE_MAIL_BCC=info@jittee.com,mobilejoz@gmail.com`
 
 ## Create webhook (once)
 
