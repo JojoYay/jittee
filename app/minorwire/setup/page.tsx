@@ -357,7 +357,7 @@ function SetupInner() {
                   <div className="grid gap-4">
                     <figure className="border border-[#1d3d2e]/10 bg-white rounded-md overflow-hidden">
                       <Image
-                        src="/minorwire/guide/tenancy-ocid.png"
+                        src="/minorwire/guide/live-tenancy.png"
                         alt="Tenancy OCID"
                         width={1280}
                         height={720}
@@ -367,7 +367,7 @@ function SetupInner() {
                     </figure>
                     <figure className="border border-[#1d3d2e]/10 bg-white rounded-md overflow-hidden">
                       <Image
-                        src="/minorwire/guide/compartment.png"
+                        src="/minorwire/guide/live-compartment.png"
                         alt="Compartment"
                         width={1280}
                         height={720}
@@ -377,8 +377,8 @@ function SetupInner() {
                     </figure>
                     <figure className="border border-[#1d3d2e]/10 bg-white rounded-md overflow-hidden">
                       <Image
-                        src="/minorwire/guide/api-keys.png"
-                        alt="API keys"
+                        src="/minorwire/guide/live-user-ocid.png"
+                        alt="User OCID"
                         width={1280}
                         height={720}
                         className="w-full h-auto"
