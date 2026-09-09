@@ -42,11 +42,15 @@ env:
     secret: MINORWIRE_DOWNLOAD_SECRET
     availability:
       - RUNTIME
+  - variable: MINORWIRE_FULFILLMENT_SECRET
+    secret: MINORWIRE_FULFILLMENT_SECRET
+    availability:
+      - RUNTIME
   - variable: MINORWIRE_PUBLIC_BASE_URL
     value: https://jittee.com
     availability:
       - RUNTIME
-  - variable: MINORWIRE_MAIL_BCC
-    value: info@jittee.com,mobilejoz@gmail.com
+  - variable: MINORWIRE_MAIL_ENDPOINT
+    value: https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/minorwire-fulfillment
     availability:
       - RUNTIME
