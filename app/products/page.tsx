@@ -33,14 +33,17 @@ const SPO: Record<string, { badge: string; tagline: string; desc: string; points
 // 製品カード (SpotMyShot / Local Recorder)。各詳細ページへ遷移
 const APPS: Record<string, { name: string; href: string; img: string; desc: string }[]> = {
   ja: [
+    { name: 'MinorWire', href: '/MinorWire', img: '', desc: 'Oracle Always Free 上に自分の WireGuard VPN を自動構築。端末用 config をアプリから発行。' },
     { name: 'SpotMyShot', href: '/spotmyshot', img: '/spotmyshot/spotMyShot_icon.png', desc: 'スポーツ大会の写真をシェア＆販売。顔・ゼッケンから自分の写真をすぐ検索できます。' },
     { name: 'Local Recorder', href: '/localrecorder', img: '/localrecorder/localRecorderIcon.png', desc: 'Teams / Zoom / ブラウザ会議をPCでローカル録画し、AIが議事録を自動作成 (Windows)。' },
   ],
   en: [
+    { name: 'MinorWire', href: '/MinorWire', img: '', desc: 'Auto-provision WireGuard on your Oracle Always Free tenancy. Issue device configs from the app.' },
     { name: 'SpotMyShot', href: '/spotmyshot', img: '/spotmyshot/spotMyShot_icon.png', desc: 'Share & sell photos from sports events. Find your shots instantly by face or bib number.' },
     { name: 'Local Recorder', href: '/localrecorder', img: '/localrecorder/localRecorderIcon.png', desc: 'Record Teams / Zoom / browser meetings locally on your PC; AI writes the minutes (Windows).' },
   ],
   zh: [
+    { name: 'MinorWire', href: '/MinorWire', img: '', desc: '在你的 Oracle Always Free 上自动部署 WireGuard，并用应用签发各设备配置。' },
     { name: 'SpotMyShot', href: '/spotmyshot', img: '/spotmyshot/spotMyShot_icon.png', desc: '分享与销售体育赛事照片。用人脸或号码布即可快速找到自己的照片。' },
     { name: 'Local Recorder', href: '/localrecorder', img: '/localrecorder/localRecorderIcon.png', desc: '在电脑本地录制 Teams / Zoom / 浏览器会议，AI 自动生成会议记录（Windows）。' },
   ],
@@ -111,7 +114,13 @@ export default function ProductsPage() {
         <div className="grid sm:grid-cols-2 gap-6 mb-12">
           {apps.map((a) => (
             <Link key={a.href} href={a.href} className="group bg-white rounded-xl shadow p-6 flex items-start gap-4 hover:shadow-lg transition-shadow">
-              <img src={a.img} alt={a.name} className="w-14 h-14 rounded-xl object-contain flex-shrink-0 bg-gray-50" />
+              {a.img ? (
+                <img src={a.img} alt={a.name} className="w-14 h-14 rounded-xl object-contain flex-shrink-0 bg-gray-50" />
+              ) : (
+                <div className="w-14 h-14 rounded-xl flex-shrink-0 bg-[#1d3d2e] text-[#9fd6b8] flex items-center justify-center font-bold text-lg">
+                  MW
+                </div>
+              )}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors">{a.name}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mt-1">{a.desc}</p>

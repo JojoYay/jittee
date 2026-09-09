@@ -55,6 +55,9 @@ export default function Navbar() {
                     <Link href="/sposched" className="block px-4 py-2 text-sm font-bold text-amber-600 hover:bg-amber-50 hover:text-amber-700 transition-colors">
                       SpoSched
                     </Link>
+                    <Link href="/MinorWire" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
+                      MinorWire
+                    </Link>
                     <Link href="/localrecorder" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
                       Local Recorder
                     </Link>
@@ -154,6 +157,13 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               SpoSched
+            </Link>
+            <Link
+              href="/MinorWire"
+              className="block pl-4 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              MinorWire
             </Link>
             <Link
               href="/localrecorder"
