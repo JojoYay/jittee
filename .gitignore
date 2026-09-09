@@ -55,4 +55,6 @@ temp/*
 # Contains embedded API credentials — never commit
 public/api/deepseek_generated.jpg
 .stripe_live_key
+.stripe_test_key
+.stripe_test_webhook_secret
 .minorwire_mail_secret

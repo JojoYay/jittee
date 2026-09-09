@@ -30,6 +30,12 @@ export type JobPhase =
   | 'done'
   | 'error'
 
+export type PeerConfRecord = {
+  name: string
+  conf: string
+  createdAt: number
+}
+
 export type JobPublicStatus = {
   id: string
   phase: JobPhase
@@ -40,5 +46,8 @@ export type JobPublicStatus = {
   publicIp?: string
   peerName?: string
   peerConf?: string
+  peers?: PeerConfRecord[]
   error?: string
+  /** True when OCI server provision already succeeded for this purchase. */
+  serverProvisioned?: boolean
 }

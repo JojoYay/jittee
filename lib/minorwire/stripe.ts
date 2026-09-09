@@ -1,22 +1,85 @@
 import Stripe from 'stripe'
+import {
+  STRIPE_CATALOG,
+  type StripeMode,
+  defaultStripeModeFromEnv,
+  normalizeStripeMode,
+} from './stripeCatalog'
 
+export type { StripeMode }
+export { STRIPE_CATALOG, defaultStripeModeFromEnv, normalizeStripeMode, paymentLinksFor } from './stripeCatalog'
+
+/** @deprecated Use STRIPE_CATALOG.live — kept for older imports */
 export const MINORWIRE_PRICE = {
-  app: 'price_1UDd65JbDLMPi8UBlMFx7RSn',
-  setup: 'price_1UDd66JbDLMPi8UBR20eZsSz',
+  app: STRIPE_CATALOG.live.app.priceId,
+  setup: STRIPE_CATALOG.live.setup.priceId,
 } as const
 
 export type MinorWireSku = 'minorwire_app' | 'minorwire_setup'
 
-export function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY
-  if (!key) throw new Error('STRIPE_SECRET_KEY is not set')
-  return new Stripe(key, { apiVersion: '2026-08-26.dahlia' })
+const clients: Partial<Record<StripeMode, Stripe>> = {}
+
+function secretForMode(mode: StripeMode): string {
+  if (mode === 'test') {
+    const testKey =
+      process.env.STRIPE_SECRET_KEY_TEST ||
+      (process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_') ||
+      process.env.STRIPE_SECRET_KEY?.startsWith('rk_test_') ||
+      process.env.STRIPE_SECRET_KEY?.startsWith('rkcs_test_')
+        ? process.env.STRIPE_SECRET_KEY
+        : undefined)
+    if (!testKey) throw new Error('STRIPE_SECRET_KEY_TEST is not set')
+    return testKey
+  }
+
+  const liveKey =
+    process.env.STRIPE_SECRET_KEY_LIVE ||
+    (process.env.STRIPE_SECRET_KEY?.startsWith('sk_live_') ||
+    process.env.STRIPE_SECRET_KEY?.startsWith('rk_live_')
+      ? process.env.STRIPE_SECRET_KEY
+      : undefined)
+  if (!liveKey) throw new Error('STRIPE_SECRET_KEY_LIVE or STRIPE_SECRET_KEY (live) is not set')
+  return liveKey
+}
+
+export function modeFromSessionId(sessionId: string | null | undefined): StripeMode | null {
+  if (!sessionId) return null
+  if (sessionId.startsWith('cs_test_')) return 'test'
+  if (sessionId.startsWith('cs_live_')) return 'live'
+  return null
+}
+
+export function getStripe(mode: StripeMode = defaultStripeModeFromEnv()): Stripe {
+  const existing = clients[mode]
+  if (existing) return existing
+  const key = secretForMode(mode)
+  const client = new Stripe(key, { apiVersion: '2026-08-26.dahlia' })
+  clients[mode] = client
+  return client
+}
+
+/** Pick live/test Stripe client from Checkout session id (cs_live_ / cs_test_). */
+export function getStripeForSessionId(sessionId: string): Stripe {
+  const mode = modeFromSessionId(sessionId) ?? defaultStripeModeFromEnv()
+  return getStripe(mode)
+}
+
+export function webhookSecrets(): { mode: StripeMode; secret: string }[] {
+  const out: { mode: StripeMode; secret: string }[] = []
+  const live = process.env.STRIPE_WEBHOOK_SECRET_LIVE || process.env.STRIPE_WEBHOOK_SECRET
+  const test = process.env.STRIPE_WEBHOOK_SECRET_TEST
+  if (live) out.push({ mode: 'live', secret: live })
+  if (test) out.push({ mode: 'test', secret: test })
+  return out
 }
 
 export function skuFromPriceId(priceId: string | null | undefined): MinorWireSku | null {
   if (!priceId) return null
-  if (priceId === MINORWIRE_PRICE.app) return 'minorwire_app'
-  if (priceId === MINORWIRE_PRICE.setup) return 'minorwire_setup'
+  for (const mode of Object.keys(STRIPE_CATALOG) as StripeMode[]) {
+    const c = STRIPE_CATALOG[mode]
+    if (priceId === c.app.priceId) return 'minorwire_app'
+    if (priceId === c.setup.priceId) return 'minorwire_setup'
+  }
   return null
 }
 

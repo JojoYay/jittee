@@ -40,6 +40,9 @@ export type JobRecord = {
   publicIp?: string
   peerName?: string
   peerConf?: string
+  peers?: { name: string; conf: string; createdAt: number }[]
+  /** AES-GCM blob of instance SSH PEM — never expose via API. */
+  sshPrivateKeyEnc?: string
   error?: string
 }
 
@@ -123,6 +126,8 @@ export function toPublicStatus(job: JobRecord): JobPublicStatus {
     publicIp: job.publicIp,
     peerName: job.peerName,
     peerConf: job.peerConf,
+    peers: job.peers,
     error: job.error,
+    serverProvisioned: job.phase === 'done' && Boolean(job.publicIp),
   }
 }

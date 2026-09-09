@@ -5,15 +5,10 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { Syne, DM_Sans } from 'next/font/google'
 import { useLanguage } from '../contexts/LanguageContext'
+import { useMinorWireStripeMode } from './StripeModeContext'
 
 const syne = Syne({ subsets: ['latin'], weight: ['600', '700', '800'] })
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] })
-
-/** Live Stripe Payment Links (PayNow only, SGD). */
-const STRIPE = {
-  app: 'https://buy.stripe.com/aFaeVe4pifjvcKD1Epc3m06',
-  setup: 'https://buy.stripe.com/8x214ocVO5IVbGz1Epc3m07',
-} as const
 
 const SUPPORT_MAIL = 'info@jittee.com'
 
@@ -91,7 +86,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         title: '端末に config を入れる',
-        desc: '表示された .conf を公式 WireGuard アプリにインポートします。',
+        desc: '表示された .conf を公式 WireGuard に入れます。追加端末用の .conf も同じ画面から何度でも作れます。',
       },
     ],
     pricingTitle: '料金（買い切り・SGD）',
@@ -101,8 +96,8 @@ const COPY: Record<string, Copy> = {
     planAppPoints: [
       'ブラウザ完結のプロビジョン',
       '最小 IAM ポリシー案内',
-      'Always Free Micro + WireGuard',
-      '端末 config 発行',
+      'OCI サーバ構築は購入ごとに1回',
+      '端末 .conf は追加発行可',
     ],
     planSetupName: 'サポート付きセットアップ',
     planSetupPrice: 'S$100',
@@ -111,7 +106,7 @@ const COPY: Record<string, Copy> = {
       'セルフ機能込み',
       'ライブサポート（目安60分）',
       'VPN 起動確認',
-      '端末設定 最大2台まで',
+      '複数端末の .conf 作成を一緒に',
     ],
     needTitle: '必要なもの',
     needPoints: [
@@ -127,7 +122,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'API キーは保存されますか？',
-        a: '構築ジョブの実行中だけサーバメモリ上で使い、永続保存しません。',
+        a: 'お客様の OCI API キーは構築中だけ使い、永続保存しません。端末 .conf 追加用に、インスタンス SSH 鍵だけ暗号化して保持します。',
       },
       {
         q: '月額のVPN利用料はありますか？',
@@ -135,7 +130,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: '何台まで繋がりますか？',
-        a: '登録ピアは多数作れますが、Always Free の Micro（1/8 OCPU・1GB）では同時利用は数台〜十台前後が現実的です。',
+        a: '購入1回あたり OCI 上のサーバ構築は1回です。.conf は端末ごとに何度でも追加できます。同時利用の現実目安は Micro で数台〜十台前後です。',
       },
     ],
     finalTitle: 'まずはサポート付きからでも、セルフからでも。',
@@ -179,7 +174,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         title: 'Import the config',
-        desc: 'Download the .conf and import it into the official WireGuard app.',
+        desc: 'Download the .conf into official WireGuard. Mint more device .conf files anytime from the same screen.',
       },
     ],
     pricingTitle: 'Pricing (one-time, SGD)',
@@ -189,8 +184,8 @@ const COPY: Record<string, Copy> = {
     planAppPoints: [
       'Browser-based provision',
       'Least-privilege IAM guide',
-      'Always Free Micro + WireGuard',
-      'Device config export',
+      'One OCI server per purchase',
+      'Unlimited extra device .conf',
     ],
     planSetupName: 'Assisted setup',
     planSetupPrice: 'S$100',
@@ -199,7 +194,7 @@ const COPY: Record<string, Copy> = {
       'Includes self-serve flow',
       'Live help (~60 min)',
       'VPN bring-up check',
-      'Up to 2 devices',
+      'Help adding multiple device .conf',
     ],
     needTitle: 'What you need',
     needPoints: [
@@ -215,7 +210,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'Do you store my API key?',
-        a: 'No. It is used only in memory during the provision job and is not persisted.',
+        a: 'Customer OCI API keys are used in memory only and not persisted. An encrypted instance SSH key is kept so you can add more device .conf files later.',
       },
       {
         q: 'Is there a monthly VPN fee?',
@@ -223,7 +218,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'How many devices can connect?',
-        a: 'Many peers can be registered, but Always Free Micro (1/8 OCPU, 1 GB) is realistic for a handful to ~10 light concurrent users.',
+        a: 'One OCI server provision per purchase. Device .conf files can be added anytime. Concurrent use on Always Free Micro is realistically a handful to ~10 light users.',
       },
     ],
     finalTitle: 'Start assisted or self-serve.',
@@ -266,18 +261,23 @@ const COPY: Record<string, Copy> = {
       },
       {
         title: '导入配置',
-        desc: '下载 .conf 并导入官方 WireGuard。',
+        desc: '下载 .conf 并导入官方 WireGuard。同一页面可随时再生成更多设备 .conf。',
       },
     ],
     pricingTitle: '价格（一次性 · SGD）',
     planAppName: '自助安装',
     planAppPrice: 'S$10',
     planAppDesc: '网页向导，适合自行完成 IAM 与部署的用户。',
-    planAppPoints: ['浏览器完成部署', '最小权限 IAM 指南', 'Always Free Micro + WireGuard', '设备配置导出'],
+    planAppPoints: [
+      '浏览器完成部署',
+      '最小权限 IAM 指南',
+      '每次购买仅搭建一次 OCI 服务器',
+      '设备 .conf 可反复追加',
+    ],
     planSetupName: '协助安装',
     planSetupPrice: 'S$100',
     planSetupDesc: '远程协助，从密钥创建到首次连通。',
-    planSetupPoints: ['含自助流程', '在线协助（约60分钟）', 'VPN 启动确认', '最多2台设备'],
+    planSetupPoints: ['含自助流程', '在线协助（约60分钟）', 'VPN 启动确认', '一起添加多台设备 .conf'],
     needTitle: '你需要准备',
     needPoints: [
       '可使用 Always Free 的 Oracle Cloud 账号',
@@ -292,7 +292,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: '会保存我的 API 密钥吗？',
-        a: '不会。仅在部署任务的内存中使用，不持久保存。',
+        a: '客户的 OCI API 密钥只在部署时使用，不会持久保存。为追加设备 .conf，仅加密保存实例 SSH 密钥。',
       },
       {
         q: '有没有按月的 VPN 费用？',
@@ -300,7 +300,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: '可以连多少台设备？',
-        a: '可注册很多 peer，但 Always Free Micro（1/8 OCPU、1GB）更适合少量到约10台轻度同时在线。',
+        a: '每次购买只搭建一次 OCI 服务器。.conf 可随时追加。Always Free Micro 同时在线更现实的是数台到约10台轻度使用。',
       },
     ],
     finalTitle: '可先协助安装，也可自助开始。',
@@ -344,12 +344,32 @@ function PaidBanner({ c }: { c: Copy }) {
 function MinorWireContent() {
   const { locale } = useLanguage()
   const c = COPY[locale] ?? COPY.ja
+  const { mode, setMode, links, isTest } = useMinorWireStripeMode()
 
   return (
     <div className={`${dmSans.className} bg-[#f3f6f4] text-[#14201a]`}>
       <Suspense fallback={null}>
         <PaidBanner c={c} />
       </Suspense>
+
+      {isTest && (
+        <div className="relative z-10 border-b border-amber-700/40 bg-amber-50 text-amber-950">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 text-sm flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
+            <p>
+              Stripe <strong>test mode</strong> — use card{' '}
+              <span className="font-mono">4242 4242 4242 4242</span> (any future expiry / CVC). No
+              real charge. PayNow is live-only.
+            </p>
+            <button
+              type="button"
+              onClick={() => setMode('live')}
+              className="underline font-semibold shrink-0 text-left"
+            >
+              Switch to live
+            </button>
+          </div>
+        </div>
+      )}
 
       <section className="relative min-h-[88vh] overflow-hidden">
         <div
@@ -370,9 +390,31 @@ function MinorWireContent() {
         />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 md:pt-32 md:pb-28">
-          <p className="text-sm font-medium tracking-[0.18em] uppercase text-[#2f6b4f] mb-6">
-            {c.badge}
-          </p>
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            <p className="text-sm font-medium tracking-[0.18em] uppercase text-[#2f6b4f]">
+              {c.badge}
+            </p>
+            <div
+              className="inline-flex rounded-md border border-[#1d3d2e]/20 bg-white/80 text-xs font-semibold overflow-hidden"
+              role="group"
+              aria-label="Stripe mode"
+            >
+              <button
+                type="button"
+                onClick={() => setMode('live')}
+                className={`px-3 py-1.5 ${mode === 'live' ? 'bg-[#1d3d2e] text-white' : 'text-[#3a4f44]'}`}
+              >
+                Live
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('test')}
+                className={`px-3 py-1.5 ${mode === 'test' ? 'bg-amber-700 text-white' : 'text-[#3a4f44]'}`}
+              >
+                Test
+              </button>
+            </div>
+          </div>
           <h1
             className={`${syne.className} text-5xl sm:text-6xl md:text-7xl font-extrabold leading-[0.95] tracking-tight max-w-4xl`}
           >
@@ -385,19 +427,23 @@ function MinorWireContent() {
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3">
             <a
-              href={STRIPE.app}
+              href={links.app}
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-md bg-[#1d3d2e] text-white font-semibold hover:bg-[#14201a] transition-colors"
             >
               {c.ctaApp}
             </a>
             <a
-              href={STRIPE.setup}
+              href={links.setup}
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-md border border-[#1d3d2e]/30 bg-white/70 backdrop-blur font-semibold hover:bg-white transition-colors"
             >
               {c.ctaSetup}
             </a>
           </div>
-          <p className="mt-4 text-sm text-[#5a6f64]">{c.ctaNote}</p>
+          <p className="mt-4 text-sm text-[#5a6f64]">
+            {isTest
+              ? 'Test checkout (card). After pay, continue to the setup wizard with a cs_test_ session.'
+              : c.ctaNote}
+          </p>
         </div>
       </section>
 
@@ -449,7 +495,7 @@ function MinorWireContent() {
               ))}
             </ul>
             <a
-              href={STRIPE.app}
+              href={links.app}
               className="mt-8 inline-flex px-5 py-3 bg-[#1d3d2e] text-white font-semibold rounded-md hover:bg-[#14201a] transition-colors"
             >
               {c.ctaApp}
@@ -468,7 +514,7 @@ function MinorWireContent() {
               ))}
             </ul>
             <a
-              href={STRIPE.setup}
+              href={links.setup}
               className="mt-8 inline-flex px-5 py-3 bg-white text-[#1d3d2e] font-semibold rounded-md hover:bg-[#e8f2ec] transition-colors"
             >
               {c.ctaSetup}
@@ -506,13 +552,13 @@ function MinorWireContent() {
           <p className="text-[#3a4f44] mb-8">{c.finalDesc}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href={STRIPE.app}
+              href={links.app}
               className="inline-flex justify-center px-6 py-3.5 rounded-md bg-[#1d3d2e] text-white font-semibold hover:bg-[#14201a] transition-colors"
             >
               {c.ctaApp}
             </a>
             <a
-              href={STRIPE.setup}
+              href={links.setup}
               className="inline-flex justify-center px-6 py-3.5 rounded-md border border-[#1d3d2e]/30 font-semibold hover:bg-white transition-colors"
             >
               {c.ctaSetup}
@@ -522,6 +568,10 @@ function MinorWireContent() {
             <Link href="/contact" className="underline">
               Contact
             </Link>
+            {' · '}
+            <button type="button" className="underline" onClick={() => setMode(isTest ? 'live' : 'test')}>
+              Stripe: {mode}
+            </button>
           </p>
         </div>
       </section>
@@ -530,5 +580,9 @@ function MinorWireContent() {
 }
 
 export default function MinorWirePage() {
-  return <MinorWireContent />
+  return (
+    <Suspense fallback={null}>
+      <MinorWireContent />
+    </Suspense>
+  )
 }

@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStripe, resolveCheckoutSku, customerEmailFromSession } from '@/lib/minorwire/stripe'
+import {
+  getStripeForSessionId,
+  resolveCheckoutSku,
+  customerEmailFromSession,
+} from '@/lib/minorwire/stripe'
 import { findActiveJobForSession, toPublicStatus } from '@/lib/minorwire/jobs/store'
 
 export const runtime = 'nodejs'
@@ -10,7 +14,7 @@ export async function GET(req: NextRequest) {
     if (!sessionId?.startsWith('cs_')) {
       return NextResponse.json({ error: 'session_id required' }, { status: 400 })
     }
-    const stripe = getStripe()
+    const stripe = getStripeForSessionId(sessionId)
     const session = await stripe.checkout.sessions.retrieve(sessionId)
     if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
       return NextResponse.json({ error: 'Payment not completed' }, { status: 403 })

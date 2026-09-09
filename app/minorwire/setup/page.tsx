@@ -42,6 +42,9 @@ function SetupInner() {
   const [job, setJob] = useState<JobPublicStatus | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [extraPeerName, setExtraPeerName] = useState('device2')
+  const [peerBusy, setPeerBusy] = useState(false)
+  const [peerError, setPeerError] = useState('')
 
   useEffect(() => {
     if (!sessionId) {
@@ -128,6 +131,38 @@ function SetupInner() {
     [sessionId, submitting, form],
   )
 
+  const onAddPeer = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault()
+      if (!sessionId || peerBusy) return
+      setPeerBusy(true)
+      setPeerError('')
+      try {
+        const res = await fetch('/api/minorwire/peers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, peerName: extraPeerName }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          setPeerError(data.error || 'Failed to add device config')
+          return
+        }
+        if (data.job) setJob(data.job)
+        setExtraPeerName((n) => {
+          const m = /^(.+?)(\d+)$/.exec(n)
+          if (m) return `${m[1]}${Number(m[2]) + 1}`
+          return `${n}2`
+        })
+      } catch {
+        setPeerError('Network error')
+      } finally {
+        setPeerBusy(false)
+      }
+    },
+    [sessionId, peerBusy, extraPeerName],
+  )
+
   const set =
     (key: keyof FormState) => (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [key]: ev.target.value }))
@@ -144,8 +179,9 @@ function SetupInner() {
         </p>
         <h1 className={`${syne.className} text-4xl font-extrabold mb-2`}>Provision in your OCI</h1>
         <p className="text-[#3a4f44] mb-8 leading-relaxed">
-          Paste a least-privilege API key. We create Always Free WireGuard on your tenancy and hand
-          you a config for the official WireGuard app. Keys are not stored after the job finishes.
+          Paste a least-privilege OCI API key once. We create one Always Free WireGuard server on
+          your tenancy. After that you can mint as many device .conf files as you need. Customer OCI
+          API keys are not persisted; only an encrypted instance SSH key is kept to add peers.
         </p>
 
         {gate === 'loading' && <p>Verifying payment…</p>}
@@ -174,27 +210,56 @@ function SetupInner() {
                 )}
                 {job.error && <p className="mt-2 text-sm text-red-700 whitespace-pre-wrap">{job.error}</p>}
                 {running && <p className="mt-3 text-sm text-[#5a6f64]">Working… this can take several minutes.</p>}
-                {job.phase === 'done' && job.peerConf && (
-                  <div className="mt-4">
-                    <p className="text-sm text-[#5a6f64] mb-3">
-                      This purchase covers one server. For another instance, buy again on the
-                      MinorWire page.
+                {job.phase === 'done' && (
+                  <div className="mt-4 space-y-6">
+                    <p className="text-sm text-[#5a6f64]">
+                      OCI server for this purchase is fixed (one server). Device .conf files can be
+                      added below anytime. Another Oracle instance requires a new purchase.
                     </p>
-                    <p className="font-semibold mb-2">
-                      WireGuard config ({job.peerName || 'device'}) — import into the official app
-                    </p>
-                    <textarea
-                      readOnly
-                      className="w-full h-48 font-mono text-xs p-3 border border-[#1d3d2e]/20 rounded bg-[#f7faf8]"
-                      value={job.peerConf}
-                    />
-                    <a
-                      className="mt-3 inline-flex px-4 py-2 bg-[#1d3d2e] text-white rounded-md font-semibold"
-                      href={`data:text/plain;charset=utf-8,${encodeURIComponent(job.peerConf)}`}
-                      download={`${job.peerName || 'device'}.conf`}
-                    >
-                      Download .conf
-                    </a>
+
+                    {(job.peers?.length
+                      ? job.peers
+                      : job.peerConf
+                        ? [{ name: job.peerName || 'device', conf: job.peerConf, createdAt: job.createdAt }]
+                        : []
+                    ).map((p) => (
+                      <div key={p.name}>
+                        <p className="font-semibold mb-2">
+                          WireGuard config ({p.name}) — import into the official app
+                        </p>
+                        <textarea
+                          readOnly
+                          className="w-full h-36 font-mono text-xs p-3 border border-[#1d3d2e]/20 rounded bg-[#f7faf8]"
+                          value={p.conf}
+                        />
+                        <a
+                          className="mt-2 inline-flex px-4 py-2 bg-[#1d3d2e] text-white rounded-md font-semibold text-sm"
+                          href={`data:text/plain;charset=utf-8,${encodeURIComponent(p.conf)}`}
+                          download={`${p.name}.conf`}
+                        >
+                          Download {p.name}.conf
+                        </a>
+                      </div>
+                    ))}
+
+                    <form onSubmit={onAddPeer} className="border-t border-[#1d3d2e]/10 pt-4 space-y-3">
+                      <p className="font-semibold">Add another device .conf</p>
+                      <input
+                        className="w-full border px-3 py-2 rounded"
+                        value={extraPeerName}
+                        onChange={(e) => setExtraPeerName(e.target.value)}
+                        placeholder="iphone"
+                        required
+                      />
+                      {peerError && <p className="text-sm text-red-700">{peerError}</p>}
+                      <button
+                        type="submit"
+                        disabled={peerBusy}
+                        className="px-5 py-2.5 rounded-md border border-[#1d3d2e] font-semibold disabled:opacity-60"
+                      >
+                        {peerBusy ? 'Adding…' : 'Create device config'}
+                      </button>
+                    </form>
                   </div>
                 )}
               </div>

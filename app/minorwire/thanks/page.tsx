@@ -23,13 +23,13 @@ function ThanksInner() {
         </p>
         <h1 className={`${syne.className} text-4xl font-extrabold mb-4`}>Payment received</h1>
         <p className="text-[#3a4f44] leading-relaxed mb-8">
-          Continue to the setup wizard. Paste your least-privilege OCI API key; we provision WireGuard
-          on your Always Free tenancy and give you a config for the official WireGuard app. Assisted
-          setup buyers: email{' '}
+          Continue to the setup wizard. Paste your least-privilege OCI API key once — we create one
+          WireGuard server on your Always Free tenancy. After that you can mint more device .conf
+          files anytime. Assisted buyers: email{' '}
           <a className="underline" href="mailto:info@jittee.com">
             info@jittee.com
           </a>{' '}
-          to schedule screen-share after (or during) setup.
+          to schedule screen-share.
         </p>
 
         {setupHref ? (

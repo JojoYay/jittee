@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
-import { getStripe, resolveCheckoutSku } from '@/lib/minorwire/stripe'
+import { getStripeForSessionId, resolveCheckoutSku } from '@/lib/minorwire/stripe'
 import { requireCreds } from '@/lib/minorwire/provision/client'
 import type { OciCredentials } from '@/lib/minorwire/provision/types'
 import {
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Valid Stripe session_id required' }, { status: 400 })
     }
 
-    const stripe = getStripe()
+    const stripe = getStripeForSessionId(sessionId)
     const session = await stripe.checkout.sessions.retrieve(sessionId)
     if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
       return NextResponse.json({ error: 'Payment not completed' }, { status: 403 })
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         job: toPublicStatus(completed),
         locked: true,
-        message: 'This purchase already provisioned one server. Buy again for another instance.',
+        message: 'This purchase already provisioned one OCI server. You can still add more device .conf files.',
       })
     }
 

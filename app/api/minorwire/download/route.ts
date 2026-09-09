@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStripe, resolveCheckoutSku } from '@/lib/minorwire/stripe'
+import { getStripeForSessionId, resolveCheckoutSku } from '@/lib/minorwire/stripe'
 import { verifyDownloadToken } from '@/lib/minorwire/downloadToken'
 import { readMinorWireZip } from '@/lib/minorwire/zip'
 
 export const runtime = 'nodejs'
 
 async function assertPaidSession(sessionId: string): Promise<boolean> {
-  const stripe = getStripe()
+  const stripe = getStripeForSessionId(sessionId)
   const session = await stripe.checkout.sessions.retrieve(sessionId)
   if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
     return false

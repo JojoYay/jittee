@@ -3,6 +3,7 @@ import { validateCredentials } from '../provision/validate'
 import { provisionAlwaysFreeVpn } from '../provision/provision'
 import { bootstrapWireGuard, addPeerAndFetchConfig } from '../provision/ssh'
 import { updateJob } from '../jobs/store'
+import { encryptSecret } from '../jobs/crypto'
 
 export async function runProvisionJob(opts: {
   jobId: string
@@ -37,12 +38,15 @@ export async function runProvisionJob(opts: {
       peerName,
     })
 
+    const now = Date.now()
     await updateJob(jobId, {
       phase: 'done',
-      message: 'Ready — import the config into the official WireGuard app',
+      message: 'Server ready — add more device configs anytime for this purchase',
       publicIp: provisioned.publicIp,
       peerName,
       peerConf,
+      peers: [{ name: peerName, conf: peerConf, createdAt: now }],
+      sshPrivateKeyEnc: encryptSecret(provisioned.sshPrivateKeyPem),
     })
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)

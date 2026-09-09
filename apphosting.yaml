@@ -29,13 +29,30 @@ env:
     secret: SERVER_URL
   - variable: GOOGLE_DRIVE_FOLDER_ID2
     secret: GOOGLE_DRIVE_FOLDER_ID2
-  # MinorWire Stripe fulfillment
+  # MinorWire Stripe fulfillment (live + optional test)
   - variable: STRIPE_SECRET_KEY
     secret: STRIPE_SECRET_KEY
     availability:
       - RUNTIME
+  - variable: STRIPE_SECRET_KEY_TEST
+    secret: STRIPE_SECRET_KEY_TEST
+    availability:
+      - RUNTIME
   - variable: STRIPE_WEBHOOK_SECRET
     secret: STRIPE_WEBHOOK_SECRET
+    availability:
+      - RUNTIME
+  - variable: STRIPE_WEBHOOK_SECRET_TEST
+    secret: STRIPE_WEBHOOK_SECRET_TEST
+    availability:
+      - RUNTIME
+  - variable: NEXT_PUBLIC_MINORWIRE_STRIPE_MODE
+    value: live
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: MINORWIRE_STRIPE_MODE
+    value: live
     availability:
       - RUNTIME
   - variable: MINORWIRE_DOWNLOAD_SECRET
