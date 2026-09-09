@@ -34,11 +34,25 @@ const emptyForm: FormState = {
   policyCompartmentName: '',
 }
 
+const OCI_REGION = 'ap-tokyo-1'
+
+/** Direct Console deep links (Home Region Tokyo). Open while signed in. */
+const OCI_LINKS = {
+  home: `https://cloud.oracle.com/?region=${OCI_REGION}`,
+  tenancy: `https://cloud.oracle.com/tenancy?region=${OCI_REGION}`,
+  compartments: `https://cloud.oracle.com/identity/compartments?region=${OCI_REGION}`,
+  domains: `https://cloud.oracle.com/identity/domains?region=${OCI_REGION}`,
+  myProfile: `https://cloud.oracle.com/identity/domains/my-profile?region=${OCI_REGION}`,
+  policies: `https://cloud.oracle.com/identity/policies?region=${OCI_REGION}`,
+} as const
+
 type FieldHelp = {
   key: keyof FormState
   label: string
   placeholder: string
   where: string
+  url?: string
+  urlLabel?: string
   required?: boolean
 }
 
@@ -48,41 +62,51 @@ const SUBMIT_FIELDS: FieldHelp[] = [
     label: '1. Home region',
     placeholder: 'ap-tokyo-1',
     where:
-      'Oracle Console top-right region menu, or Administration → Tenancy Details → Home Region. Always Free must use your home region (example: ap-tokyo-1).',
+      'Usually ap-tokyo-1 for Japan East (Tokyo). Confirm on Tenancy Details → Home region (NRT = Tokyo).',
+    url: OCI_LINKS.tenancy,
+    urlLabel: 'Open Tenancy Details',
   },
   {
     key: 'tenancyOcid',
     label: '2. Tenancy OCID',
     placeholder: 'ocid1.tenancy.oc1..aaaa...',
     where:
-      'Profile menu (person icon, top-right) → Tenancy → copy OCID. Starts with ocid1.tenancy.oc1..',
+      'On Tenancy Details, General information → OCID → copy. Starts with ocid1.tenancy.oc1..',
+    url: OCI_LINKS.tenancy,
+    urlLabel: 'Open Tenancy Details (copy OCID)',
   },
   {
     key: 'compartmentOcid',
-    label: '3. Compartment OCID (where the VM will be created)',
+    label: '3. Compartment OCID (folder for the VM)',
     placeholder: 'ocid1.tenancy.oc1.. OR ocid1.compartment.oc1..',
     where:
-      'Identity → Compartments. For beginners pick the root row (same OCID as tenancy is OK). Copy that OCID. This is NOT the word Target Compartment.',
+      'Open Compartments → click the root row (often named like your tenancy + “(root)”). Copy OCID. Beginners: this is often the SAME string as Tenancy OCID. The compartment Name (e.g. jittee) is NOT pasted here — only into the IAM policy box.',
+    url: OCI_LINKS.compartments,
+    urlLabel: 'Open Compartments (copy root OCID)',
   },
   {
     key: 'userOcid',
     label: '4. User OCID (API user)',
     placeholder: 'ocid1.user.oc1..aaaa...',
     where:
-      'Identity → Users → open the API user (e.g. minorwire) → copy OCID. Starts with ocid1.user.oc1..',
+      'Open My profile (or Domains → Default → Users → your API user) → Details → OCID → copy. Starts with ocid1.user.oc1..',
+    url: OCI_LINKS.myProfile,
+    urlLabel: 'Open My profile (copy User OCID)',
   },
   {
     key: 'fingerprint',
     label: '5. API key fingerprint',
     placeholder: 'aa:bb:cc:dd:...',
     where:
-      'Same user → Resources → API Keys → copy Fingerprint (looks like aa:bb:cc:...).',
+      'My profile → tab “Tokens and keys” → API Keys → copy Fingerprint. If empty: Add API Key, download the .pem once, then copy the fingerprint shown.',
+    url: OCI_LINKS.myProfile,
+    urlLabel: 'Open My profile → Tokens and keys',
   },
   {
     key: 'peerName',
     label: '6. First device name (for the .conf file name)',
     placeholder: 'phone',
-    where: 'Any short name you like (letters/numbers). Example: phone, laptop.',
+    where: 'Any short name you like (letters/numbers). Example: phone, laptop. Not from Oracle.',
     required: false,
   },
 ]
@@ -331,40 +355,100 @@ function SetupInner() {
 
             {showForm && (
               <div className="space-y-8">
-                <section className="border border-amber-700/30 bg-amber-50 p-5 rounded-md">
-                  <h2 className={`${syne.className} text-xl font-bold mb-2`}>
+                <section className="border border-amber-700/30 bg-amber-50 p-5 rounded-md space-y-3">
+                  <h2 className={`${syne.className} text-xl font-bold`}>
                     What was &quot;Target Compartment&quot;?
                   </h2>
                   <p className="text-[#3a4f44] leading-relaxed">
-                    It is <strong>not</strong> a value you paste into the form below. It was only a
-                    placeholder inside the IAM policy text. In Oracle, a compartment is a folder for
-                    resources. Beginners: use the <strong>root</strong> compartment (its Name is
-                    often your tenancy name; its OCID is often the same as Tenancy OCID).
+                    It is <strong>not</strong> a form field. It was only a placeholder inside the IAM
+                    policy text. On your tenancy the root compartment name is usually the same as
+                    the tenancy name (example: <code>jittee</code>). Put that <strong>name</strong>{' '}
+                    into the policy box in section B. Put the compartment <strong>OCID</strong> into
+                    field 3 below.
                   </p>
+                </section>
+
+                <section className="border border-[#1d3d2e]/15 bg-white p-5 rounded-md space-y-3">
+                  <h2 className={`${syne.className} text-2xl font-bold`}>
+                    Direct Oracle Console URLs (bookmark these)
+                  </h2>
+                  <p className="text-sm text-[#3a4f44]">
+                    Sign in first, then open each link. Region is fixed to{' '}
+                    <code>{OCI_REGION}</code> (Japan East / Tokyo).
+                  </p>
+                  <ul className="space-y-2 text-sm text-[#3a4f44]">
+                    <li>
+                      <a className="underline font-semibold" href={OCI_LINKS.home} target="_blank" rel="noreferrer">
+                        Console home
+                      </a>{' '}
+                      — start here if logged out
+                    </li>
+                    <li>
+                      <a className="underline font-semibold" href={OCI_LINKS.tenancy} target="_blank" rel="noreferrer">
+                        Tenancy Details
+                      </a>{' '}
+                      — copy Tenancy OCID + confirm home region
+                    </li>
+                    <li>
+                      <a className="underline font-semibold" href={OCI_LINKS.compartments} target="_blank" rel="noreferrer">
+                        Compartments
+                      </a>{' '}
+                      — copy root compartment OCID; note the Name for the policy
+                    </li>
+                    <li>
+                      <a className="underline font-semibold" href={OCI_LINKS.domains} target="_blank" rel="noreferrer">
+                        Identity Domains
+                      </a>{' '}
+                      — Users / Groups / Policies entry
+                    </li>
+                    <li>
+                      <a className="underline font-semibold" href={OCI_LINKS.myProfile} target="_blank" rel="noreferrer">
+                        My profile
+                      </a>{' '}
+                      — User OCID; then open tab “Tokens and keys” for Fingerprint + PEM
+                    </li>
+                    <li>
+                      <a className="underline font-semibold" href={OCI_LINKS.policies} target="_blank" rel="noreferrer">
+                        Policies
+                      </a>{' '}
+                      — paste the IAM policy from section B
+                    </li>
+                  </ul>
                 </section>
 
                 <section className="space-y-4">
                   <h2 className={`${syne.className} text-2xl font-bold`}>A. Prepare in Oracle (once)</h2>
                   <ol className="list-decimal pl-5 space-y-2 text-[#3a4f44]">
                     <li>
+                      Sign in at{' '}
+                      <a className="underline" href={OCI_LINKS.home} target="_blank" rel="noreferrer">
+                        {OCI_LINKS.home}
+                      </a>
+                    </li>
+                    <li>
                       Open{' '}
-                      <a className="underline" href="https://cloud.oracle.com" target="_blank" rel="noreferrer">
-                        cloud.oracle.com
+                      <a className="underline" href={OCI_LINKS.domains} target="_blank" rel="noreferrer">
+                        Domains
                       </a>{' '}
-                      and sign in.
+                      → Default → Groups → create group <code>MinorWire</code> (if missing).
                     </li>
                     <li>
-                      Identity → Domains → your domain → Groups → create group <code>MinorWire</code>.
+                      Same domain → Users → create an API user (or use your admin user) → add to
+                      group <code>MinorWire</code>.
                     </li>
                     <li>
-                      Identity → Domains → Users → create user for API access → add to group{' '}
-                      <code>MinorWire</code>.
+                      Open{' '}
+                      <a className="underline" href={OCI_LINKS.policies} target="_blank" rel="noreferrer">
+                        Policies
+                      </a>{' '}
+                      → create a policy → paste section B.
                     </li>
                     <li>
-                      Identity → Policies → create a policy and paste the text from section B.
-                    </li>
-                    <li>
-                      That user → API Keys → Add API Key → download the private key (.pem) once.
+                      Open{' '}
+                      <a className="underline" href={OCI_LINKS.myProfile} target="_blank" rel="noreferrer">
+                        My profile
+                      </a>{' '}
+                      → Tokens and keys → Add API Key → download the .pem once.
                     </li>
                   </ol>
 
@@ -411,8 +495,12 @@ function SetupInner() {
                 <section className="border border-[#1d3d2e]/15 bg-white/80 p-6 rounded-md space-y-3">
                   <h2 className={`${syne.className} text-2xl font-bold`}>B. IAM policy (copy into Oracle)</h2>
                   <p className="text-sm text-[#3a4f44]">
-                    Type the compartment <strong>Name</strong> (not OCID) so the policy text updates.
-                    Then copy the box into Oracle → Identity → Policies.
+                    Type the compartment <strong>Name</strong> (for your root, usually the tenancy
+                    name like <code>jittee</code> — not an OCID). Then copy the box and paste into{' '}
+                    <a className="underline font-semibold" href={OCI_LINKS.policies} target="_blank" rel="noreferrer">
+                      Policies
+                    </a>
+                    .
                   </p>
                   <label className="block text-sm font-medium">
                     Compartment name for policy text only
@@ -450,7 +538,19 @@ function SetupInner() {
                   {SUBMIT_FIELDS.map((f) => (
                     <div key={f.key}>
                       <label className="block text-sm font-medium mb-1">{f.label}</label>
-                      <p className="text-xs text-[#5a6f64] mb-2 leading-relaxed">{f.where}</p>
+                      <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
+                      {f.url && (
+                        <p className="text-xs mb-2">
+                          <a
+                            className="underline font-semibold text-[#2f6b4f]"
+                            href={f.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {f.urlLabel || 'Open in Oracle Console'}
+                          </a>
+                        </p>
+                      )}
                       <input
                         required={f.required !== false}
                         className="w-full border px-3 py-2 rounded font-mono text-sm"
@@ -466,9 +566,19 @@ function SetupInner() {
                     <label className="block text-sm font-medium mb-1">
                       7. API private key (PEM file contents)
                     </label>
-                    <p className="text-xs text-[#5a6f64] mb-2 leading-relaxed">
-                      Open the downloaded .pem in Notepad and paste everything, including BEGIN /
-                      END lines.
+                    <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">
+                      From My profile → Tokens and keys → Add API Key → download .pem → open in
+                      Notepad → paste everything including BEGIN / END lines.
+                    </p>
+                    <p className="text-xs mb-2">
+                      <a
+                        className="underline font-semibold text-[#2f6b4f]"
+                        href={OCI_LINKS.myProfile}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open My profile (then Tokens and keys)
+                      </a>
                     </p>
                     <textarea
                       required
