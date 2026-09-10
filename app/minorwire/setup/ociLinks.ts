@@ -15,6 +15,8 @@ export type OciConsoleLinks = {
   compartments: string
   domains: string
   myProfile: string
+  /** My profile → Tokens and keys (API keys / auth tokens) */
+  authTokens: string
   policies: string
   billingUpgrade: string
 }
@@ -33,6 +35,7 @@ export function buildOciLinks(region: string): OciConsoleLinks {
     compartments: `https://cloud.oracle.com/identity/compartments?region=${r}`,
     domains: `https://cloud.oracle.com/identity/domains?region=${r}`,
     myProfile: `https://cloud.oracle.com/identity/domains/my-profile?region=${r}`,
+    authTokens: `https://cloud.oracle.com/identity/domains/my-profile/auth-tokens?region=${r}`,
     policies: `https://cloud.oracle.com/identity/policies?region=${r}`,
     billingUpgrade: `https://cloud.oracle.com/billing/payment?region=${r}`,
   }

@@ -303,6 +303,10 @@ function SetupInner() {
                     const stepFields = (step.fields ?? [])
                       .map((key) => c.fields.find((f) => f.key === key))
                       .filter((f): f is (typeof c.fields)[number] => Boolean(f))
+                    const stepImages =
+                      step.images && step.images.length > 0
+                        ? step.images
+                        : [{ src: step.image, alt: step.imageAlt }]
                     return (
                       <article
                         key={step.id}
@@ -323,16 +327,30 @@ function SetupInner() {
                               </a>
                             </p>
                           )}
+                          {step.clickSteps && step.clickSteps.length > 0 && (
+                            <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#3a4f44]">
+                              {step.clickSteps.map((s) => (
+                                <li key={s}>{s}</li>
+                              ))}
+                            </ol>
+                          )}
                         </div>
-                        <figure>
-                          <Image
-                            src={step.image}
-                            alt={step.imageAlt}
-                            width={1280}
-                            height={720}
-                            className="w-full h-auto border-t border-[#1d3d2e]/10"
-                          />
-                        </figure>
+                        {stepImages.map((img) => (
+                          <figure key={img.src + (img.caption || '')}>
+                            <Image
+                              src={img.src}
+                              alt={img.alt}
+                              width={1280}
+                              height={720}
+                              className="w-full h-auto border-t border-[#1d3d2e]/10"
+                            />
+                            {img.caption && (
+                              <figcaption className="px-5 py-2 text-xs text-[#5a6f64] bg-[#f7faf8] border-t border-[#1d3d2e]/5">
+                                {img.caption}
+                              </figcaption>
+                            )}
+                          </figure>
+                        ))}
 
                         {(stepFields.length > 0 || step.showPem || step.showSubmit) && (
                           <div className="space-y-4 border-t border-[#2f6b4f]/20 bg-[#e8f2ec]/60 p-5">
@@ -390,7 +408,7 @@ function SetupInner() {
                                 <p className="text-xs mb-2">
                                   <a
                                     className="underline font-semibold text-[#2f6b4f]"
-                                    href={ociLinks.myProfile}
+                                    href={ociLinks.authTokens}
                                     target="_blank"
                                     rel="noreferrer"
                                   >

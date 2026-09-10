@@ -17,12 +17,22 @@ export type SetupFieldCopy = {
   required?: boolean
 }
 
+export type GuideImageCopy = {
+  src: string
+  alt: string
+  caption?: string
+}
+
 export type GuideStepCopy = {
   id: string
   title: string
   body: string
+  /** Ordered click-by-click instructions shown under the body. */
+  clickSteps?: string[]
   image: string
   imageAlt: string
+  /** Extra screenshots after the primary image (e.g. API key wizard). */
+  images?: GuideImageCopy[]
   link?: string
   /** Resolved with the region currently selected in the form. */
   ociLink?: GuideOciLinkKey
@@ -79,8 +89,8 @@ export type SetupCopy = {
 const fieldUrls = {
   region: 'tenancy' as const,
   tenancyOcid: 'tenancy' as const,
-  userOcid: 'myProfile' as const,
-  fingerprint: 'myProfile' as const,
+  userOcid: 'authTokens' as const,
+  fingerprint: 'authTokens' as const,
 }
 
 export const SETUP_COPY: Record<string, SetupCopy> = {
@@ -150,7 +160,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'tenancy',
         title: 'Step 5 — Tenancy OCID をコピーして貼る',
         body:
-          'Profile → Tenancy または Tenancy Details で OCID をコピー。Compartment は root（= Tenancy OCID）を自動使用するので、別途の IAM / Compartment 設定は不要です。下にそのまま貼ってください。',
+          'Profile → Tenancy または Tenancy Details で OCID をコピー。または次の Step 6 で API キー作成直後に出る Configuration file preview の tenancy= 行からもコピーできます。Compartment は root（= Tenancy OCID）を自動使用します。',
         image: '/minorwire/guide/live-tenancy.png',
         imageAlt: 'Tenancy OCID',
         ociLink: 'tenancy',
@@ -159,13 +169,41 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'apiKey',
-        title: 'Step 6 — 管理者の API キーを作成して貼る',
+        title: 'Step 6 — API キーを作成して貼る（ボタン順）',
         body:
-          'My profile → Tokens and keys → Add API Key。表示される Fingerprint を控え、.pem を一度だけダウンロード。User OCID も同じ画面の Details からコピー。グループやポリシーは作りません。下に貼ってから VPN を作成します。',
-        image: '/minorwire/guide/live-user-ocid.png',
-        imageAlt: 'User OCID and API key',
-        ociLink: 'myProfile',
-        linkLabel: 'My profile を開く',
+          '下のリンクで Tokens and keys を開き、スクショと同じ操作で進めます。秘密鍵 (.pem) は一度しかダウンロードできないので必ず保存してください。',
+        clickSteps: [
+          'Tokens and keys ページを開く（下のリンク）',
+          'API keys セクションの「Add API key」をクリック',
+          '「Generate API key pair」が選ばれていることを確認',
+          '「Download private key」をクリックして .pem を保存（二度と表示されません）',
+          '必要なら「Download public key」も保存',
+          '右下の「Add」をクリック（秘密鍵ダウンロード後に有効になります）',
+          '「Configuration file preview」が表示されたら、Fingerprint / user= / tenancy= / region= を控える（Copy でも可）',
+          'ダウンロードした .pem をメモ帳で開き、BEGIN〜END を下の PEM 欄に貼る',
+          'user= を User OCID、Fingerprint を Fingerprint 欄に貼り、VPN 端末名を入れて「VPN を作成」',
+        ],
+        image: '/minorwire/guide/api-01-tokens-and-keys.png',
+        imageAlt: 'Tokens and keys — Add API key',
+        images: [
+          {
+            src: '/minorwire/guide/api-01-tokens-and-keys.png',
+            alt: 'Tokens and keys page',
+            caption: '1. Tokens and keys → Add API key',
+          },
+          {
+            src: '/minorwire/guide/api-02-add-api-key.png',
+            alt: 'Add API key dialog',
+            caption: '2. Generate → Download private key → Add',
+          },
+          {
+            src: '/minorwire/guide/api-03-config-preview.png',
+            alt: 'Configuration file preview',
+            caption: '3. Configuration file preview（値はぼかし済み）— Fingerprint / user / tenancy / region',
+          },
+        ],
+        ociLink: 'authTokens',
+        linkLabel: 'Tokens and keys を開く',
         fields: ['userOcid', 'fingerprint', 'peerName'],
         showPem: true,
         showSubmit: true,
@@ -195,15 +233,15 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         key: 'userOcid',
         label: 'User OCID（管理者）',
         placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'My profile の OCID。',
+        where: 'Configuration file preview の user=、または My profile の OCID。',
         ociLink: fieldUrls.userOcid,
-        urlLabel: 'My profile',
+        urlLabel: 'Tokens and keys',
       },
       {
         key: 'fingerprint',
         label: 'API Key Fingerprint',
         placeholder: 'aa:bb:cc:dd:...',
-        where: 'Tokens and keys に表示される指紋。',
+        where: 'Configuration file preview 上部の Fingerprint、または preview 内の fingerprint=。',
         ociLink: fieldUrls.fingerprint,
         urlLabel: 'Tokens and keys',
       },
@@ -217,8 +255,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
     ],
     pemLabel: 'API 秘密鍵（PEM）',
-    pemWhere: 'ダウンロードした .pem を開き、BEGIN から END まで全部貼る。',
-    pemUrlLabel: 'My profile',
+    pemWhere: 'Download private key で保存した .pem を開き、BEGIN から END まで全部貼る。',
+    pemUrlLabel: 'Tokens and keys',
     submitBusy: '開始中…',
     submit: 'VPN を作成',
     verifying: '支払いを確認しています…',
@@ -309,7 +347,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'tenancy',
         title: 'Step 5 — Copy Tenancy OCID and paste below',
         body:
-          'Profile → Tenancy / Tenancy Details → copy OCID. We use root compartment (= Tenancy OCID) automatically — no separate IAM or compartment setup. Paste it into the field under this step.',
+          'Profile → Tenancy / Tenancy Details → copy OCID. Or copy the tenancy= line from the Configuration file preview that appears right after you create an API key in Step 6. We use root compartment (= Tenancy OCID) automatically.',
         image: '/minorwire/guide/live-tenancy.png',
         imageAlt: 'Tenancy OCID',
         ociLink: 'tenancy',
@@ -318,13 +356,41 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'apiKey',
-        title: 'Step 6 — Create an admin API key and paste below',
+        title: 'Step 6 — Create an API key and paste (click by click)',
         body:
-          'My profile → Tokens and keys → Add API Key. Save Fingerprint and download the .pem once. Copy User OCID from the same profile. Do not create groups or policies. Paste the values below, then create the VPN.',
-        image: '/minorwire/guide/live-user-ocid.png',
-        imageAlt: 'User OCID and API key',
-        ociLink: 'myProfile',
-        linkLabel: 'Open My profile',
+          'Open Tokens and keys with the link below and follow the same clicks as the screenshots. The private key (.pem) can be downloaded only once — save it.',
+        clickSteps: [
+          'Open the Tokens and keys page (link below)',
+          'In API keys, click Add API key',
+          'Confirm Generate API key pair is selected',
+          'Click Download private key and save the .pem (it will not be shown again)',
+          'Optionally click Download public key',
+          'Click Add at the bottom right (enabled after downloading the private key)',
+          'On Configuration file preview, note Fingerprint / user= / tenancy= / region= (or use Copy)',
+          'Open the .pem in a text editor and paste BEGIN through END into the PEM field below',
+          'Paste user= into User OCID, Fingerprint into Fingerprint, enter a VPN device name, then Create VPN',
+        ],
+        image: '/minorwire/guide/api-01-tokens-and-keys.png',
+        imageAlt: 'Tokens and keys — Add API key',
+        images: [
+          {
+            src: '/minorwire/guide/api-01-tokens-and-keys.png',
+            alt: 'Tokens and keys page',
+            caption: '1. Tokens and keys → Add API key',
+          },
+          {
+            src: '/minorwire/guide/api-02-add-api-key.png',
+            alt: 'Add API key dialog',
+            caption: '2. Generate → Download private key → Add',
+          },
+          {
+            src: '/minorwire/guide/api-03-config-preview.png',
+            alt: 'Configuration file preview',
+            caption: '3. Configuration file preview (values blurred) — Fingerprint / user / tenancy / region',
+          },
+        ],
+        ociLink: 'authTokens',
+        linkLabel: 'Open Tokens and keys',
         fields: ['userOcid', 'fingerprint', 'peerName'],
         showPem: true,
         showSubmit: true,
@@ -354,15 +420,15 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         key: 'userOcid',
         label: 'User OCID (admin)',
         placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'OCID from My profile.',
+        where: 'user= from Configuration file preview, or My profile OCID.',
         ociLink: fieldUrls.userOcid,
-        urlLabel: 'My profile',
+        urlLabel: 'Tokens and keys',
       },
       {
         key: 'fingerprint',
         label: 'API Key Fingerprint',
         placeholder: 'aa:bb:cc:dd:...',
-        where: 'Fingerprint shown under Tokens and keys.',
+        where: 'Fingerprint at the top of Configuration file preview, or fingerprint= inside it.',
         ociLink: fieldUrls.fingerprint,
         urlLabel: 'Tokens and keys',
       },
@@ -376,8 +442,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
     ],
     pemLabel: 'API private key (PEM)',
-    pemWhere: 'Open the downloaded .pem and paste BEGIN through END.',
-    pemUrlLabel: 'My profile',
+    pemWhere: 'Open the .pem from Download private key and paste BEGIN through END.',
+    pemUrlLabel: 'Tokens and keys',
     submitBusy: 'Starting…',
     submit: 'Create VPN',
     verifying: 'Verifying payment…',
@@ -466,7 +532,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'tenancy',
         title: 'Step 5 — 复制 Tenancy OCID 并粘贴',
         body:
-          'Profile → Tenancy / Tenancy Details 复制 OCID。我们会自动使用 root（= Tenancy OCID），无需单独 IAM / Compartment。请粘贴到本步骤下方的输入框。',
+          'Profile → Tenancy / Tenancy Details 复制 OCID。也可在 Step 6 创建 API 密钥后出现的 Configuration file preview 中复制 tenancy= 行。我们会自动使用 root（= Tenancy OCID）。',
         image: '/minorwire/guide/live-tenancy.png',
         imageAlt: 'Tenancy OCID',
         ociLink: 'tenancy',
@@ -475,13 +541,41 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'apiKey',
-        title: 'Step 6 — 创建管理员 API 密钥并粘贴',
+        title: 'Step 6 — 创建 API 密钥并粘贴（按按钮顺序）',
         body:
-          'My profile → Tokens and keys → Add API Key。保存 Fingerprint 并下载一次 .pem。从同一页面复制 User OCID。不要创建组或策略。粘贴到下方后创建 VPN。',
-        image: '/minorwire/guide/live-user-ocid.png',
-        imageAlt: 'User OCID and API key',
-        ociLink: 'myProfile',
-        linkLabel: '打开 My profile',
+          '用下方链接打开 Tokens and keys，按截图相同步骤操作。私钥（.pem）只能下载一次，请务必保存。',
+        clickSteps: [
+          '打开 Tokens and keys 页面（下方链接）',
+          '在 API keys 区域点击 Add API key',
+          '确认已选中 Generate API key pair',
+          '点击 Download private key 并保存 .pem（不会再次显示）',
+          '可选：点击 Download public key',
+          '点击右下角 Add（下载私钥后才会可用）',
+          '出现 Configuration file preview 后，记下 Fingerprint / user= / tenancy= / region=（也可用 Copy）',
+          '用记事本打开 .pem，把 BEGIN 到 END 粘贴到下方 PEM 栏',
+          '把 user= 填到 User OCID、Fingerprint 填到 Fingerprint，输入 VPN 设备名后点击创建 VPN',
+        ],
+        image: '/minorwire/guide/api-01-tokens-and-keys.png',
+        imageAlt: 'Tokens and keys — Add API key',
+        images: [
+          {
+            src: '/minorwire/guide/api-01-tokens-and-keys.png',
+            alt: 'Tokens and keys page',
+            caption: '1. Tokens and keys → Add API key',
+          },
+          {
+            src: '/minorwire/guide/api-02-add-api-key.png',
+            alt: 'Add API key dialog',
+            caption: '2. Generate → Download private key → Add',
+          },
+          {
+            src: '/minorwire/guide/api-03-config-preview.png',
+            alt: 'Configuration file preview',
+            caption: '3. Configuration file preview（已模糊）— Fingerprint / user / tenancy / region',
+          },
+        ],
+        ociLink: 'authTokens',
+        linkLabel: '打开 Tokens and keys',
         fields: ['userOcid', 'fingerprint', 'peerName'],
         showPem: true,
         showSubmit: true,
@@ -511,15 +605,15 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         key: 'userOcid',
         label: 'User OCID（管理员）',
         placeholder: 'ocid1.user.oc1..aaaa...',
-        where: '来自 My profile 的 OCID。',
+        where: 'Configuration file preview 中的 user=，或 My profile 的 OCID。',
         ociLink: fieldUrls.userOcid,
-        urlLabel: 'My profile',
+        urlLabel: 'Tokens and keys',
       },
       {
         key: 'fingerprint',
         label: 'API Key Fingerprint',
         placeholder: 'aa:bb:cc:dd:...',
-        where: 'Tokens and keys 中显示的指纹。',
+        where: 'Configuration file preview 顶部的 Fingerprint，或其中的 fingerprint=。',
         ociLink: fieldUrls.fingerprint,
         urlLabel: 'Tokens and keys',
       },
@@ -532,8 +626,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
     ],
     pemLabel: 'API 私钥（PEM）',
-    pemWhere: '打开下载的 .pem，从 BEGIN 到 END 全部粘贴。',
-    pemUrlLabel: 'My profile',
+    pemWhere: '打开 Download private key 保存的 .pem，从 BEGIN 到 END 全部粘贴。',
+    pemUrlLabel: 'Tokens and keys',
     submitBusy: '启动中…',
     submit: '创建 VPN',
     verifying: '正在确认付款…',
