@@ -65,16 +65,36 @@ function SetupInner() {
   }, [locale])
 
   const kickRun = useCallback(
-    async (jobId: string) => {
+    async (
+      jobId: string,
+      opts?: {
+        force?: boolean
+        creds?: {
+          region: string
+          tenancyOcid: string
+          compartmentOcid: string
+          userOcid: string
+          fingerprint: string
+          privateKeyPem: string
+        }
+        peerName?: string
+      },
+    ) => {
       if (!sessionId) return
       const now = Date.now()
-      if (now - lastKickAtRef.current < 20_000) return
+      if (!opts?.force && now - lastKickAtRef.current < 20_000) return
       lastKickAtRef.current = now
       try {
         await fetch(`/api/minorwire/jobs/${encodeURIComponent(jobId)}/run`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId }),
+          body: JSON.stringify({
+            sessionId,
+            peerName: opts?.peerName,
+            creds: opts?.creds,
+          }),
+          // Keep the request alive if the tab is backgrounded briefly.
+          keepalive: true,
         })
       } catch {
         /* status polling still recovers via server re-kick */
@@ -171,6 +191,14 @@ function SetupInner() {
         return
       }
       const tenancy = parsed.tenancyOcid
+      const creds = {
+        region: parsed.region,
+        tenancyOcid: tenancy,
+        compartmentOcid: tenancy,
+        userOcid: parsed.userOcid,
+        fingerprint: parsed.fingerprint,
+        privateKeyPem: form.privateKeyPem,
+      }
       try {
         const res = await fetch('/api/minorwire/jobs', {
           method: 'POST',
@@ -178,13 +206,13 @@ function SetupInner() {
           body: JSON.stringify({
             sessionId,
             peerName: form.peerName,
-            region: parsed.region,
-            tenancyOcid: tenancy,
+            region: creds.region,
+            tenancyOcid: creds.tenancyOcid,
             // Admin simple path: root compartment == tenancy OCID
-            compartmentOcid: tenancy,
-            userOcid: parsed.userOcid,
-            fingerprint: parsed.fingerprint,
-            privateKeyPem: form.privateKeyPem,
+            compartmentOcid: creds.compartmentOcid,
+            userOcid: creds.userOcid,
+            fingerprint: creds.fingerprint,
+            privateKeyPem: creds.privateKeyPem,
           }),
         })
         const data = await res.json()
@@ -193,7 +221,11 @@ function SetupInner() {
           return
         }
         setJob(data.job)
-        if (data.needsClientKick && data.job?.id) void kickRun(data.job.id)
+        // Primary runner start: dedicated /run request (Cloud Run CPU). Pass creds so
+        // provision can start even if encrypted payload read fails.
+        if (data.job?.id && (data.needsClientKick || data.job.phase === 'queued')) {
+          void kickRun(data.job.id, { force: true, creds, peerName: form.peerName })
+        }
       } catch {
         setSubmitError(c.networkError)
       } finally {

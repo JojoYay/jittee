@@ -28,43 +28,6 @@ function internalSecret(): string {
   )
 }
 
-function runBaseUrl(req: NextRequest): string {
-  const configured = process.env.MINORWIRE_PUBLIC_BASE_URL?.replace(/\/$/, '')
-  if (configured) return configured
-  const host = req.headers.get('x-forwarded-host') || req.headers.get('host')
-  const proto = req.headers.get('x-forwarded-proto') || 'https'
-  if (host) return `${proto}://${host}`
-  return 'https://jittee.com'
-}
-
-/** Best-effort HTTP kick so Cloud Run allocates a dedicated request CPU budget. */
-async function kickRunViaHttp(req: NextRequest, jobId: string): Promise<void> {
-  const runSecret = internalSecret()
-  if (!runSecret) return
-  const base = runBaseUrl(req)
-  await appendJobLog(jobId, {
-    level: 'info',
-    step: 'kick_http',
-    message: `Dispatching run via HTTP ${base}/api/minorwire/jobs/${jobId}/run`,
-    phase: 'queued',
-  })
-  await updateJob(jobId, { lastKickAt: Date.now() })
-  const res = await fetch(`${base}/api/minorwire/jobs/${jobId}/run`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-minorwire-job-secret': runSecret,
-    },
-    body: JSON.stringify({}),
-  })
-  await appendJobLog(jobId, {
-    level: res.ok ? 'info' : 'warn',
-    step: 'kick_http',
-    message: `Run HTTP response status=${res.status}`,
-    phase: 'queued',
-  })
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as {
@@ -107,7 +70,7 @@ export async function POST(req: NextRequest) {
     if (existing && existing.phase !== 'done' && existing.phase !== 'error') {
       return NextResponse.json({
         job: toPublicStatus(existing),
-        needsClientKick: existing.phase === 'queued' && Boolean(existing.payloadEnc),
+        needsClientKick: existing.phase === 'queued',
       })
     }
     // phase === error: allow one retry under the same paid session
@@ -152,34 +115,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Server misconfigured (job run secret)' }, { status: 500 })
     }
 
-    // Keep work alive after the HTTP response (Next.js after / waitUntil).
-    // Also ask the browser to POST /run (needsClientKick) — that is the reliable
-    // Cloud Run CPU path when request-only CPU freezes void fetch().
-    after(() => {
-      void (async () => {
-        try {
-          await kickRunViaHttp(req, jobId)
-        } catch (e) {
-          const msg = e instanceof Error ? e.message : String(e)
-          await appendJobLog(jobId, {
-            level: 'warn',
-            step: 'kick_http',
-            message: `HTTP kick failed: ${msg}; falling back to in-process trigger`,
-            phase: 'queued',
-          })
-          try {
-            await triggerJobRun(jobId)
-          } catch (e2) {
-            const msg2 = e2 instanceof Error ? e2.message : String(e2)
-            await appendJobLog(jobId, {
-              level: 'error',
-              step: 'trigger',
-              message: `In-process trigger failed: ${msg2}`,
-              phase: 'queued',
-            })
-          }
-        }
-      })()
+    // Backup path: keep running after the create response when the platform supports it.
+    // Primary path is the browser POST to /run (needsClientKick) which gets its own
+    // Cloud Run CPU budget — request-only CPU freezes void fetch() after create returns.
+    // IMPORTANT: after() must be given a Promise (do not void an async IIFE).
+    after(async () => {
+      await appendJobLog(jobId, {
+        level: 'info',
+        step: 'after_trigger',
+        message: 'Server after() starting in-process trigger',
+        phase: 'queued',
+      })
+      try {
+        const result = await triggerJobRun(jobId)
+        await appendJobLog(jobId, {
+          level: result.started ? 'info' : 'warn',
+          step: 'after_trigger',
+          message: `after() trigger finished started=${result.started} reason=${result.reason || ''}`,
+          phase: result.started ? 'validating' : 'queued',
+        })
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e)
+        await appendJobLog(jobId, {
+          level: 'error',
+          step: 'after_trigger',
+          message: `after() trigger threw: ${msg}`,
+          phase: 'queued',
+        })
+      }
     })
 
     const job = await getJob(jobId)

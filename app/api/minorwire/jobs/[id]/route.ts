@@ -43,8 +43,10 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
           message: 'Status poll scheduling re-kick for queued job',
           phase: 'queued',
         })
-        after(() => {
-          void triggerJobRun(id).catch(async (e) => {
+        after(async () => {
+          try {
+            await triggerJobRun(id)
+          } catch (e) {
             const msg = e instanceof Error ? e.message : String(e)
             await appendJobLog(id, {
               level: 'error',
@@ -52,7 +54,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
               message: msg,
               phase: 'queued',
             })
-          })
+          }
         })
       }
     }
