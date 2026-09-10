@@ -106,6 +106,7 @@ export async function POST(req: NextRequest) {
       payloadEnc,
       peerName,
       resumePublicIp: resumable?.publicIp,
+      resumeDisplayName: resumable?.displayName,
       resumeSshPrivateKeyEnc: resumable?.sshPrivateKeyEnc,
     })
     await appendJobLog(jobId, {

@@ -63,10 +63,12 @@ export type JobRecord = {
   sessionId: string
   sku: string
   publicIp?: string
+  /** OCI instance displayName (minorwire-*). */
+  displayName?: string
   peerName?: string
   peerConf?: string
   peers?: { name: string; conf: string; createdAt: number }[]
-  /** AES-GCM blob of instance SSH PEM — never expose via API. */
+  /** AES-GCM blob of instance SSH private key (OpenSSH) — never expose via API. */
   sshPrivateKeyEnc?: string
   /** Temporary AES-GCM blob of OCI creds + peerName for the runner; cleared after run. */
   payloadEnc?: string
@@ -84,6 +86,7 @@ export async function createJobDoc(input: {
   peerName: string
   /** Carry forward from a failed job so bootstrap can resume without re-creating OCI resources. */
   resumePublicIp?: string
+  resumeDisplayName?: string
   resumeSshPrivateKeyEnc?: string
 }): Promise<void> {
   const now = Date.now()
@@ -109,6 +112,7 @@ export async function createJobDoc(input: {
     logs: [bootLog],
   }
   if (input.resumePublicIp) doc.publicIp = input.resumePublicIp
+  if (input.resumeDisplayName) doc.displayName = input.resumeDisplayName
   if (input.resumeSshPrivateKeyEnc) doc.sshPrivateKeyEnc = input.resumeSshPrivateKeyEnc
   await db().collection(COLLECTION).doc(input.id).set(doc)
   await db()
@@ -311,6 +315,7 @@ export function toPublicStatus(job: JobRecord): JobPublicStatus {
     updatedAt: job.updatedAt,
     sessionId: job.sessionId,
     publicIp: job.publicIp,
+    displayName: job.displayName,
     peerName: job.peerName,
     peerConf: job.peerConf,
     peers: job.peers,

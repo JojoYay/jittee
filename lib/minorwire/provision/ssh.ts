@@ -1,6 +1,7 @@
 import { Client, type ConnectConfig } from 'ssh2'
 import { readFileSync } from 'node:fs'
 import { resolvePrivateAsset } from '../privateAssets'
+import { toSsh2PrivateKey } from './sshKeys'
 
 function connect(cfg: ConnectConfig): Promise<Client> {
   return new Promise((resolvePromise, reject) => {
@@ -82,7 +83,7 @@ export async function bootstrapWireGuard(opts: {
     host: opts.host,
     port: 22,
     username: 'ubuntu',
-    privateKey: opts.privateKeyPem,
+    privateKey: toSsh2PrivateKey(opts.privateKeyPem),
     readyTimeout: 30_000,
   })
   try {
@@ -111,7 +112,7 @@ export async function addPeerAndFetchConfig(opts: {
     host: opts.host,
     port: 22,
     username: 'ubuntu',
-    privateKey: opts.privateKeyPem,
+    privateKey: toSsh2PrivateKey(opts.privateKeyPem),
   })
   try {
     const add = await exec(client, `sudo wg-add-peer ${opts.peerName}`)

@@ -374,6 +374,11 @@ function SetupInner() {
                     {c.publicIp}: {job.publicIp}
                   </p>
                 )}
+                {job.displayName && (
+                  <p className="mt-1 text-sm font-mono text-[#2f6b4f]">
+                    {c.instanceName}: {job.displayName}
+                  </p>
+                )}
                 {job.error && <p className="mt-2 text-sm text-red-700 whitespace-pre-wrap">{job.error}</p>}
                 {job.phase === 'error' && <p className="mt-2 text-sm text-[#5a6f64]">{c.retryHint}</p>}
                 {running && <p className="mt-3 text-sm text-[#5a6f64]">{c.working}</p>}

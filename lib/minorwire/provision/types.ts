@@ -52,6 +52,8 @@ export type JobPublicStatus = {
   updatedAt: number
   sessionId: string
   publicIp?: string
+  /** OCI Compute instance displayName (e.g. minorwire-a1b2c3). */
+  displayName?: string
   peerName?: string
   peerConf?: string
   peers?: PeerConfRecord[]
