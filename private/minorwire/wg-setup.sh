@@ -19,7 +19,13 @@ log() { printf '==> %s\n' "$*"; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 
 [[ ${EUID} -eq 0 ]] || die "run as root: sudo bash $0"
-[[ -e /etc/wireguard/${WG_IF}.conf ]] && die "${WG_DIR}/${WG_IF}.conf already exists; move it aside before re-running"
+if [[ -e /etc/wireguard/${WG_IF}.conf ]]; then
+  if systemctl is-active --quiet "wg-quick@${WG_IF}" 2>/dev/null || wg show "${WG_IF}" >/dev/null 2>&1; then
+    log "WireGuard already configured on ${WG_IF}; skipping bootstrap"
+    exit 0
+  fi
+  die "${WG_DIR}/${WG_IF}.conf already exists but interface is not up; move it aside before re-running"
+fi
 
 log "Installing packages"
 export DEBIAN_FRONTEND=noninteractive

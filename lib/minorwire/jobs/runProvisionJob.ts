@@ -2,8 +2,8 @@ import type { OciCredentials } from '../provision/types'
 import { validateCredentials } from '../provision/validate'
 import { provisionAlwaysFreeVpn } from '../provision/provision'
 import { bootstrapWireGuard, addPeerAndFetchConfig } from '../provision/ssh'
-import { appendJobLog, updateJob } from '../jobs/store'
-import { encryptSecret } from '../jobs/crypto'
+import { appendJobLog, getJob, updateJob } from '../jobs/store'
+import { decryptSecret, encryptSecret } from '../jobs/crypto'
 import { redactFingerprint, redactOcid, redactSecretMessage } from '../jobs/redact'
 
 export async function runProvisionJob(opts: {
@@ -34,36 +34,65 @@ export async function runProvisionJob(opts: {
       phase: 'validating',
     })
 
-    await updateJob(jobId, { phase: 'provisioning', message: 'Creating VCN and Always Free Micro' })
-    await appendJobLog(jobId, {
-      level: 'info',
-      step: 'provision',
-      message: 'Creating VCN / subnet / Always Free Micro instance',
-      phase: 'provisioning',
-    })
-    const provisioned = await provisionAlwaysFreeVpn(creds)
-    await updateJob(jobId, {
-      phase: 'bootstrapping',
-      message: `Instance running at ${provisioned.publicIp}; installing WireGuard`,
-      publicIp: provisioned.publicIp,
-    })
-    await appendJobLog(jobId, {
-      level: 'info',
-      step: 'provision',
-      message: `Instance ready ip=${provisioned.publicIp} id=${redactOcid(provisioned.instanceId)}`,
-      phase: 'bootstrapping',
-    })
+    const existing = await getJob(jobId)
+    let publicIp = existing?.publicIp?.trim() || ''
+    let sshPrivateKeyPem = ''
+    if (publicIp && existing?.sshPrivateKeyEnc) {
+      try {
+        sshPrivateKeyPem = decryptSecret(existing.sshPrivateKeyEnc)
+      } catch {
+        sshPrivateKeyPem = ''
+      }
+    }
+
+    if (publicIp && sshPrivateKeyPem.includes('PRIVATE KEY')) {
+      await updateJob(jobId, {
+        phase: 'bootstrapping',
+        message: `Resuming WireGuard install on ${publicIp}`,
+        publicIp,
+      })
+      await appendJobLog(jobId, {
+        level: 'info',
+        step: 'provision',
+        message: `Resuming existing instance ip=${publicIp} (skip OCI create)`,
+        phase: 'bootstrapping',
+      })
+    } else {
+      await updateJob(jobId, { phase: 'provisioning', message: 'Creating VCN and Always Free Micro' })
+      await appendJobLog(jobId, {
+        level: 'info',
+        step: 'provision',
+        message: 'Creating VCN / subnet / Always Free Micro instance',
+        phase: 'provisioning',
+      })
+      const provisioned = await provisionAlwaysFreeVpn(creds)
+      publicIp = provisioned.publicIp
+      sshPrivateKeyPem = provisioned.sshPrivateKeyPem
+      // Persist SSH key before bootstrap so a later retry can resume without creating another instance.
+      await updateJob(jobId, {
+        phase: 'bootstrapping',
+        message: `Instance running at ${publicIp}; installing WireGuard`,
+        publicIp,
+        sshPrivateKeyEnc: encryptSecret(sshPrivateKeyPem),
+      })
+      await appendJobLog(jobId, {
+        level: 'info',
+        step: 'provision',
+        message: `Instance ready ip=${publicIp} id=${redactOcid(provisioned.instanceId)}`,
+        phase: 'bootstrapping',
+      })
+    }
 
     await appendJobLog(jobId, {
       level: 'info',
       step: 'wg_bootstrap',
-      message: `SSH bootstrap WireGuard on ${provisioned.publicIp}`,
+      message: `SSH bootstrap WireGuard on ${publicIp}`,
       phase: 'bootstrapping',
     })
     await bootstrapWireGuard({
-      host: provisioned.publicIp,
-      privateKeyPem: provisioned.sshPrivateKeyPem,
-      publicIp: provisioned.publicIp,
+      host: publicIp,
+      privateKeyPem: sshPrivateKeyPem,
+      publicIp,
     })
     await appendJobLog(jobId, {
       level: 'info',
@@ -80,8 +109,8 @@ export async function runProvisionJob(opts: {
       phase: 'peer',
     })
     const peerConf = await addPeerAndFetchConfig({
-      host: provisioned.publicIp,
-      privateKeyPem: provisioned.sshPrivateKeyPem,
+      host: publicIp,
+      privateKeyPem: sshPrivateKeyPem,
       peerName,
     })
 
@@ -89,16 +118,16 @@ export async function runProvisionJob(opts: {
     await updateJob(jobId, {
       phase: 'done',
       message: 'Server ready — add more device configs anytime for this purchase',
-      publicIp: provisioned.publicIp,
+      publicIp,
       peerName,
       peerConf,
       peers: [{ name: peerName, conf: peerConf, createdAt: now }],
-      sshPrivateKeyEnc: encryptSecret(provisioned.sshPrivateKeyPem),
+      sshPrivateKeyEnc: encryptSecret(sshPrivateKeyPem),
     })
     await appendJobLog(jobId, {
       level: 'info',
       step: 'done',
-      message: `Provision complete ip=${provisioned.publicIp} peer=${peerName}`,
+      message: `Provision complete ip=${publicIp} peer=${peerName}`,
       phase: 'done',
     })
   } catch (e) {

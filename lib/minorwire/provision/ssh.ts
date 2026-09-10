@@ -1,6 +1,6 @@
 import { Client, type ConnectConfig } from 'ssh2'
 import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { resolvePrivateAsset } from '../privateAssets'
 
 function connect(cfg: ConnectConfig): Promise<Client> {
   return new Promise((resolvePromise, reject) => {
@@ -74,7 +74,9 @@ export async function bootstrapWireGuard(opts: {
   publicIp: string
   scriptPath?: string
 }): Promise<void> {
-  const scriptPath = resolve(opts.scriptPath ?? 'private/minorwire/wg-setup.sh')
+  const scriptPath = opts.scriptPath
+    ? opts.scriptPath
+    : resolvePrivateAsset('minorwire', 'wg-setup.sh')
   const script = readFileSync(scriptPath)
   const client = await withRetryConnect({
     host: opts.host,

@@ -1,14 +1,10 @@
-import { readFileSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { resolvePrivateAsset } from './privateAssets'
 
 export function getMinorWireZipPath(): string {
-  return join(process.cwd(), 'private', 'minorwire', 'minorwire-cli.zip')
+  return resolvePrivateAsset('minorwire', 'minorwire-cli.zip')
 }
 
 export function readMinorWireZip(): Buffer {
-  const path = getMinorWireZipPath()
-  if (!existsSync(path)) {
-    throw new Error(`Missing package at ${path}`)
-  }
-  return readFileSync(path)
+  return readFileSync(getMinorWireZipPath())
 }

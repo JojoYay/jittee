@@ -82,35 +82,55 @@ export async function createJobDoc(input: {
   sku: string
   payloadEnc: string
   peerName: string
+  /** Carry forward from a failed job so bootstrap can resume without re-creating OCI resources. */
+  resumePublicIp?: string
+  resumeSshPrivateKeyEnc?: string
 }): Promise<void> {
   const now = Date.now()
   const bootLog: JobLogEntry = {
     at: now,
     level: 'info',
     step: 'create',
-    message: 'Job document created',
+    message: input.resumePublicIp
+      ? `Job document created (resume ip=${input.resumePublicIp})`
+      : 'Job document created',
     phase: 'queued',
   }
-  await db()
-    .collection(COLLECTION)
-    .doc(input.id)
-    .set({
-      id: input.id,
-      phase: 'queued',
-      message: 'Queued',
-      createdAt: now,
-      updatedAt: now,
-      sessionId: input.sessionId,
-      sku: input.sku,
-      payloadEnc: input.payloadEnc,
-      peerName: input.peerName,
-      logs: [bootLog],
-    })
+  const doc: Record<string, unknown> = {
+    id: input.id,
+    phase: 'queued',
+    message: 'Queued',
+    createdAt: now,
+    updatedAt: now,
+    sessionId: input.sessionId,
+    sku: input.sku,
+    payloadEnc: input.payloadEnc,
+    peerName: input.peerName,
+    logs: [bootLog],
+  }
+  if (input.resumePublicIp) doc.publicIp = input.resumePublicIp
+  if (input.resumeSshPrivateKeyEnc) doc.sshPrivateKeyEnc = input.resumeSshPrivateKeyEnc
+  await db().collection(COLLECTION).doc(input.id).set(doc)
   await db()
     .collection(COLLECTION)
     .doc(input.id)
     .collection('logs')
     .add(bootLog)
+}
+
+/** Prior failed job that already has an instance + SSH key (safe to resume bootstrap). */
+export async function findResumableErrorJobForSession(
+  sessionId: string,
+): Promise<JobRecord | null> {
+  const rows = await findJobsForSession(sessionId)
+  return (
+    rows.find(
+      (j) =>
+        j.phase === 'error' &&
+        Boolean(j.publicIp?.trim()) &&
+        Boolean(j.sshPrivateKeyEnc),
+    ) ?? null
+  )
 }
 
 export async function appendJobLog(
@@ -297,6 +317,8 @@ export function toPublicStatus(job: JobRecord): JobPublicStatus {
     error: job.error,
     logs,
     canRetry: job.phase === 'error',
-    serverProvisioned: job.phase === 'done' && Boolean(job.publicIp),
+    serverProvisioned:
+      Boolean(job.publicIp) &&
+      (job.phase === 'done' || (job.phase === 'error' && Boolean(job.sshPrivateKeyEnc))),
   }
 }

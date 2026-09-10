@@ -7,6 +7,7 @@ import {
   createJobDoc,
   findActiveJobForSession,
   findCompletedJobForSession,
+  findResumableErrorJobForSession,
   getJob,
   toPublicStatus,
   appendJobLog,
@@ -97,11 +98,22 @@ export async function POST(req: NextRequest) {
     const peerName = (body.peerName || 'device1').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'device1'
     const jobId = `mw_${randomBytes(8).toString('hex')}`
     const payloadEnc = encryptSecret(JSON.stringify({ creds, peerName }))
-    await createJobDoc({ id: jobId, sessionId, sku, payloadEnc, peerName })
+    const resumable = await findResumableErrorJobForSession(sessionId)
+    await createJobDoc({
+      id: jobId,
+      sessionId,
+      sku,
+      payloadEnc,
+      peerName,
+      resumePublicIp: resumable?.publicIp,
+      resumeSshPrivateKeyEnc: resumable?.sshPrivateKeyEnc,
+    })
     await appendJobLog(jobId, {
       level: 'info',
       step: 'create',
-      message: `Accepted provision request region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`,
+      message: resumable?.publicIp
+        ? `Accepted provision retry (resume ip=${resumable.publicIp}) region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`
+        : `Accepted provision request region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`,
       phase: 'queued',
     })
 
