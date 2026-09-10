@@ -21,6 +21,8 @@ interface Copy {
   badge: string
   heroTitle: string
   heroDesc: string
+  teaserTitle: string
+  teaserBody: string
   freeOpsTitle: string
   freeOpsBody: string
   ctaApp: string
@@ -77,6 +79,9 @@ const COPY: Record<string, Copy> = {
     heroTitle: '一度つくれば、毎月の運用費は基本ゼロ。',
     heroDesc:
       'あなたが用意するクラウド上に、専用の VPN サーバーを1台自動で立てます。キーを登録するだけで完了。回線もサーバーもあなたのものなので、有名な月額 VPN サービスのような毎月課金はありません。',
+    teaserTitle: 'VPNサーバーを立ててテレビを見よう',
+    teaserBody:
+      '海外にいても、選んだ国からアクセスしているように見せるためのシンプルな VPN サーバーです。セットアップは約5分で完了します。',
     freeOpsTitle: '毎月の運用費用は無料',
     freeOpsBody:
       'クラウド側の無料枠の範囲で動かせば、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
@@ -183,6 +188,9 @@ const COPY: Record<string, Copy> = {
     heroTitle: 'Set it up once. Monthly ops stay free.',
     heroDesc:
       'We automatically create one dedicated VPN server on the cloud account you provide. Just register an admin API key. Because the server and pipe are yours, there is no recurring fee like popular monthly VPN brands.',
+    teaserTitle: 'Spin up a VPN server. Watch TV like you\'re home.',
+    teaserBody:
+      'A simple VPN server so that while you are overseas, it looks like you are accessing from a country you choose. Setup finishes in about five minutes.',
     freeOpsTitle: 'Monthly operating cost: free',
     freeOpsBody:
       'Stay within the cloud free allowance and you do not pay monthly server or VPN usage fees. You only pay the one-time setup fee.',
@@ -290,6 +298,9 @@ const COPY: Record<string, Copy> = {
     heroTitle: '设置一次，之后月费基本为零。',
     heroDesc:
       '我们在你准备的云账号上自动创建一台专属 VPN 服务器。只需登记管理员 API 密钥。服务器与线路归你，因此不像常见月付 VPN 品牌那样每月收费。',
+    teaserTitle: '搭一台 VPN 服务器，像在家一样看电视',
+    teaserBody:
+      '这是一台简单的 VPN 服务器，让你在海外时看起来像从选定的国家访问。大约 5 分钟即可完成设置。',
     freeOpsTitle: '每月运营费用：免费',
     freeOpsBody:
       '在云免费额度内运行时，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
@@ -517,6 +528,19 @@ function MinorWireContent() {
             {isTest
               ? 'Test checkout (card). After pay, continue to the setup wizard with a cs_test_ session.'
               : c.ctaNote}
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-[#1d3d2e] text-[#e8f2ec]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-14">
+          <h2
+            className={`${syne.className} text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight max-w-3xl leading-tight`}
+          >
+            {c.teaserTitle}
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-[#cfe7da] max-w-2xl leading-relaxed">
+            {c.teaserBody}
           </p>
         </div>
       </section>
