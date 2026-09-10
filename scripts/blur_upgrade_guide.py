@@ -44,10 +44,8 @@ def callout(im: Image.Image, box, text: str, tag_above: bool = True) -> None:
 
 im = Image.open(asset("image-887a4d46-fbf8-4d13-b73b-9d406f27296c.png")).convert("RGB")
 
-# Blur Name / Email / Address values (keep labels and layout)
-mosaic(im, (430, 500, 920, 545), block=8)  # Name
-mosaic(im, (430, 545, 850, 585), block=8)  # Email
-mosaic(im, (430, 580, 1000, 670), block=8)  # Address
+# Blur Name / Email / Address value column in Account details
+mosaic(im, (440, 500, 1000, 680), block=8)
 
 # Menu path callouts
 callout(im, (10, 55, 285, 95), "1. Billing & Cost Management")
