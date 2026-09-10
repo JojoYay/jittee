@@ -4,9 +4,16 @@ import type { OciCredentials, ProvisionResult } from './types'
 import { createClients } from './client'
 import { validateCredentials } from './validate'
 import { generateInstanceSshKeyPair } from './sshKeys'
+import { cleanupExistingMinorwireResources, type CleanupLogFn } from './cleanup'
+import { DISPLAY_PREFIX } from './provisionConstants'
 
 const SHAPE = 'VM.Standard.E2.1.Micro'
-const DISPLAY_PREFIX = 'minorwire'
+
+export type ProvisionOptions = {
+  displayName?: string
+  /** Progress log sink (no secrets). */
+  onLog?: CleanupLogFn
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms))
@@ -68,13 +75,23 @@ async function getPrimaryIps(
 
 export async function provisionAlwaysFreeVpn(
   creds: OciCredentials,
-  options: { displayName?: string } = {},
+  options: ProvisionOptions = {},
 ): Promise<ProvisionResult> {
   const validated = await validateCredentials(creds)
   const { compute, network } = createClients(creds)
   const availabilityDomain = validated.availabilityDomains[0]
   const displayName = options.displayName ?? `${DISPLAY_PREFIX}-${randomBytes(3).toString('hex')}`
   const { publicKeyOpenSsh, privateKeyPem: sshPrivateKeyPem } = generateInstanceSshKeyPair()
+  const onLog = options.onLog
+
+  await cleanupExistingMinorwireResources(
+    compute,
+    network,
+    creds.compartmentOcid.trim(),
+    onLog,
+  )
+
+  if (onLog) await onLog(`Creating VCN stack (${displayName})`)
 
   const vcnRes = await network.createVcn({
     createVcnDetails: {

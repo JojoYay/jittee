@@ -58,14 +58,27 @@ export async function runProvisionJob(opts: {
         phase: 'bootstrapping',
       })
     } else {
-      await updateJob(jobId, { phase: 'provisioning', message: 'Creating VCN and Always Free Micro' })
+      await updateJob(jobId, {
+        phase: 'provisioning',
+        message: 'Cleaning prior MinorWire resources, then creating VCN and Always Free Micro',
+      })
       await appendJobLog(jobId, {
         level: 'info',
         step: 'provision',
-        message: 'Creating VCN / subnet / Always Free Micro instance',
+        message:
+          'Cleaning prior minorwire-* resources if any, then creating VCN / subnet / Always Free Micro',
         phase: 'provisioning',
       })
-      const provisioned = await provisionAlwaysFreeVpn(creds)
+      const provisioned = await provisionAlwaysFreeVpn(creds, {
+        onLog: async (message) => {
+          await appendJobLog(jobId, {
+            level: 'info',
+            step: 'provision_cleanup',
+            message,
+            phase: 'provisioning',
+          })
+        },
+      })
       publicIp = provisioned.publicIp
       sshPrivateKeyPem = provisioned.sshPrivateKeyPem
       // Persist SSH key before bootstrap so a later retry can resume without creating another instance.
