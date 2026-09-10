@@ -292,7 +292,7 @@ function SetupInner() {
             )}
 
             {showForm && (
-              <div className="space-y-8">
+              <form onSubmit={onSubmit} className="space-y-8">
                 <section className="space-y-5">
                   <div>
                     <h2 className={`${syne.className} text-2xl font-bold`}>{c.guideTitle}</h2>
@@ -300,12 +300,15 @@ function SetupInner() {
                   </div>
                   {c.guideSteps.map((step) => {
                     const stepHref = step.ociLink ? ociLinks[step.ociLink] : step.link
+                    const stepFields = (step.fields ?? [])
+                      .map((key) => c.fields.find((f) => f.key === key))
+                      .filter((f): f is (typeof c.fields)[number] => Boolean(f))
                     return (
                       <article
-                        key={step.title}
+                        key={step.id}
                         className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden"
                       >
-                        <div className="p-5 space-y-2">
+                        <div className="p-5 space-y-3">
                           <h3 className={`${syne.className} text-lg font-bold`}>{step.title}</h3>
                           <p className="text-sm text-[#3a4f44] leading-relaxed">{step.body}</p>
                           {stepHref && (
@@ -330,96 +333,100 @@ function SetupInner() {
                             className="w-full h-auto border-t border-[#1d3d2e]/10"
                           />
                         </figure>
+
+                        {(stepFields.length > 0 || step.showPem || step.showSubmit) && (
+                          <div className="space-y-4 border-t border-[#2f6b4f]/20 bg-[#e8f2ec]/60 p-5">
+                            {stepFields.map((f) => {
+                              const fieldHref = f.ociLink ? ociLinks[f.ociLink] : undefined
+                              return (
+                                <div key={f.key}>
+                                  <label className="block text-sm font-medium mb-1">{f.label}</label>
+                                  <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
+                                  {fieldHref && (
+                                    <p className="text-xs mb-2">
+                                      <a
+                                        className="underline font-semibold text-[#2f6b4f]"
+                                        href={fieldHref}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        {f.urlLabel}
+                                      </a>
+                                    </p>
+                                  )}
+                                  {f.key === 'region' ? (
+                                    <select
+                                      required
+                                      className="w-full border px-3 py-2 rounded text-sm bg-white"
+                                      value={form.region}
+                                      onChange={(e) =>
+                                        setForm((prev) => ({ ...prev, region: e.target.value }))
+                                      }
+                                    >
+                                      {REGION_OPTIONS.map((r) => (
+                                        <option key={r.id} value={r.id}>
+                                          {r.name} ({r.id})
+                                        </option>
+                                      ))}
+                                    </select>
+                                  ) : (
+                                    <input
+                                      required={f.required !== false}
+                                      className="w-full border px-3 py-2 rounded font-mono text-sm bg-white"
+                                      value={form[f.key]}
+                                      onChange={set(f.key)}
+                                      placeholder={f.placeholder}
+                                      autoComplete="off"
+                                    />
+                                  )}
+                                </div>
+                              )
+                            })}
+
+                            {step.showPem && (
+                              <div>
+                                <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
+                                <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{c.pemWhere}</p>
+                                <p className="text-xs mb-2">
+                                  <a
+                                    className="underline font-semibold text-[#2f6b4f]"
+                                    href={ociLinks.myProfile}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {c.pemUrlLabel}
+                                  </a>
+                                </p>
+                                <textarea
+                                  required
+                                  className="w-full h-40 font-mono text-xs p-3 border rounded bg-white"
+                                  value={form.privateKeyPem}
+                                  onChange={set('privateKeyPem')}
+                                  placeholder="-----BEGIN PRIVATE KEY-----"
+                                  autoComplete="off"
+                                />
+                              </div>
+                            )}
+
+                            {step.showSubmit && (
+                              <div className="space-y-3 pt-1">
+                                {submitError && <p className="text-red-700 text-sm">{submitError}</p>}
+                                <button
+                                  type="submit"
+                                  disabled={submitting}
+                                  className="px-6 py-3 rounded-md bg-[#1d3d2e] text-white font-semibold disabled:opacity-60"
+                                >
+                                  {submitting ? c.submitBusy : c.submit}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </article>
                     )
                   })}
                 </section>
-
-                <form
-                  onSubmit={onSubmit}
-                  className="space-y-5 border border-[#1d3d2e]/15 bg-white/80 p-6 rounded-md"
-                >
-                  <h2 className={`${syne.className} text-2xl font-bold`}>{c.formTitle}</h2>
-                  <p className="text-sm text-[#5a6f64]">{c.formIntro}</p>
-
-                  {c.fields.map((f) => {
-                    const fieldHref = f.ociLink ? ociLinks[f.ociLink] : undefined
-                    return (
-                      <div key={f.key}>
-                        <label className="block text-sm font-medium mb-1">{f.label}</label>
-                        <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
-                        {fieldHref && (
-                          <p className="text-xs mb-2">
-                            <a
-                              className="underline font-semibold text-[#2f6b4f]"
-                              href={fieldHref}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {f.urlLabel}
-                            </a>
-                          </p>
-                        )}
-                        {f.key === 'region' ? (
-                          <select
-                            required
-                            className="w-full border px-3 py-2 rounded text-sm bg-white"
-                            value={form.region}
-                            onChange={(e) => setForm((prev) => ({ ...prev, region: e.target.value }))}
-                          >
-                            {REGION_OPTIONS.map((r) => (
-                              <option key={r.id} value={r.id}>
-                                {r.name} ({r.id})
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <input
-                            required={f.required !== false}
-                            className="w-full border px-3 py-2 rounded font-mono text-sm"
-                            value={form[f.key]}
-                            onChange={set(f.key)}
-                            placeholder={f.placeholder}
-                            autoComplete="off"
-                          />
-                        )}
-                      </div>
-                    )
-                  })}
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
-                    <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{c.pemWhere}</p>
-                    <p className="text-xs mb-2">
-                      <a
-                        className="underline font-semibold text-[#2f6b4f]"
-                        href={ociLinks.myProfile}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {c.pemUrlLabel}
-                      </a>
-                    </p>
-                    <textarea
-                      required
-                      className="w-full h-40 font-mono text-xs p-3 border rounded"
-                      value={form.privateKeyPem}
-                      onChange={set('privateKeyPem')}
-                      placeholder="-----BEGIN PRIVATE KEY-----"
-                      autoComplete="off"
-                    />
-                  </div>
-
-                  {submitError && <p className="text-red-700 text-sm">{submitError}</p>}
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="px-6 py-3 rounded-md bg-[#1d3d2e] text-white font-semibold disabled:opacity-60"
-                  >
-                    {submitting ? c.submitBusy : c.submit}
-                  </button>
-                </form>
-              </div>
+              </form>
             )}
           </>
         )}
