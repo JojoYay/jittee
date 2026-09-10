@@ -1,11 +1,6 @@
 import type { GuideOciLinkKey } from './ociLinks'
 
-export type SetupFieldKey =
-  | 'region'
-  | 'tenancyOcid'
-  | 'userOcid'
-  | 'fingerprint'
-  | 'peerName'
+export type SetupFieldKey = 'region' | 'ociConfig' | 'peerName'
 
 export type SetupFieldCopy = {
   key: SetupFieldKey
@@ -65,6 +60,8 @@ export type SetupCopy = {
   pemFileReady: (name: string) => string
   pemFileInvalid: string
   pemFileClear: string
+  ociConfigOk: string
+  ociConfigInvalid: string
   submitBusy: string
   submit: string
   verifying: string
@@ -91,9 +88,7 @@ export type SetupCopy = {
 
 const fieldUrls = {
   region: 'tenancy' as const,
-  tenancyOcid: 'tenancy' as const,
-  userOcid: 'authTokens' as const,
-  fingerprint: 'authTokens' as const,
+  ociConfig: 'authTokens' as const,
 }
 
 export const SETUP_COPY: Record<string, SetupCopy> = {
@@ -106,14 +101,14 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     needsItems: [
       'Oracle Cloud アカウント（VPN を置きたいリージョンをホームリージョンにして作成。日本語UIの推奨は Japan East / Tokyo）',
       'Pay As You Go（有料プラン）へのアップグレード（Always Free の枠を安定して使うため。枠内は課金されません。アップグレード時に約 USD $100 のオーソリがかかり、後で取り消されます）',
-      '管理者ユーザーの API キー（User OCID + Fingerprint + PEM）。IAM 設定は不要',
+      '管理者ユーザーの API キー（Configuration file preview の Copy 内容 + 秘密鍵 .pem）。IAM 設定は不要',
     ],
     flowTitle: '全体の流れ',
     flowSteps: [
       '作りたいリージョンをホームリージョンにして Oracle Cloud アカウントを作成する（推奨: 東京）',
       'Pay As You Go にアップグレードする',
-      '管理者のまま API キーを作り、Tenancy OCID を控える',
-      '下のフォームで同じリージョンを選び、値を貼って「VPN を作成」',
+      '管理者のまま API キーを作り、Configuration file preview を Copy、.pem を保存',
+      '下に Copy 内容を貼り、.pem をアップロードして「VPN を作成」',
       '成功後、Compute → Instances で minorwire-* が Running か確認し、.conf を WireGuard アプリに入れる',
     ],
     guideTitle: '手順ガイド（上から順に）',
@@ -167,31 +162,19 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         linkLabel: 'Upgrade and Manage Payment を開く',
       },
       {
-        id: 'tenancy',
-        title: 'Step 5 — Tenancy OCID をコピーして貼る',
-        body:
-          'Profile → Tenancy または Tenancy Details で OCID をコピー。または次の Step 6 で API キー作成直後に出る Configuration file preview の tenancy= 行からもコピーできます。Compartment は root（= Tenancy OCID）を自動使用します。',
-        image: '/minorwire/guide/live-tenancy.png',
-        imageAlt: 'Tenancy OCID',
-        ociLink: 'tenancy',
-        linkLabel: 'Tenancy Details を開く',
-        fields: ['tenancyOcid'],
-      },
-      {
         id: 'apiKey',
-        title: 'Step 6 — API キーを作成して貼る（ボタン順）',
+        title: 'Step 5 — API キーを作り、Copy して貼る',
         body:
-          '下のリンクで Tokens and keys を開き、スクショと同じ操作で進めます。秘密鍵 (.pem) は一度しかダウンロードできないので必ず保存してください。',
+          '下のリンクで Tokens and keys を開き、スクショと同じ操作で進めます。秘密鍵 (.pem) は一度しかダウンロードできません。Configuration file preview では右下の Copy を押し、出てきたテキストをそのまま下に貼るだけで、user / fingerprint / tenancy / region が揃います。',
         clickSteps: [
           'Tokens and keys ページを開く（下のリンク）',
           'API keys セクションの「Add API key」をクリック',
           '「Generate API key pair」が選ばれていることを確認',
           '「Download private key」をクリックして .pem を保存（二度と表示されません）',
-          '必要なら「Download public key」も保存',
           '右下の「Add」をクリック（秘密鍵ダウンロード後に有効になります）',
-          '「Configuration file preview」が表示されたら、Fingerprint / user= / tenancy= / region= を控える（Copy でも可）',
-          'ダウンロードした .pem ファイルを下の「ファイルを選択」からアップロード',
-          'user= を User OCID、Fingerprint を Fingerprint 欄に貼り、VPN 端末名を入れて「VPN を作成」',
+          '「Configuration file preview」で右下の「Copy」をクリック',
+          '下の欄に貼り付け（[DEFAULT] / user= / fingerprint= / tenancy= / region= がまとめて入ります）',
+          '保存した .pem をアップロードし、VPN 端末名を入れて「VPN を作成」',
         ],
         image: '/minorwire/guide/api-01-tokens-and-keys.png',
         imageAlt: 'Tokens and keys — Add API key',
@@ -208,19 +191,19 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
           },
           {
             src: '/minorwire/guide/api-03-config-preview.png',
-            alt: 'Configuration file preview',
-            caption: '3. Configuration file preview（値はぼかし済み）— Fingerprint / user / tenancy / region',
+            alt: 'Configuration file preview — Copy',
+            caption: '3. Configuration file preview → 右下の Copy（値はぼかし済み）',
           },
         ],
         ociLink: 'authTokens',
         linkLabel: 'Tokens and keys を開く',
-        fields: ['userOcid', 'fingerprint', 'peerName'],
+        fields: ['ociConfig', 'peerName'],
         showPem: true,
         showSubmit: true,
       },
       {
         id: 'verifyInstance',
-        title: 'Step 7 — 成功後: Compute でインスタンスを確認',
+        title: 'Step 6 — 成功後: Compute でインスタンスを確認',
         body:
           '「VPN を作成」が成功すると、あなたのテナンシー上に Always Free Micro（VM.Standard.E2.1.Micro）のコンピュート・インスタンスが1台できます。名前は minorwire- で始まります。セットアップ画面に公開 IP も表示されます。コンソールでも次の手順で確認できます。',
         clickSteps: [
@@ -244,32 +227,17 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         label: 'VPN を作るリージョン（ホームリージョン）',
         placeholder: 'ap-tokyo-1',
         where:
-          'サインアップ時の Home Region と同じものを選んでください。日本語UIの初期値は Tokyo。Always Free Micro はホームリージョンのみ。',
+          'サインアップ時の Home Region と同じものを選んでください。日本語UIの初期値は Tokyo。Always Free Micro はホームリージョンのみ。Configuration file preview を貼ると region= で上書きされます。',
         ociLink: fieldUrls.region,
         urlLabel: 'Tenancy Details',
       },
       {
-        key: 'tenancyOcid',
-        label: 'Tenancy OCID',
-        placeholder: 'ocid1.tenancy.oc1..aaaa...',
-        where: 'ocid1.tenancy.oc1.. で始まる文字列を貼ります。',
-        ociLink: fieldUrls.tenancyOcid,
-        urlLabel: 'Tenancy Details',
-      },
-      {
-        key: 'userOcid',
-        label: 'User OCID（管理者）',
-        placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'Configuration file preview の user=、または My profile の OCID。',
-        ociLink: fieldUrls.userOcid,
-        urlLabel: 'Tokens and keys',
-      },
-      {
-        key: 'fingerprint',
-        label: 'API Key Fingerprint',
-        placeholder: 'aa:bb:cc:dd:...',
-        where: 'Configuration file preview 上部の Fingerprint、または preview 内の fingerprint=。',
-        ociLink: fieldUrls.fingerprint,
+        key: 'ociConfig',
+        label: 'Configuration file preview（Copy した全文）',
+        placeholder: '[DEFAULT]\nuser=ocid1.user.oc1..\nfingerprint=aa:bb:...\ntenancy=ocid1.tenancy.oc1..\nregion=ap-tokyo-1\nkey_file=...',
+        where:
+          'OCI の Configuration file preview で Copy したテキストをそのまま貼り付けてください。user / fingerprint / tenancy / region を自動で読み取ります（Compartment は tenancy= を自動使用）。',
+        ociLink: fieldUrls.ociConfig,
         urlLabel: 'Tokens and keys',
       },
       {
@@ -288,6 +256,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     pemFileReady: (name) => `選択中: ${name}`,
     pemFileInvalid: '有効な .pem 秘密鍵ファイルを選んでください（PRIVATE KEY を含むこと）。',
     pemFileClear: 'ファイルをクリア',
+    ociConfigOk: 'Configuration を読み取りました（user / fingerprint / tenancy / region）。',
+    ociConfigInvalid:
+      'Configuration file preview の全文を貼り付けてください（user= / fingerprint= / tenancy= / region= が必要です）。',
     submitBusy: '開始中…',
     submit: 'VPN を作成',
     verifying: '支払いを確認しています…',
@@ -322,14 +293,14 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     needsItems: [
       'An Oracle Cloud account with Home Region set to where you want the VPN (English UI default: Singapore)',
       'Upgrade to Pay As You Go (keeps Always Free resources free; improves capacity reliability. Upgrade may place an ~USD $100 authorization hold that is later reversed)',
-      'An admin user API key (User OCID + Fingerprint + PEM). No IAM setup required',
+      'An admin API key (Configuration file preview Copy text + private key .pem). No IAM setup required',
     ],
     flowTitle: 'Overall flow',
     flowSteps: [
       'Create an Oracle Cloud account whose home region is where you want the VPN (recommended: Singapore)',
       'Upgrade to Pay As You Go',
-      'Create an admin API key and copy the Tenancy OCID',
-      'Select the same region in the form below, paste values, and create the VPN',
+      'Create an admin API key, Copy the Configuration file preview, and save the .pem',
+      'Paste the Copy text below, upload the .pem, and create the VPN',
       'After success, confirm minorwire-* is Running under Compute → Instances, then import the .conf into WireGuard',
     ],
     guideTitle: 'Step-by-step guide',
@@ -382,31 +353,19 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         linkLabel: 'Open Upgrade and Manage Payment',
       },
       {
-        id: 'tenancy',
-        title: 'Step 5 — Copy Tenancy OCID and paste below',
-        body:
-          'Profile → Tenancy / Tenancy Details → copy OCID. Or copy the tenancy= line from the Configuration file preview that appears right after you create an API key in Step 6. We use root compartment (= Tenancy OCID) automatically.',
-        image: '/minorwire/guide/live-tenancy.png',
-        imageAlt: 'Tenancy OCID',
-        ociLink: 'tenancy',
-        linkLabel: 'Open Tenancy Details',
-        fields: ['tenancyOcid'],
-      },
-      {
         id: 'apiKey',
-        title: 'Step 6 — Create an API key and paste (click by click)',
+        title: 'Step 5 — Create an API key, Copy, and paste',
         body:
-          'Open Tokens and keys with the link below and follow the same clicks as the screenshots. The private key (.pem) can be downloaded only once — save it.',
+          'Open Tokens and keys with the link below and follow the screenshots. The private key (.pem) can be downloaded only once. On Configuration file preview, click Copy at the bottom right and paste the whole text below — that fills user / fingerprint / tenancy / region.',
         clickSteps: [
           'Open the Tokens and keys page (link below)',
           'In API keys, click Add API key',
           'Confirm Generate API key pair is selected',
           'Click Download private key and save the .pem (it will not be shown again)',
-          'Optionally click Download public key',
           'Click Add at the bottom right (enabled after downloading the private key)',
-          'On Configuration file preview, note Fingerprint / user= / tenancy= / region= (or use Copy)',
-          'Upload the downloaded .pem file with the file picker below',
-          'Paste user= into User OCID, Fingerprint into Fingerprint, enter a VPN device name, then Create VPN',
+          'On Configuration file preview, click Copy at the bottom right',
+          'Paste into the field below ([DEFAULT] / user= / fingerprint= / tenancy= / region= all at once)',
+          'Upload the saved .pem, enter a VPN device name, then Create VPN',
         ],
         image: '/minorwire/guide/api-01-tokens-and-keys.png',
         imageAlt: 'Tokens and keys — Add API key',
@@ -423,19 +382,19 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
           },
           {
             src: '/minorwire/guide/api-03-config-preview.png',
-            alt: 'Configuration file preview',
-            caption: '3. Configuration file preview (values blurred) — Fingerprint / user / tenancy / region',
+            alt: 'Configuration file preview — Copy',
+            caption: '3. Configuration file preview → Copy (bottom right; values blurred)',
           },
         ],
         ociLink: 'authTokens',
         linkLabel: 'Open Tokens and keys',
-        fields: ['userOcid', 'fingerprint', 'peerName'],
+        fields: ['ociConfig', 'peerName'],
         showPem: true,
         showSubmit: true,
       },
       {
         id: 'verifyInstance',
-        title: 'Step 7 — After success: confirm the instance in Compute',
+        title: 'Step 6 — After success: confirm the instance in Compute',
         body:
           'When Create VPN succeeds, one Always Free Micro instance (VM.Standard.E2.1.Micro) is created in your tenancy. The name starts with minorwire-. The setup page also shows the public IP. You can double-check in the console as follows.',
         clickSteps: [
@@ -459,32 +418,17 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         label: 'Region for the VPN (home region)',
         placeholder: 'ap-singapore-1',
         where:
-          'Must match Home Region from signup. English UI defaults to Singapore. Always Free Micro is home-region only.',
+          'Must match Home Region from signup. English UI defaults to Singapore. Always Free Micro is home-region only. Pasting Configuration file preview overwrites this from region=.',
         ociLink: fieldUrls.region,
         urlLabel: 'Tenancy Details',
       },
       {
-        key: 'tenancyOcid',
-        label: 'Tenancy OCID',
-        placeholder: 'ocid1.tenancy.oc1..aaaa...',
-        where: 'Paste the string that starts with ocid1.tenancy.oc1..',
-        ociLink: fieldUrls.tenancyOcid,
-        urlLabel: 'Tenancy Details',
-      },
-      {
-        key: 'userOcid',
-        label: 'User OCID (admin)',
-        placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'user= from Configuration file preview, or My profile OCID.',
-        ociLink: fieldUrls.userOcid,
-        urlLabel: 'Tokens and keys',
-      },
-      {
-        key: 'fingerprint',
-        label: 'API Key Fingerprint',
-        placeholder: 'aa:bb:cc:dd:...',
-        where: 'Fingerprint at the top of Configuration file preview, or fingerprint= inside it.',
-        ociLink: fieldUrls.fingerprint,
+        key: 'ociConfig',
+        label: 'Configuration file preview (full Copy text)',
+        placeholder: '[DEFAULT]\nuser=ocid1.user.oc1..\nfingerprint=aa:bb:...\ntenancy=ocid1.tenancy.oc1..\nregion=ap-singapore-1\nkey_file=...',
+        where:
+          'Paste the text from OCI Configuration file preview Copy as-is. We read user / fingerprint / tenancy / region automatically (compartment = tenancy).',
+        ociLink: fieldUrls.ociConfig,
         urlLabel: 'Tokens and keys',
       },
       {
@@ -503,6 +447,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     pemFileReady: (name) => `Selected: ${name}`,
     pemFileInvalid: 'Choose a valid .pem private key file (must contain PRIVATE KEY).',
     pemFileClear: 'Clear file',
+    ociConfigOk: 'Configuration parsed (user / fingerprint / tenancy / region).',
+    ociConfigInvalid:
+      'Paste the full Configuration file preview text (needs user= / fingerprint= / tenancy= / region=).',
     submitBusy: 'Starting…',
     submit: 'Create VPN',
     verifying: 'Verifying payment…',
@@ -537,14 +484,14 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     needsItems: [
       'Oracle Cloud 账号（Home Region 选你想放 VPN 的区域；中文界面默认推荐 Singapore）',
       '升级到 Pay As You Go（Always Free 资源仍免费，便于稳定拿到容量。升级时可能出现约 USD $100 预授权，随后会撤销）',
-      '管理员用户的 API 密钥（User OCID + Fingerprint + PEM）。无需 IAM 配置',
+      '管理员 API 密钥（Configuration file preview 的 Copy 全文 + 私钥 .pem）。无需 IAM 配置',
     ],
     flowTitle: '整体流程',
     flowSteps: [
       '用目标区域作为 Home Region 创建 Oracle Cloud 账号（推荐：Singapore）',
       '升级到 Pay As You Go',
-      '用管理员创建 API 密钥并复制 Tenancy OCID',
-      '在下方表单选择同一区域，粘贴并创建 VPN',
+      '用管理员创建 API 密钥，Copy Configuration file preview，并保存 .pem',
+      '把 Copy 内容粘贴到下方、上传 .pem，然后创建 VPN',
       '成功后在 Compute → Instances 确认 minorwire-* 为 Running，再把 .conf 导入 WireGuard',
     ],
     guideTitle: '分步指南（按顺序）',
@@ -595,31 +542,19 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         linkLabel: '打开 Upgrade and Manage Payment',
       },
       {
-        id: 'tenancy',
-        title: 'Step 5 — 复制 Tenancy OCID 并粘贴',
-        body:
-          'Profile → Tenancy / Tenancy Details 复制 OCID。也可在 Step 6 创建 API 密钥后出现的 Configuration file preview 中复制 tenancy= 行。我们会自动使用 root（= Tenancy OCID）。',
-        image: '/minorwire/guide/live-tenancy.png',
-        imageAlt: 'Tenancy OCID',
-        ociLink: 'tenancy',
-        linkLabel: '打开 Tenancy Details',
-        fields: ['tenancyOcid'],
-      },
-      {
         id: 'apiKey',
-        title: 'Step 6 — 创建 API 密钥并粘贴（按按钮顺序）',
+        title: 'Step 5 — 创建 API 密钥，Copy 后粘贴',
         body:
-          '用下方链接打开 Tokens and keys，按截图相同步骤操作。私钥（.pem）只能下载一次，请务必保存。',
+          '用下方链接打开 Tokens and keys，按截图操作。私钥（.pem）只能下载一次。在 Configuration file preview 右下角点 Copy，把全文粘贴到下方即可自动填入 user / fingerprint / tenancy / region。',
         clickSteps: [
           '打开 Tokens and keys 页面（下方链接）',
           '在 API keys 区域点击 Add API key',
           '确认已选中 Generate API key pair',
           '点击 Download private key 并保存 .pem（不会再次显示）',
-          '可选：点击 Download public key',
           '点击右下角 Add（下载私钥后才会可用）',
-          '出现 Configuration file preview 后，记下 Fingerprint / user= / tenancy= / region=（也可用 Copy）',
-          '用下方的文件选择器上传下载的 .pem 文件',
-          '把 user= 填到 User OCID、Fingerprint 填到 Fingerprint，输入 VPN 设备名后点击创建 VPN',
+          '在 Configuration file preview 右下角点击 Copy',
+          '粘贴到下方输入框（[DEFAULT] / user= / fingerprint= / tenancy= / region= 一次到位）',
+          '上传保存的 .pem，输入 VPN 设备名后点击创建 VPN',
         ],
         image: '/minorwire/guide/api-01-tokens-and-keys.png',
         imageAlt: 'Tokens and keys — Add API key',
@@ -636,19 +571,19 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
           },
           {
             src: '/minorwire/guide/api-03-config-preview.png',
-            alt: 'Configuration file preview',
-            caption: '3. Configuration file preview（已模糊）— Fingerprint / user / tenancy / region',
+            alt: 'Configuration file preview — Copy',
+            caption: '3. Configuration file preview → 右下角 Copy（已模糊）',
           },
         ],
         ociLink: 'authTokens',
         linkLabel: '打开 Tokens and keys',
-        fields: ['userOcid', 'fingerprint', 'peerName'],
+        fields: ['ociConfig', 'peerName'],
         showPem: true,
         showSubmit: true,
       },
       {
         id: 'verifyInstance',
-        title: 'Step 7 — 成功后：在 Compute 确认实例',
+        title: 'Step 6 — 成功后：在 Compute 确认实例',
         body:
           '「创建 VPN」成功后，会在你的租户中创建一台 Always Free Micro（VM.Standard.E2.1.Micro）计算实例。名称以 minorwire- 开头。设置页也会显示公网 IP。也可按以下步骤在控制台核对。',
         clickSteps: [
@@ -672,32 +607,17 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         label: 'VPN 所在区域（Home Region）',
         placeholder: 'ap-singapore-1',
         where:
-          '须与注册时的 Home Region 一致。中文界面默认 Singapore。Always Free Micro 仅限 Home Region。',
+          '须与注册时的 Home Region 一致。中文界面默认 Singapore。Always Free Micro 仅限 Home Region。粘贴 Configuration file preview 后会用 region= 覆盖。',
         ociLink: fieldUrls.region,
         urlLabel: 'Tenancy Details',
       },
       {
-        key: 'tenancyOcid',
-        label: 'Tenancy OCID',
-        placeholder: 'ocid1.tenancy.oc1..aaaa...',
-        where: '粘贴以 ocid1.tenancy.oc1.. 开头的字符串。',
-        ociLink: fieldUrls.tenancyOcid,
-        urlLabel: 'Tenancy Details',
-      },
-      {
-        key: 'userOcid',
-        label: 'User OCID（管理员）',
-        placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'Configuration file preview 中的 user=，或 My profile 的 OCID。',
-        ociLink: fieldUrls.userOcid,
-        urlLabel: 'Tokens and keys',
-      },
-      {
-        key: 'fingerprint',
-        label: 'API Key Fingerprint',
-        placeholder: 'aa:bb:cc:dd:...',
-        where: 'Configuration file preview 顶部的 Fingerprint，或其中的 fingerprint=。',
-        ociLink: fieldUrls.fingerprint,
+        key: 'ociConfig',
+        label: 'Configuration file preview（Copy 的全文）',
+        placeholder: '[DEFAULT]\nuser=ocid1.user.oc1..\nfingerprint=aa:bb:...\ntenancy=ocid1.tenancy.oc1..\nregion=ap-singapore-1\nkey_file=...',
+        where:
+          '把 OCI Configuration file preview 中 Copy 的文本原样粘贴。我们会自动读取 user / fingerprint / tenancy / region（compartment = tenancy）。',
+        ociLink: fieldUrls.ociConfig,
         urlLabel: 'Tokens and keys',
       },
       {
@@ -715,6 +635,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     pemFileReady: (name) => `已选择: ${name}`,
     pemFileInvalid: '请选择有效的 .pem 私钥文件（须包含 PRIVATE KEY）。',
     pemFileClear: '清除文件',
+    ociConfigOk: '已读取 Configuration（user / fingerprint / tenancy / region）。',
+    ociConfigInvalid:
+      '请粘贴 Configuration file preview 全文（需要 user= / fingerprint= / tenancy= / region=）。',
     submitBusy: '启动中…',
     submit: '创建 VPN',
     verifying: '正在确认付款…',

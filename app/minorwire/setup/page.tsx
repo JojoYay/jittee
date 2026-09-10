@@ -9,6 +9,7 @@ import type { JobPublicStatus } from '@/lib/minorwire/provision/types'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { SETUP_COPY } from './copy'
 import { buildOciLinks } from './ociLinks'
+import { parseOciConfig } from './parseOciConfig'
 import { defaultRegionForLocale, REGION_OPTIONS } from './regions'
 
 const syne = Syne({ subsets: ['latin'], weight: ['600', '700', '800'] })
@@ -16,6 +17,7 @@ const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] })
 
 type FormState = {
   region: string
+  ociConfig: string
   tenancyOcid: string
   userOcid: string
   fingerprint: string
@@ -26,6 +28,7 @@ type FormState = {
 function emptyFormForLocale(locale: string): FormState {
   return {
     region: defaultRegionForLocale(locale),
+    ociConfig: '',
     tenancyOcid: '',
     userOcid: '',
     fingerprint: '',
@@ -52,6 +55,9 @@ function SetupInner() {
   const [pemFileName, setPemFileName] = useState('')
   const [pemFileError, setPemFileError] = useState('')
   const ociLinks = buildOciLinks(form.region)
+  const regionSelectOptions = REGION_OPTIONS.some((r) => r.id === form.region)
+    ? [...REGION_OPTIONS]
+    : [...REGION_OPTIONS, { id: form.region, name: form.region }]
 
   useEffect(() => {
     setForm((f) => ({ ...f, region: defaultRegionForLocale(locale) }))
@@ -106,13 +112,39 @@ function SetupInner() {
     return () => clearInterval(t)
   }, [job, sessionId])
 
+  const applyOciConfig = useCallback((text: string) => {
+    const parsed = parseOciConfig(text)
+    setForm((f) => ({
+      ...f,
+      ociConfig: text,
+      ...(parsed
+        ? {
+            userOcid: parsed.userOcid,
+            fingerprint: parsed.fingerprint,
+            tenancyOcid: parsed.tenancyOcid,
+            region: parsed.region,
+          }
+        : {
+            userOcid: '',
+            fingerprint: '',
+            tenancyOcid: '',
+          }),
+    }))
+  }, [])
+
   const onSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault()
       if (!sessionId || submitting) return
       setSubmitting(true)
       setSubmitError('')
-      const tenancy = form.tenancyOcid.trim()
+      const parsed = parseOciConfig(form.ociConfig)
+      if (!parsed) {
+        setSubmitError(c.ociConfigInvalid)
+        setSubmitting(false)
+        return
+      }
+      const tenancy = parsed.tenancyOcid
       try {
         const res = await fetch('/api/minorwire/jobs', {
           method: 'POST',
@@ -120,12 +152,12 @@ function SetupInner() {
           body: JSON.stringify({
             sessionId,
             peerName: form.peerName,
-            region: form.region,
+            region: parsed.region,
             tenancyOcid: tenancy,
             // Admin simple path: root compartment == tenancy OCID
             compartmentOcid: tenancy,
-            userOcid: form.userOcid,
-            fingerprint: form.fingerprint,
+            userOcid: parsed.userOcid,
+            fingerprint: parsed.fingerprint,
             privateKeyPem: form.privateKeyPem,
           }),
         })
@@ -141,7 +173,7 @@ function SetupInner() {
         setSubmitting(false)
       }
     },
-    [sessionId, submitting, form, c.failedStart, c.networkError],
+    [sessionId, submitting, form, c.failedStart, c.networkError, c.ociConfigInvalid],
   )
 
   const onAddPeer = useCallback(
@@ -218,6 +250,7 @@ function SetupInner() {
 
   const running = job && job.phase !== 'done' && job.phase !== 'error'
   const showForm = gate === 'ok' && (!job || job.phase === 'error')
+  const ociConfigOk = Boolean(parseOciConfig(form.ociConfig))
 
   return (
     <div className={`${dmSans.className} min-h-screen bg-[#f3f6f4] text-[#14201a]`}>
@@ -419,12 +452,32 @@ function SetupInner() {
                                         setForm((prev) => ({ ...prev, region: e.target.value }))
                                       }
                                     >
-                                      {REGION_OPTIONS.map((r) => (
+                                      {regionSelectOptions.map((r) => (
                                         <option key={r.id} value={r.id}>
                                           {r.name} ({r.id})
                                         </option>
                                       ))}
                                     </select>
+                                  ) : f.key === 'ociConfig' ? (
+                                    <>
+                                      <textarea
+                                        required
+                                        rows={8}
+                                        className="w-full border px-3 py-2 rounded font-mono text-xs bg-white"
+                                        value={form.ociConfig}
+                                        onChange={(e) => applyOciConfig(e.target.value)}
+                                        placeholder={f.placeholder}
+                                        autoComplete="off"
+                                        spellCheck={false}
+                                      />
+                                      {form.ociConfig.trim() && (
+                                        <p
+                                          className={`mt-2 text-xs ${ociConfigOk ? 'text-[#2f6b4f]' : 'text-red-700'}`}
+                                        >
+                                          {ociConfigOk ? c.ociConfigOk : c.ociConfigInvalid}
+                                        </p>
+                                      )}
+                                    </>
                                   ) : (
                                     <input
                                       required={f.required !== false}
