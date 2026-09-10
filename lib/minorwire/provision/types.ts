@@ -36,6 +36,14 @@ export type PeerConfRecord = {
   createdAt: number
 }
 
+export type JobLogEntry = {
+  at: number
+  level: 'info' | 'warn' | 'error'
+  step: string
+  message: string
+  phase?: JobPhase
+}
+
 export type JobPublicStatus = {
   id: string
   phase: JobPhase
@@ -48,6 +56,10 @@ export type JobPublicStatus = {
   peerConf?: string
   peers?: PeerConfRecord[]
   error?: string
+  /** Recent structured steps for support / setup UI (secrets redacted). */
+  logs?: JobLogEntry[]
+  /** True when the customer may resubmit credentials for this purchase. */
+  canRetry?: boolean
   /** True when OCI server provision already succeeded for this purchase. */
   serverProvisioned?: boolean
 }

@@ -9,7 +9,7 @@ function keyMaterial(): Buffer {
   return createHash('sha256').update(secret).digest()
 }
 
-/** Encrypt instance SSH PEM for Firestore (customer OCI API keys are never stored). */
+/** Encrypt secrets for Firestore (instance SSH PEM; temporary OCI job payload). */
 export function encryptSecret(plain: string): string {
   const iv = randomBytes(12)
   const cipher = createCipheriv('aes-256-gcm', keyMaterial(), iv)

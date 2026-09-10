@@ -4,7 +4,11 @@ import {
   resolveCheckoutSku,
   customerEmailFromSession,
 } from '@/lib/minorwire/stripe'
-import { findActiveJobForSession, toPublicStatus } from '@/lib/minorwire/jobs/store'
+import {
+  findActiveJobForSession,
+  recoverStuckQueuedJob,
+  toPublicStatus,
+} from '@/lib/minorwire/jobs/store'
 
 export const runtime = 'nodejs'
 
@@ -24,9 +28,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unknown purchase' }, { status: 403 })
     }
     let job = null
+    let needsClientKick = false
     try {
-      const found = await findActiveJobForSession(sessionId)
-      job = found ? toPublicStatus(found) : null
+      let found = await findActiveJobForSession(sessionId)
+      if (found) {
+        found = await recoverStuckQueuedJob(found)
+        needsClientKick = found.phase === 'queued' && Boolean(found.payloadEnc)
+        job = toPublicStatus(found)
+      }
     } catch (jobErr) {
       console.error('[minorwire/session] job lookup failed', jobErr)
       // Payment is verified; allow wizard even if Firestore is temporarily unavailable.
@@ -37,6 +46,7 @@ export async function GET(req: NextRequest) {
       sku,
       email: customerEmailFromSession(session),
       job,
+      needsClientKick,
     })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed'

@@ -71,6 +71,9 @@ export type SetupCopy = {
   status: string
   publicIp: string
   working: string
+  lastUpdated: (isoOrLocal: string) => string
+  recentSteps: string
+  retryHint: string
   doneNote: string
   confTitle: (name: string) => string
   downloadConf: (name: string) => string
@@ -268,6 +271,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     status: '状態',
     publicIp: '公開 IP',
     working: '作業中… 数分かかることがあります。',
+    lastUpdated: (t) => `最終更新: ${t}`,
+    recentSteps: '進捗ログ',
+    retryHint: '失敗したため、下のフォームから同じ購入でもう一度実行できます。',
     doneNote:
       'この購入での OCI サーバは1台までです。端末用 .conf は下からいつでも追加できます。インスタンスは Compute → Instances で Running（MinorWire 作成時は minorwire-*）を確認できます。',
     confTitle: (name) => `WireGuard 設定 (${name})`,
@@ -459,6 +465,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     status: 'Status',
     publicIp: 'Public IP',
     working: 'Working… this can take a few minutes.',
+    lastUpdated: (t) => `Last updated: ${t}`,
+    recentSteps: 'Progress log',
+    retryHint: 'This run failed. You can submit the form again for the same purchase.',
     doneNote:
       'This purchase includes one OCI server. You can add more device .conf files below anytime. Confirm the instance under Compute → Instances as minorwire-* / Running.',
     confTitle: (name) => `WireGuard config (${name})`,
@@ -647,6 +656,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     status: '状态',
     publicIp: '公网 IP',
     working: '处理中… 可能需要几分钟。',
+    lastUpdated: (t) => `最后更新: ${t}`,
+    recentSteps: '进度日志',
+    retryHint: '本次失败。可对同一笔购买再次提交下方表单。',
     doneNote: '本次购买仅包含一台 OCI 服务器。下方可随时追加设备 .conf。也可在 Compute → Instances 确认 minorwire-* / Running。',
     confTitle: (name) => `WireGuard 配置 (${name})`,
     downloadConf: (name) => `下载 ${name}.conf`,

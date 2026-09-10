@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Suspense, useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { Syne, DM_Sans } from 'next/font/google'
 import type { JobPublicStatus } from '@/lib/minorwire/provision/types'
 import { useLanguage } from '../../contexts/LanguageContext'
@@ -54,6 +54,7 @@ function SetupInner() {
   const [peerError, setPeerError] = useState('')
   const [pemFileName, setPemFileName] = useState('')
   const [pemFileError, setPemFileError] = useState('')
+  const lastKickAtRef = useRef(0)
   const ociLinks = buildOciLinks(form.region)
   const regionSelectOptions = REGION_OPTIONS.some((r) => r.id === form.region)
     ? [...REGION_OPTIONS]
@@ -62,6 +63,25 @@ function SetupInner() {
   useEffect(() => {
     setForm((f) => ({ ...f, region: defaultRegionForLocale(locale) }))
   }, [locale])
+
+  const kickRun = useCallback(
+    async (jobId: string) => {
+      if (!sessionId) return
+      const now = Date.now()
+      if (now - lastKickAtRef.current < 20_000) return
+      lastKickAtRef.current = now
+      try {
+        await fetch(`/api/minorwire/jobs/${encodeURIComponent(jobId)}/run`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId }),
+        })
+      } catch {
+        /* status polling still recovers via server re-kick */
+      }
+    },
+    [sessionId],
+  )
 
   useEffect(() => {
     if (!sessionId) {
@@ -81,7 +101,10 @@ function SetupInner() {
           return
         }
         setSku(data.sku || '')
-        if (data.job) setJob(data.job)
+        if (data.job) {
+          setJob(data.job)
+          if (data.needsClientKick && data.job.id) void kickRun(data.job.id)
+        }
         setGate('ok')
       } catch {
         if (!cancelled) {
@@ -93,7 +116,7 @@ function SetupInner() {
     return () => {
       cancelled = true
     }
-  }, [sessionId, c.missingSession, c.paymentUnverified, c.verifyFailed])
+  }, [sessionId, c.missingSession, c.paymentUnverified, c.verifyFailed, kickRun])
 
   useEffect(() => {
     if (!job || !sessionId) return
@@ -104,13 +127,16 @@ function SetupInner() {
           `/api/minorwire/jobs/${encodeURIComponent(job.id)}?session_id=${encodeURIComponent(sessionId)}`,
         )
         const data = await res.json()
-        if (res.ok && data.job) setJob(data.job)
+        if (res.ok && data.job) {
+          setJob(data.job)
+          if (data.needsClientKick) void kickRun(job.id)
+        }
       } catch {
         /* ignore poll errors */
       }
     }, 4000)
     return () => clearInterval(t)
-  }, [job, sessionId])
+  }, [job, sessionId, kickRun])
 
   const applyOciConfig = useCallback((text: string) => {
     const parsed = parseOciConfig(text)
@@ -167,13 +193,14 @@ function SetupInner() {
           return
         }
         setJob(data.job)
+        if (data.needsClientKick && data.job?.id) void kickRun(data.job.id)
       } catch {
         setSubmitError(c.networkError)
       } finally {
         setSubmitting(false)
       }
     },
-    [sessionId, submitting, form, c.failedStart, c.networkError, c.ociConfigInvalid],
+    [sessionId, submitting, form, c.failedStart, c.networkError, c.ociConfigInvalid, kickRun],
   )
 
   const onAddPeer = useCallback(
@@ -307,13 +334,32 @@ function SetupInner() {
                   {c.status}: {job.phase}
                 </p>
                 <p className="text-[#3a4f44] mt-1">{job.message}</p>
+                <p className="text-xs text-[#5a6f64] mt-2">
+                  {c.lastUpdated(new Date(job.updatedAt || job.createdAt).toLocaleString())}
+                </p>
                 {job.publicIp && (
                   <p className="mt-2 text-sm font-mono text-[#2f6b4f]">
                     {c.publicIp}: {job.publicIp}
                   </p>
                 )}
                 {job.error && <p className="mt-2 text-sm text-red-700 whitespace-pre-wrap">{job.error}</p>}
+                {job.phase === 'error' && <p className="mt-2 text-sm text-[#5a6f64]">{c.retryHint}</p>}
                 {running && <p className="mt-3 text-sm text-[#5a6f64]">{c.working}</p>}
+                {job.logs && job.logs.length > 0 && (
+                  <div className="mt-4 border-t border-[#1d3d2e]/10 pt-3">
+                    <p className="text-sm font-semibold mb-2">{c.recentSteps}</p>
+                    <ul className="space-y-1.5 max-h-40 overflow-y-auto text-xs font-mono text-[#3a4f44]">
+                      {job.logs.slice(-12).map((log) => (
+                        <li key={`${log.at}-${log.step}-${log.message.slice(0, 24)}`}>
+                          <span className="text-[#5a6f64]">
+                            {new Date(log.at).toLocaleTimeString()} [{log.step}]
+                          </span>{' '}
+                          {log.message}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 {job.phase === 'done' && (
                   <div className="mt-4 space-y-6">
                     <p className="text-sm text-[#5a6f64]">{c.doneNote}</p>
