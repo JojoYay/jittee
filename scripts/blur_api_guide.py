@@ -32,74 +32,72 @@ def solid(im: Image.Image, box, color=(210, 210, 210)) -> None:
 
 
 def callout(im: Image.Image, box, text: str, tag_above: bool = True) -> None:
-    """Outline a UI control; put the text label outside so the button stays readable."""
     d = ImageDraw.Draw(im)
     d.rectangle(box, outline=(200, 40, 40), width=3)
     try:
-        font = ImageFont.truetype("arial.ttf", 17)
+        font = ImageFont.truetype("arial.ttf", 16)
     except Exception:
         font = ImageFont.load_default()
-    tw = int(font.getlength(text)) + 14
-    th = 24
+    tw = int(font.getlength(text)) + 12
+    th = 22
     if tag_above:
-        ly0 = max(0, box[1] - th - 6)
+        ly0 = max(0, box[1] - th - 4)
     else:
-        ly0 = min(im.height - th, box[3] + 6)
-    lx0 = max(0, min(box[0], im.width - tw))
+        ly0 = min(im.height - th, box[3] + 4)
+    # Center label over the outline when it fits; otherwise clamp to image
+    box_mid = (box[0] + box[2]) // 2
+    lx0 = max(0, min(box_mid - tw // 2, im.width - tw))
     d.rectangle((lx0, ly0, lx0 + tw, ly0 + th), fill=(200, 40, 40))
-    d.text((lx0 + 5, ly0 + 3), text, fill=(255, 255, 255), font=font)
+    d.text((lx0 + 4, ly0 + 2), text, fill=(255, 255, 255), font=font)
 
 
 # --- 1) Tokens and keys ---
 im = Image.open(asset("image-a09ba6bb-f861-4a3d-9512-5cae7cb43b57.png")).convert("RGB")
-# Fully obscure display name
 solid(im, (150, 45, 420, 95), (200, 200, 200))
 mosaic(im, (150, 45, 420, 95), block=6)
-# Tokens and keys tab (active underline)
-callout(im, (375, 103, 505, 133), "Tokens and keys")
-# Add API key only (not Delete)
-callout(im, (155, 188, 265, 218), "1. Add API key")
+# Active-tab underline is x=359..414; keep box on Tokens only (not Saved passwords)
+callout(im, (356, 107, 415, 127), "Tokens and keys")
+callout(im, (155, 188, 262, 216), "1. Add API key")
 im.save(os.path.join(OUT, "api-01-tokens-and-keys.png"), optimize=True)
 print("api-01")
 
 # --- 2) Add API key dialog ---
 im = Image.open(asset("image-45f39f63-d1a8-464e-b87c-9c971d9c05ac.png")).convert("RGB")
-callout(im, (32, 208, 275, 238), "2. Generate API key pair")
-# Left download tile — keep title readable
+callout(im, (14, 196, 216, 226), "2. Generate API key pair")
 callout(im, (38, 370, 505, 560), "3. Download private key (click this card)")
-# Outline Add; put the caption to the LEFT so the disabled Add label stays readable
+# Disabled Add button fill is approx x=913..982, y=677..723
 d = ImageDraw.Draw(im)
-add_box = (908, 704, 985, 732)
+add_box = (912, 676, 986, 724)
 d.rectangle(add_box, outline=(200, 40, 40), width=3)
 try:
-    font = ImageFont.truetype("arial.ttf", 16)
+    font = ImageFont.truetype("arial.ttf", 15)
 except Exception:
     font = ImageFont.load_default()
 cap = "4. Add (after .pem download)"
 tw = int(font.getlength(cap)) + 12
-lx0 = max(40, 900 - tw)
-d.rectangle((lx0, 704, lx0 + tw, 726), fill=(200, 40, 40))
-d.text((lx0 + 4, 706), cap, fill=(255, 255, 255), font=font)
+box_mid = (add_box[0] + add_box[2]) // 2
+lx0 = max(40, min(box_mid - tw // 2, im.width - tw))
+ly0 = add_box[1] - 26
+d.rectangle((lx0, ly0, lx0 + tw, ly0 + 22), fill=(200, 40, 40))
+d.text((lx0 + 4, ly0 + 2), cap, fill=(255, 255, 255), font=font)
 im.save(os.path.join(OUT, "api-02-add-api-key.png"), optimize=True)
 print("api-02")
 
-# --- 3) Configuration file preview (source with visible Copy) ---
+# --- 3) Configuration file preview ---
 im = Image.open(asset("image-fb5fd5ae-2986-4111-acfd-c9e80fb50c45.png")).convert("RGB")
-# Blur secrets only; keep UI chrome / Copy / Close / region readable
-# Coords from grid overlay on this 1024x563 asset
-mosaic(im, (50, 95, 500, 125), block=9)  # fingerprint hex
-mosaic(im, (90, 155, 980, 178), block=9)  # user=
-mosaic(im, (150, 178, 500, 200), block=9)  # fingerprint=
-mosaic(im, (110, 200, 980, 222), block=9)  # tenancy=
-mosaic(im, (230, 225, 755, 255), block=9)  # single-line preview secrets
-callout(im, (40, 80, 520, 135), "Fingerprint — copy this")
-callout(im, (40, 145, 720, 230), "user= / tenancy= / region=")
-callout(im, (760, 215, 835, 250), "Copy")
-callout(im, (920, 515, 995, 548), "Close")
+# Secrets only
+mosaic(im, (55, 100, 500, 128), block=9)
+mosaic(im, (85, 158, 980, 180), block=9)
+mosaic(im, (145, 180, 500, 202), block=9)
+mosaic(im, (105, 202, 980, 224), block=9)
+mosaic(im, (230, 226, 755, 256), block=9)
+# Config text starts ~x=25; start at left edge so values are fully enclosed
+callout(im, (0, 82, 545, 142), "Fingerprint — copy this")
+callout(im, (0, 145, 765, 252), "user= / tenancy= / region=")
+callout(im, (768, 218, 840, 252), "Copy")
+# Close button border is x=965..1003, y=527..551
+callout(im, (962, 524, 1006, 554), "Close")
 im.save(os.path.join(OUT, "api-03-config-preview.png"), optimize=True)
 print("api-03")
 
-for name in os.listdir(OUT):
-    if name.startswith("_"):
-        os.remove(os.path.join(OUT, name))
 print("done")
