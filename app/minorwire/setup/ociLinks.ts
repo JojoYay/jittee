@@ -19,6 +19,8 @@ export type OciConsoleLinks = {
   authTokens: string
   policies: string
   billingUpgrade: string
+  /** Compute → Instances list */
+  computeInstances: string
 }
 
 export type GuideOciLinkKey = keyof OciConsoleLinks
@@ -38,6 +40,7 @@ export function buildOciLinks(region: string): OciConsoleLinks {
     authTokens: `https://cloud.oracle.com/identity/domains/my-profile/auth-tokens?region=${r}`,
     policies: `https://cloud.oracle.com/identity/policies?region=${r}`,
     billingUpgrade: `https://cloud.oracle.com/invoices-and-orders/upgrade-and-payment?region=${r}`,
+    computeInstances: `https://cloud.oracle.com/compute/instances?region=${r}`,
   }
 }
 
