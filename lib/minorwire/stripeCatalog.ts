@@ -12,8 +12,8 @@ export type StripeSkuCatalog = {
 export const STRIPE_CATALOG: Record<StripeMode, StripeSkuCatalog> = {
   live: {
     app: {
-      priceId: 'price_1UDd65JbDLMPi8UBlMFx7RSn',
-      paymentLinkUrl: 'https://buy.stripe.com/aFaeVe4pifjvcKD1Epc3m06',
+      priceId: 'price_1UE5DUJbDLMPi8UBOyuCYCsZ',
+      paymentLinkUrl: 'https://buy.stripe.com/3cIcN6cVO3ANeSLerbc3m08',
     },
     setup: {
       priceId: 'price_1UDd66JbDLMPi8UBR20eZsSz',
@@ -22,8 +22,8 @@ export const STRIPE_CATALOG: Record<StripeMode, StripeSkuCatalog> = {
   },
   test: {
     app: {
-      priceId: 'price_1UDfnUEMjpt2c9dsNF1hnR8r',
-      paymentLinkUrl: 'https://buy.stripe.com/test_8x2cN58QU16H15L4nZ4F200',
+      priceId: 'price_1UE5CPEMjpt2c9dsyj5X2DIQ',
+      paymentLinkUrl: 'https://buy.stripe.com/test_fZudR92swdTtdSxf2D4F202',
     },
     setup: {
       priceId: 'price_1UDfnVEMjpt2c9dsHCYMTKJr',

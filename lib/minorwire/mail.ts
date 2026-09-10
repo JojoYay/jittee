@@ -4,8 +4,8 @@ const DEFAULT_ENDPOINT =
   'https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/minorwire-fulfillment'
 
 /**
- * Send fulfillment mail via SpoSched Supabase Edge Function
- * (same Resend keys as /sposched trial-signup).
+ * Send fulfillment mail via SpoSched Supabase Edge Function.
+ * Shares RESEND_API_KEY (free tier); From uses MINORWIRE_RESEND_FROM when set.
  */
 export async function sendMinorWireFulfillmentEmail(opts: {
   to: string

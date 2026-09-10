@@ -12,10 +12,10 @@ We do **not** sell VPN bandwidth. Traffic runs on the customer's OCI instance.
 
 | SKU | Price | Includes |
 |-----|-------|----------|
-| `MinorWire_app` | SGD 10 | App license + self-serve guide (IAM policy snippet, OCID checklist, provision flow) |
+| `MinorWire_app` | SGD 18 | App license + self-serve guide (IAM policy snippet, OCID checklist, provision flow) |
 | `MinorWire_setup` | SGD 100 | App + live assisted setup (screen share through IAM key creation, first VPN up, first device config) |
 
-Currency: **SGD**. Suggested upsell: buy app (S$10), then upgrade to assisted for +S$90.
+Currency: **SGD**. Suggested upsell: buy app (S$18), then upgrade to assisted for +S$82.
 
 No monthly VPN fee in MVP. Optional later: support subscription.
 
@@ -37,7 +37,7 @@ No monthly VPN fee in MVP. Optional later: support subscription.
 
 ## Flows
 
-### Self-serve (S$10)
+### Self-serve (S$18)
 
 1. Pay Stripe → download app / unlock license
 2. Customer creates IAM user + policy (copy-paste from in-app guide)

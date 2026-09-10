@@ -41,7 +41,7 @@ $appProd = Invoke-Stripe @(
 $appPrice = Invoke-Stripe @(
   'prices', 'create',
   '--product', $appProd.id,
-  '--unit-amount', '1000',
+  '--unit-amount', '1800',
   '--currency', 'sgd',
   '--lookup-key', 'minorwire_app',
   '-d', 'metadata[sku]=minorwire_app'

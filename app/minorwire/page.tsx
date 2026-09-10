@@ -85,7 +85,7 @@ const COPY: Record<string, Copy> = {
     freeOpsTitle: '毎月の運用費用は無料',
     freeOpsBody:
       'クラウド側の無料枠の範囲で動かせば、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
-    ctaApp: '自分で設定 S$10（PayNow）',
+    ctaApp: '自分で設定 S$18（PayNow）',
     ctaSetup: 'Jittee に設定してもらう S$100（PayNow）',
     ctaNote: '決済は Stripe PayNow。支払い後にセットアップ画面へ進みます（メールでも URL を送付）。',
     conceptTitle: '何をするサービスか',
@@ -134,7 +134,7 @@ const COPY: Record<string, Copy> = {
       '手順はかなり簡単なので、案内に沿って自分で設定できます。時間を節約したい・一緒に確認しながら進めたい場合は、Jittee に設定を依頼（有料）も選べます。',
     pricingTitle: '料金（買い切り・SGD）',
     planAppName: '自分で設定',
-    planAppPrice: 'S$10',
+    planAppPrice: 'S$18',
     planAppDesc: 'インストラクションに沿って自分でキー登録〜起動まで進める方向け。',
     planAppPoints: [
       '画面の手順どおりに進めれば完了',
@@ -194,7 +194,7 @@ const COPY: Record<string, Copy> = {
     freeOpsTitle: 'Monthly operating cost: free',
     freeOpsBody:
       'Stay within the cloud free allowance and you do not pay monthly server or VPN usage fees. You only pay the one-time setup fee.',
-    ctaApp: 'Do it yourself S$10 (PayNow)',
+    ctaApp: 'Do it yourself S$18 (PayNow)',
     ctaSetup: 'Have Jittee set it up S$100 (PayNow)',
     ctaNote: 'Stripe PayNow. After payment you open the setup wizard (URL also emailed).',
     conceptTitle: 'What this is',
@@ -244,7 +244,7 @@ const COPY: Record<string, Copy> = {
       'Setup is simple enough to follow the on-screen instructions yourself. If you prefer speed and a guided session, pay Jittee to configure it with you.',
     pricingTitle: 'Pricing (one-time, SGD)',
     planAppName: 'Do it yourself',
-    planAppPrice: 'S$10',
+    planAppPrice: 'S$18',
     planAppDesc: 'Follow the instructions and finish key registration through first connect on your own.',
     planAppPoints: [
       'Step-by-step on-screen guide',
@@ -304,7 +304,7 @@ const COPY: Record<string, Copy> = {
     freeOpsTitle: '每月运营费用：免费',
     freeOpsBody:
       '在云免费额度内运行时，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
-    ctaApp: '自己设置 S$10（PayNow）',
+    ctaApp: '自己设置 S$18（PayNow）',
     ctaSetup: '请 Jittee 代为设置 S$100（PayNow）',
     ctaNote: 'Stripe PayNow。付款后进入设置向导（邮件也会发送链接）。',
     conceptTitle: '这是什么服务',
@@ -353,7 +353,7 @@ const COPY: Record<string, Copy> = {
       '流程很简单，可以按说明自己完成。若想省时间、希望有人一起确认，也可以付费请 Jittee 代为设置。',
     pricingTitle: '价格（一次性 · SGD）',
     planAppName: '自己设置',
-    planAppPrice: 'S$10',
+    planAppPrice: 'S$18',
     planAppDesc: '按说明自行完成密钥登记到首次连通。',
     planAppPoints: ['按页面步骤即可完成', '登记密钥后自动建服务器', '每次购买仅搭建一次服务器', '设备配置可反复追加'],
     planAppBest: '适合愿意自己点几步的人',
