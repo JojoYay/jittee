@@ -88,7 +88,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     badge: 'MinorWire セットアップ',
     title: 'かんたんセットアップ（管理者キー）',
     intro:
-      'あなたの Oracle Cloud 上に WireGuard を1台作ります。IAM ポリシーや専用ユーザーは不要です。管理者アカウントの API キーだけで進めます。',
+      'あなたが用意する Cloud (Oracle Cloud) 上に VPN サーバー (WireGuard) を1台作ります。管理者アカウントの API キーを登録するだけですべて自動で作成します。',
     needsTitle: '最初に必要なもの',
     needsItems: [
       'Oracle Cloud アカウント（VPN を置きたいリージョンをホームリージョンにして作成。日本語UIの推奨は Japan East / Tokyo）',
@@ -248,7 +248,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     badge: 'MinorWire setup',
     title: 'Simple setup (admin API key)',
     intro:
-      'We create one WireGuard server on your Oracle Cloud tenancy. No IAM policy or dedicated user. Use your Administrators API key only.',
+      'We create one VPN server (WireGuard) on the cloud account you provide (Oracle Cloud). Register an admin API key and everything is created automatically.',
     needsTitle: 'What you need first',
     needsItems: [
       'An Oracle Cloud account with Home Region set to where you want the VPN (English UI default: Singapore)',
@@ -407,7 +407,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     badge: 'MinorWire 设置',
     title: '简易设置（管理员 API 密钥）',
     intro:
-      '我们会在你的 Oracle Cloud 上创建一台 WireGuard。不需要 IAM 策略或专用用户，只用管理员 API 密钥即可。',
+      '我们会在你准备的云账号（Oracle Cloud）上创建一台 VPN 服务器（WireGuard）。只需登记管理员 API 密钥，其余全部自动完成。',
     needsTitle: '首先需要准备',
     needsItems: [
       'Oracle Cloud 账号（Home Region 选你想放 VPN 的区域；中文界面默认推荐 Singapore）',
