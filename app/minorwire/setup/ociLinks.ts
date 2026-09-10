@@ -37,7 +37,7 @@ export function buildOciLinks(region: string): OciConsoleLinks {
     myProfile: `https://cloud.oracle.com/identity/domains/my-profile?region=${r}`,
     authTokens: `https://cloud.oracle.com/identity/domains/my-profile/auth-tokens?region=${r}`,
     policies: `https://cloud.oracle.com/identity/policies?region=${r}`,
-    billingUpgrade: `https://cloud.oracle.com/billing/payment?region=${r}`,
+    billingUpgrade: `https://cloud.oracle.com/invoices-and-orders/upgrade-and-payment?region=${r}`,
   }
 }
 
