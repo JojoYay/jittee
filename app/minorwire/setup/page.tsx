@@ -425,6 +425,45 @@ function SetupInner() {
 
                         {(stepFields.length > 0 || step.showPem || step.showSubmit) && (
                           <div className="space-y-4 border-t border-[#2f6b4f]/20 bg-[#e8f2ec]/60 p-5">
+                            {step.showPem && (
+                              <div>
+                                <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
+                                <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{c.pemWhere}</p>
+                                <p className="text-xs mb-2">
+                                  <a
+                                    className="underline font-semibold text-[#2f6b4f]"
+                                    href={ociLinks.authTokens}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {c.pemUrlLabel}
+                                  </a>
+                                </p>
+                                <input
+                                  required={!form.privateKeyPem}
+                                  type="file"
+                                  accept=".pem,application/x-pem-file,application/pkcs8,*/*"
+                                  className="block w-full text-sm text-[#3a4f44] file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#1d3d2e] file:text-white file:font-semibold"
+                                  onChange={onPemFile}
+                                />
+                                {pemFileName && (
+                                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[#2f6b4f]">
+                                    <span>{c.pemFileReady(pemFileName)}</span>
+                                    <button
+                                      type="button"
+                                      onClick={clearPemFile}
+                                      className="underline text-[#5a6f64]"
+                                    >
+                                      {c.pemFileClear}
+                                    </button>
+                                  </div>
+                                )}
+                                {pemFileError && (
+                                  <p className="mt-2 text-sm text-red-700">{pemFileError}</p>
+                                )}
+                              </div>
+                            )}
+
                             {stepFields.map((f) => {
                               const fieldHref = f.ociLink ? ociLinks[f.ociLink] : undefined
                               return (
@@ -491,45 +530,6 @@ function SetupInner() {
                                 </div>
                               )
                             })}
-
-                            {step.showPem && (
-                              <div>
-                                <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
-                                <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{c.pemWhere}</p>
-                                <p className="text-xs mb-2">
-                                  <a
-                                    className="underline font-semibold text-[#2f6b4f]"
-                                    href={ociLinks.authTokens}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {c.pemUrlLabel}
-                                  </a>
-                                </p>
-                                <input
-                                  required={!form.privateKeyPem}
-                                  type="file"
-                                  accept=".pem,application/x-pem-file,application/pkcs8,*/*"
-                                  className="block w-full text-sm text-[#3a4f44] file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#1d3d2e] file:text-white file:font-semibold"
-                                  onChange={onPemFile}
-                                />
-                                {pemFileName && (
-                                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[#2f6b4f]">
-                                    <span>{c.pemFileReady(pemFileName)}</span>
-                                    <button
-                                      type="button"
-                                      onClick={clearPemFile}
-                                      className="underline text-[#5a6f64]"
-                                    >
-                                      {c.pemFileClear}
-                                    </button>
-                                  </div>
-                                )}
-                                {pemFileError && (
-                                  <p className="mt-2 text-sm text-red-700">{pemFileError}</p>
-                                )}
-                              </div>
-                            )}
 
                             {step.showSubmit && (
                               <div className="space-y-3 pt-1">
