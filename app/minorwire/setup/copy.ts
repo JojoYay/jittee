@@ -62,6 +62,9 @@ export type SetupCopy = {
   pemLabel: string
   pemWhere: string
   pemUrlLabel: string
+  pemFileReady: (name: string) => string
+  pemFileInvalid: string
+  pemFileClear: string
   submitBusy: string
   submit: string
   verifying: string
@@ -180,7 +183,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
           '必要なら「Download public key」も保存',
           '右下の「Add」をクリック（秘密鍵ダウンロード後に有効になります）',
           '「Configuration file preview」が表示されたら、Fingerprint / user= / tenancy= / region= を控える（Copy でも可）',
-          'ダウンロードした .pem をメモ帳で開き、BEGIN〜END を下の PEM 欄に貼る',
+          'ダウンロードした .pem ファイルを下の「ファイルを選択」からアップロード',
           'user= を User OCID、Fingerprint を Fingerprint 欄に貼り、VPN 端末名を入れて「VPN を作成」',
         ],
         image: '/minorwire/guide/api-01-tokens-and-keys.png',
@@ -254,9 +257,13 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         required: false,
       },
     ],
-    pemLabel: 'API 秘密鍵（PEM）',
-    pemWhere: 'Download private key で保存した .pem を開き、BEGIN から END まで全部貼る。',
+    pemLabel: 'API 秘密鍵（.pem ファイル）',
+    pemWhere:
+      'Download private key で保存した .pem をそのままアップロードしてください（開いて貼る必要はありません）。例: you@example.com-2026-09-10T02_05_19.736Z.pem',
     pemUrlLabel: 'Tokens and keys',
+    pemFileReady: (name) => `選択中: ${name}`,
+    pemFileInvalid: '有効な .pem 秘密鍵ファイルを選んでください（PRIVATE KEY を含むこと）。',
+    pemFileClear: 'ファイルをクリア',
     submitBusy: '開始中…',
     submit: 'VPN を作成',
     verifying: '支払いを確認しています…',
@@ -367,7 +374,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
           'Optionally click Download public key',
           'Click Add at the bottom right (enabled after downloading the private key)',
           'On Configuration file preview, note Fingerprint / user= / tenancy= / region= (or use Copy)',
-          'Open the .pem in a text editor and paste BEGIN through END into the PEM field below',
+          'Upload the downloaded .pem file with the file picker below',
           'Paste user= into User OCID, Fingerprint into Fingerprint, enter a VPN device name, then Create VPN',
         ],
         image: '/minorwire/guide/api-01-tokens-and-keys.png',
@@ -441,9 +448,13 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         required: false,
       },
     ],
-    pemLabel: 'API private key (PEM)',
-    pemWhere: 'Open the .pem from Download private key and paste BEGIN through END.',
+    pemLabel: 'API private key (.pem file)',
+    pemWhere:
+      'Upload the .pem saved from Download private key as-is (no need to open and paste). Example: you@example.com-2026-09-10T02_05_19.736Z.pem',
     pemUrlLabel: 'Tokens and keys',
+    pemFileReady: (name) => `Selected: ${name}`,
+    pemFileInvalid: 'Choose a valid .pem private key file (must contain PRIVATE KEY).',
+    pemFileClear: 'Clear file',
     submitBusy: 'Starting…',
     submit: 'Create VPN',
     verifying: 'Verifying payment…',
@@ -552,7 +563,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
           '可选：点击 Download public key',
           '点击右下角 Add（下载私钥后才会可用）',
           '出现 Configuration file preview 后，记下 Fingerprint / user= / tenancy= / region=（也可用 Copy）',
-          '用记事本打开 .pem，把 BEGIN 到 END 粘贴到下方 PEM 栏',
+          '用下方的文件选择器上传下载的 .pem 文件',
           '把 user= 填到 User OCID、Fingerprint 填到 Fingerprint，输入 VPN 设备名后点击创建 VPN',
         ],
         image: '/minorwire/guide/api-01-tokens-and-keys.png',
@@ -625,9 +636,13 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         required: false,
       },
     ],
-    pemLabel: 'API 私钥（PEM）',
-    pemWhere: '打开 Download private key 保存的 .pem，从 BEGIN 到 END 全部粘贴。',
+    pemLabel: 'API 私钥（.pem 文件）',
+    pemWhere:
+      '直接上传 Download private key 保存的 .pem（无需打开粘贴）。例如: you@example.com-2026-09-10T02_05_19.736Z.pem',
     pemUrlLabel: 'Tokens and keys',
+    pemFileReady: (name) => `已选择: ${name}`,
+    pemFileInvalid: '请选择有效的 .pem 私钥文件（须包含 PRIVATE KEY）。',
+    pemFileClear: '清除文件',
     submitBusy: '启动中…',
     submit: '创建 VPN',
     verifying: '正在确认付款…',

@@ -49,6 +49,8 @@ function SetupInner() {
   const [extraPeerName, setExtraPeerName] = useState('device2')
   const [peerBusy, setPeerBusy] = useState(false)
   const [peerError, setPeerError] = useState('')
+  const [pemFileName, setPemFileName] = useState('')
+  const [pemFileError, setPemFileError] = useState('')
   const ociLinks = buildOciLinks(form.region)
 
   useEffect(() => {
@@ -177,6 +179,42 @@ function SetupInner() {
   const set =
     (key: keyof FormState) => (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [key]: ev.target.value }))
+
+  const onPemFile = useCallback(
+    async (ev: React.ChangeEvent<HTMLInputElement>) => {
+      const file = ev.target.files?.[0]
+      setPemFileError('')
+      if (!file) {
+        setPemFileName('')
+        setForm((f) => ({ ...f, privateKeyPem: '' }))
+        return
+      }
+      try {
+        const text = await file.text()
+        if (!text.includes('PRIVATE KEY')) {
+          setPemFileName('')
+          setForm((f) => ({ ...f, privateKeyPem: '' }))
+          setPemFileError(c.pemFileInvalid)
+          ev.target.value = ''
+          return
+        }
+        setPemFileName(file.name)
+        setForm((f) => ({ ...f, privateKeyPem: text }))
+      } catch {
+        setPemFileName('')
+        setForm((f) => ({ ...f, privateKeyPem: '' }))
+        setPemFileError(c.pemFileInvalid)
+        ev.target.value = ''
+      }
+    },
+    [c.pemFileInvalid],
+  )
+
+  const clearPemFile = useCallback(() => {
+    setPemFileName('')
+    setPemFileError('')
+    setForm((f) => ({ ...f, privateKeyPem: '' }))
+  }, [])
 
   const running = job && job.phase !== 'done' && job.phase !== 'error'
   const showForm = gate === 'ok' && (!job || job.phase === 'error')
@@ -415,14 +453,28 @@ function SetupInner() {
                                     {c.pemUrlLabel}
                                   </a>
                                 </p>
-                                <textarea
-                                  required
-                                  className="w-full h-40 font-mono text-xs p-3 border rounded bg-white"
-                                  value={form.privateKeyPem}
-                                  onChange={set('privateKeyPem')}
-                                  placeholder="-----BEGIN PRIVATE KEY-----"
-                                  autoComplete="off"
+                                <input
+                                  required={!form.privateKeyPem}
+                                  type="file"
+                                  accept=".pem,application/x-pem-file,application/pkcs8,*/*"
+                                  className="block w-full text-sm text-[#3a4f44] file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#1d3d2e] file:text-white file:font-semibold"
+                                  onChange={onPemFile}
                                 />
+                                {pemFileName && (
+                                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[#2f6b4f]">
+                                    <span>{c.pemFileReady(pemFileName)}</span>
+                                    <button
+                                      type="button"
+                                      onClick={clearPemFile}
+                                      className="underline text-[#5a6f64]"
+                                    >
+                                      {c.pemFileClear}
+                                    </button>
+                                  </div>
+                                )}
+                                {pemFileError && (
+                                  <p className="mt-2 text-sm text-red-700">{pemFileError}</p>
+                                )}
                               </div>
                             )}
 
