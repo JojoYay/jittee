@@ -8,7 +8,8 @@ import { Syne, DM_Sans } from 'next/font/google'
 import type { JobPublicStatus } from '@/lib/minorwire/provision/types'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { SETUP_COPY } from './copy'
-import { OCI_LINKS, OCI_REGION } from './ociLinks'
+import { buildOciLinks } from './ociLinks'
+import { defaultRegionForLocale, REGION_OPTIONS } from './regions'
 
 const syne = Syne({ subsets: ['latin'], weight: ['600', '700', '800'] })
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] })
@@ -22,13 +23,15 @@ type FormState = {
   peerName: string
 }
 
-const emptyForm: FormState = {
-  region: OCI_REGION,
-  tenancyOcid: '',
-  userOcid: '',
-  fingerprint: '',
-  privateKeyPem: '',
-  peerName: 'device1',
+function emptyFormForLocale(locale: string): FormState {
+  return {
+    region: defaultRegionForLocale(locale),
+    tenancyOcid: '',
+    userOcid: '',
+    fingerprint: '',
+    privateKeyPem: '',
+    peerName: 'device1',
+  }
 }
 
 function SetupInner() {
@@ -39,13 +42,18 @@ function SetupInner() {
   const [gate, setGate] = useState<'loading' | 'ok' | 'bad'>('loading')
   const [gateError, setGateError] = useState('')
   const [sku, setSku] = useState('')
-  const [form, setForm] = useState<FormState>(emptyForm)
+  const [form, setForm] = useState<FormState>(() => emptyFormForLocale(locale))
   const [job, setJob] = useState<JobPublicStatus | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [extraPeerName, setExtraPeerName] = useState('device2')
   const [peerBusy, setPeerBusy] = useState(false)
   const [peerError, setPeerError] = useState('')
+  const ociLinks = buildOciLinks(form.region)
+
+  useEffect(() => {
+    setForm((f) => ({ ...f, region: defaultRegionForLocale(locale) }))
+  }, [locale])
 
   useEffect(() => {
     if (!sessionId) {
@@ -290,38 +298,41 @@ function SetupInner() {
                     <h2 className={`${syne.className} text-2xl font-bold`}>{c.guideTitle}</h2>
                     <p className="text-sm text-[#3a4f44] mt-2 leading-relaxed">{c.guideIntro}</p>
                   </div>
-                  {c.guideSteps.map((step) => (
-                    <article
-                      key={step.title}
-                      className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden"
-                    >
-                      <div className="p-5 space-y-2">
-                        <h3 className={`${syne.className} text-lg font-bold`}>{step.title}</h3>
-                        <p className="text-sm text-[#3a4f44] leading-relaxed">{step.body}</p>
-                        {step.link && (
-                          <p className="text-sm">
-                            <a
-                              className="underline font-semibold text-[#2f6b4f]"
-                              href={step.link}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {step.linkLabel || step.link}
-                            </a>
-                          </p>
-                        )}
-                      </div>
-                      <figure>
-                        <Image
-                          src={step.image}
-                          alt={step.imageAlt}
-                          width={1280}
-                          height={720}
-                          className="w-full h-auto border-t border-[#1d3d2e]/10"
-                        />
-                      </figure>
-                    </article>
-                  ))}
+                  {c.guideSteps.map((step) => {
+                    const stepHref = step.ociLink ? ociLinks[step.ociLink] : step.link
+                    return (
+                      <article
+                        key={step.title}
+                        className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden"
+                      >
+                        <div className="p-5 space-y-2">
+                          <h3 className={`${syne.className} text-lg font-bold`}>{step.title}</h3>
+                          <p className="text-sm text-[#3a4f44] leading-relaxed">{step.body}</p>
+                          {stepHref && (
+                            <p className="text-sm">
+                              <a
+                                className="underline font-semibold text-[#2f6b4f]"
+                                href={stepHref}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {step.linkLabel || stepHref}
+                              </a>
+                            </p>
+                          )}
+                        </div>
+                        <figure>
+                          <Image
+                            src={step.image}
+                            alt={step.imageAlt}
+                            width={1280}
+                            height={720}
+                            className="w-full h-auto border-t border-[#1d3d2e]/10"
+                          />
+                        </figure>
+                      </article>
+                    )
+                  })}
                 </section>
 
                 <form
@@ -331,32 +342,50 @@ function SetupInner() {
                   <h2 className={`${syne.className} text-2xl font-bold`}>{c.formTitle}</h2>
                   <p className="text-sm text-[#5a6f64]">{c.formIntro}</p>
 
-                  {c.fields.map((f) => (
-                    <div key={f.key}>
-                      <label className="block text-sm font-medium mb-1">{f.label}</label>
-                      <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
-                      {f.url && (
-                        <p className="text-xs mb-2">
-                          <a
-                            className="underline font-semibold text-[#2f6b4f]"
-                            href={f.url}
-                            target="_blank"
-                            rel="noreferrer"
+                  {c.fields.map((f) => {
+                    const fieldHref = f.ociLink ? ociLinks[f.ociLink] : undefined
+                    return (
+                      <div key={f.key}>
+                        <label className="block text-sm font-medium mb-1">{f.label}</label>
+                        <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
+                        {fieldHref && (
+                          <p className="text-xs mb-2">
+                            <a
+                              className="underline font-semibold text-[#2f6b4f]"
+                              href={fieldHref}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {f.urlLabel}
+                            </a>
+                          </p>
+                        )}
+                        {f.key === 'region' ? (
+                          <select
+                            required
+                            className="w-full border px-3 py-2 rounded text-sm bg-white"
+                            value={form.region}
+                            onChange={(e) => setForm((prev) => ({ ...prev, region: e.target.value }))}
                           >
-                            {f.urlLabel}
-                          </a>
-                        </p>
-                      )}
-                      <input
-                        required={f.required !== false}
-                        className="w-full border px-3 py-2 rounded font-mono text-sm"
-                        value={form[f.key]}
-                        onChange={set(f.key)}
-                        placeholder={f.placeholder}
-                        autoComplete="off"
-                      />
-                    </div>
-                  ))}
+                            {REGION_OPTIONS.map((r) => (
+                              <option key={r.id} value={r.id}>
+                                {r.name} ({r.id})
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            required={f.required !== false}
+                            className="w-full border px-3 py-2 rounded font-mono text-sm"
+                            value={form[f.key]}
+                            onChange={set(f.key)}
+                            placeholder={f.placeholder}
+                            autoComplete="off"
+                          />
+                        )}
+                      </div>
+                    )
+                  })}
 
                   <div>
                     <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
@@ -364,7 +393,7 @@ function SetupInner() {
                     <p className="text-xs mb-2">
                       <a
                         className="underline font-semibold text-[#2f6b4f]"
-                        href={OCI_LINKS.myProfile}
+                        href={ociLinks.myProfile}
                         target="_blank"
                         rel="noreferrer"
                       >
