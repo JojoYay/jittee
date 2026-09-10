@@ -66,10 +66,12 @@ export async function POST(req: NextRequest) {
     }
     // phase === error: allow one retry under the same paid session
 
+    const tenancyOcid = body.tenancyOcid ?? ''
     const creds: OciCredentials = {
       region: body.region ?? '',
-      tenancyOcid: body.tenancyOcid ?? '',
-      compartmentOcid: body.compartmentOcid ?? '',
+      tenancyOcid,
+      // Simple admin path: root compartment is the tenancy OCID
+      compartmentOcid: body.compartmentOcid?.trim() || tenancyOcid,
       userOcid: body.userOcid ?? '',
       fingerprint: body.fingerprint ?? '',
       privateKeyPem: body.privateKeyPem ?? '',

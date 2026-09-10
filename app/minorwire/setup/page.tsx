@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { Syne, DM_Sans } from 'next/font/google'
-import { buildIamPolicy } from '@/lib/minorwire/iamPolicy'
 import type { JobPublicStatus } from '@/lib/minorwire/provision/types'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { SETUP_COPY } from './copy'
@@ -17,23 +16,19 @@ const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] })
 type FormState = {
   region: string
   tenancyOcid: string
-  compartmentOcid: string
   userOcid: string
   fingerprint: string
   privateKeyPem: string
   peerName: string
-  policyCompartmentName: string
 }
 
 const emptyForm: FormState = {
   region: OCI_REGION,
   tenancyOcid: '',
-  compartmentOcid: '',
   userOcid: '',
   fingerprint: '',
   privateKeyPem: '',
   peerName: 'device1',
-  policyCompartmentName: '',
 }
 
 function SetupInner() {
@@ -51,7 +46,6 @@ function SetupInner() {
   const [extraPeerName, setExtraPeerName] = useState('device2')
   const [peerBusy, setPeerBusy] = useState(false)
   const [peerError, setPeerError] = useState('')
-  const [copiedPolicy, setCopiedPolicy] = useState(false)
 
   useEffect(() => {
     if (!sessionId) {
@@ -108,6 +102,7 @@ function SetupInner() {
       if (!sessionId || submitting) return
       setSubmitting(true)
       setSubmitError('')
+      const tenancy = form.tenancyOcid.trim()
       try {
         const res = await fetch('/api/minorwire/jobs', {
           method: 'POST',
@@ -116,8 +111,9 @@ function SetupInner() {
             sessionId,
             peerName: form.peerName,
             region: form.region,
-            tenancyOcid: form.tenancyOcid,
-            compartmentOcid: form.compartmentOcid,
+            tenancyOcid: tenancy,
+            // Admin simple path: root compartment == tenancy OCID
+            compartmentOcid: tenancy,
             userOcid: form.userOcid,
             fingerprint: form.fingerprint,
             privateKeyPem: form.privateKeyPem,
@@ -174,20 +170,8 @@ function SetupInner() {
     (key: keyof FormState) => (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [key]: ev.target.value }))
 
-  const policyName = form.policyCompartmentName.trim() || 'REPLACE_WITH_COMPARTMENT_NAME'
-  const policy = buildIamPolicy(policyName)
   const running = job && job.phase !== 'done' && job.phase !== 'error'
   const showForm = gate === 'ok' && (!job || job.phase === 'error')
-
-  const copyPolicy = async () => {
-    try {
-      await navigator.clipboard.writeText(policy)
-      setCopiedPolicy(true)
-      setTimeout(() => setCopiedPolicy(false), 2000)
-    } catch {
-      /* ignore */
-    }
-  }
 
   return (
     <div className={`${dmSans.className} min-h-screen bg-[#f3f6f4] text-[#14201a]`}>
@@ -197,6 +181,29 @@ function SetupInner() {
         </p>
         <h1 className={`${syne.className} text-4xl font-extrabold mb-2`}>{c.title}</h1>
         <p className="text-[#3a4f44] mb-8 leading-relaxed">{c.intro}</p>
+
+        {gate !== 'loading' && (
+          <div className="mb-8 space-y-4">
+            <section className="border border-[#1d3d2e]/15 bg-white p-5 rounded-md">
+              <h2 className={`${syne.className} text-xl font-bold mb-3`}>{c.needsTitle}</h2>
+              <ul className="space-y-2 text-[#3a4f44]">
+                {c.needsItems.map((item) => (
+                  <li key={item} className="border-l-2 border-[#7dba98] pl-3">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </section>
+            <section className="border border-[#1d3d2e]/15 bg-white p-5 rounded-md">
+              <h2 className={`${syne.className} text-xl font-bold mb-3`}>{c.flowTitle}</h2>
+              <ol className="list-decimal pl-5 space-y-2 text-[#3a4f44]">
+                {c.flowSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </section>
+          </div>
+        )}
 
         {gate === 'loading' && <p>{c.verifying}</p>}
         {gate === 'bad' && (
@@ -278,150 +285,43 @@ function SetupInner() {
 
             {showForm && (
               <div className="space-y-8">
-                <section className="border border-amber-700/30 bg-amber-50 p-5 rounded-md space-y-3">
-                  <h2 className={`${syne.className} text-xl font-bold`}>{c.targetTitle}</h2>
-                  <p className="text-[#3a4f44] leading-relaxed">{c.targetBody}</p>
-                </section>
-
-                <section className="border border-[#1d3d2e]/15 bg-white p-5 rounded-md space-y-3">
-                  <h2 className={`${syne.className} text-2xl font-bold`}>{c.urlsTitle}</h2>
-                  <p className="text-sm text-[#3a4f44]">{c.urlsIntro}</p>
-                  <ul className="space-y-2 text-sm text-[#3a4f44]">
-                    <li>
-                      <a className="underline font-semibold" href={OCI_LINKS.home} target="_blank" rel="noreferrer">
-                        {c.urlHome}
-                      </a>{' '}
-                      — {c.urlHomeHint}
-                    </li>
-                    <li>
-                      <a className="underline font-semibold" href={OCI_LINKS.tenancy} target="_blank" rel="noreferrer">
-                        {c.urlTenancy}
-                      </a>{' '}
-                      — {c.urlTenancyHint}
-                    </li>
-                    <li>
-                      <a
-                        className="underline font-semibold"
-                        href={OCI_LINKS.compartments}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {c.urlCompartments}
-                      </a>{' '}
-                      — {c.urlCompartmentsHint}
-                    </li>
-                    <li>
-                      <a className="underline font-semibold" href={OCI_LINKS.domains} target="_blank" rel="noreferrer">
-                        {c.urlDomains}
-                      </a>{' '}
-                      — {c.urlDomainsHint}
-                    </li>
-                    <li>
-                      <a
-                        className="underline font-semibold"
-                        href={OCI_LINKS.myProfile}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {c.urlProfile}
-                      </a>{' '}
-                      — {c.urlProfileHint}
-                    </li>
-                    <li>
-                      <a
-                        className="underline font-semibold"
-                        href={OCI_LINKS.policies}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {c.urlPolicies}
-                      </a>{' '}
-                      — {c.urlPoliciesHint}
-                    </li>
-                  </ul>
-                </section>
-
-                <section className="space-y-4">
-                  <h2 className={`${syne.className} text-2xl font-bold`}>{c.prepareTitle}</h2>
-                  <ol className="list-decimal pl-5 space-y-2 text-[#3a4f44]">
-                    {c.prepareSteps.map((step) => (
-                      <li key={step}>{step}</li>
-                    ))}
-                  </ol>
-                  <p className="text-sm text-[#5a6f64]">
-                    <a className="underline font-semibold" href={OCI_LINKS.home} target="_blank" rel="noreferrer">
-                      {OCI_LINKS.home}
-                    </a>
-                  </p>
-
-                  <div className="grid gap-4">
-                    <figure className="border border-[#1d3d2e]/10 bg-white rounded-md overflow-hidden">
-                      <Image
-                        src="/minorwire/guide/live-tenancy.png"
-                        alt="Tenancy OCID"
-                        width={1280}
-                        height={720}
-                        className="w-full h-auto"
-                      />
-                      <figcaption className="p-3 text-sm text-[#5a6f64]">{c.figTenancy}</figcaption>
-                    </figure>
-                    <figure className="border border-[#1d3d2e]/10 bg-white rounded-md overflow-hidden">
-                      <Image
-                        src="/minorwire/guide/live-compartment.png"
-                        alt="Compartment"
-                        width={1280}
-                        height={720}
-                        className="w-full h-auto"
-                      />
-                      <figcaption className="p-3 text-sm text-[#5a6f64]">{c.figCompartment}</figcaption>
-                    </figure>
-                    <figure className="border border-[#1d3d2e]/10 bg-white rounded-md overflow-hidden">
-                      <Image
-                        src="/minorwire/guide/live-user-ocid.png"
-                        alt="User OCID"
-                        width={1280}
-                        height={720}
-                        className="w-full h-auto"
-                      />
-                      <figcaption className="p-3 text-sm text-[#5a6f64]">{c.figApiKeys}</figcaption>
-                    </figure>
+                <section className="space-y-5">
+                  <div>
+                    <h2 className={`${syne.className} text-2xl font-bold`}>{c.guideTitle}</h2>
+                    <p className="text-sm text-[#3a4f44] mt-2 leading-relaxed">{c.guideIntro}</p>
                   </div>
-                </section>
-
-                <section className="border border-[#1d3d2e]/15 bg-white/80 p-6 rounded-md space-y-3">
-                  <h2 className={`${syne.className} text-2xl font-bold`}>{c.policyTitle}</h2>
-                  <p className="text-sm text-[#3a4f44]">
-                    {c.policyIntroBefore}
-                    <a
-                      className="underline font-semibold"
-                      href={OCI_LINKS.policies}
-                      target="_blank"
-                      rel="noreferrer"
+                  {c.guideSteps.map((step) => (
+                    <article
+                      key={step.title}
+                      className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden"
                     >
-                      {c.urlPolicies}
-                    </a>
-                    {c.policyIntroAfter}
-                  </p>
-                  <label className="block text-sm font-medium">{c.policyNameLabel}</label>
-                  <input
-                    className="w-full border px-3 py-2 rounded"
-                    value={form.policyCompartmentName}
-                    onChange={set('policyCompartmentName')}
-                    placeholder={c.policyNamePlaceholder}
-                    autoComplete="off"
-                  />
-                  <textarea
-                    readOnly
-                    className="w-full h-40 font-mono text-xs p-3 border rounded bg-[#f7faf8]"
-                    value={policy}
-                  />
-                  <button
-                    type="button"
-                    onClick={copyPolicy}
-                    className="px-4 py-2 rounded-md border border-[#1d3d2e] font-semibold text-sm"
-                  >
-                    {copiedPolicy ? c.copiedPolicy : c.copyPolicy}
-                  </button>
+                      <div className="p-5 space-y-2">
+                        <h3 className={`${syne.className} text-lg font-bold`}>{step.title}</h3>
+                        <p className="text-sm text-[#3a4f44] leading-relaxed">{step.body}</p>
+                        {step.link && (
+                          <p className="text-sm">
+                            <a
+                              className="underline font-semibold text-[#2f6b4f]"
+                              href={step.link}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {step.linkLabel || step.link}
+                            </a>
+                          </p>
+                        )}
+                      </div>
+                      <figure>
+                        <Image
+                          src={step.image}
+                          alt={step.imageAlt}
+                          width={1280}
+                          height={720}
+                          className="w-full h-auto border-t border-[#1d3d2e]/10"
+                        />
+                      </figure>
+                    </article>
+                  ))}
                 </section>
 
                 <form

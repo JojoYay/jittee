@@ -3,7 +3,6 @@ import { OCI_LINKS } from './ociLinks'
 export type SetupFieldKey =
   | 'region'
   | 'tenancyOcid'
-  | 'compartmentOcid'
   | 'userOcid'
   | 'fingerprint'
   | 'peerName'
@@ -18,10 +17,34 @@ export type SetupFieldCopy = {
   required?: boolean
 }
 
+export type GuideStepCopy = {
+  title: string
+  body: string
+  image: string
+  imageAlt: string
+  link?: string
+  linkLabel?: string
+}
+
 export type SetupCopy = {
   badge: string
   title: string
   intro: string
+  needsTitle: string
+  needsItems: string[]
+  flowTitle: string
+  flowSteps: string[]
+  guideTitle: string
+  guideIntro: string
+  guideSteps: GuideStepCopy[]
+  formTitle: string
+  formIntro: string
+  fields: SetupFieldCopy[]
+  pemLabel: string
+  pemWhere: string
+  pemUrlLabel: string
+  submitBusy: string
+  submit: string
   verifying: string
   cannotStart: string
   back: string
@@ -36,42 +59,6 @@ export type SetupCopy = {
   addPeerPlaceholder: string
   addPeerBusy: string
   addPeerSubmit: string
-  targetTitle: string
-  targetBody: string
-  urlsTitle: string
-  urlsIntro: string
-  urlHome: string
-  urlHomeHint: string
-  urlTenancy: string
-  urlTenancyHint: string
-  urlCompartments: string
-  urlCompartmentsHint: string
-  urlDomains: string
-  urlDomainsHint: string
-  urlProfile: string
-  urlProfileHint: string
-  urlPolicies: string
-  urlPoliciesHint: string
-  prepareTitle: string
-  prepareSteps: string[]
-  figTenancy: string
-  figCompartment: string
-  figApiKeys: string
-  policyTitle: string
-  policyIntroBefore: string
-  policyIntroAfter: string
-  policyNameLabel: string
-  policyNamePlaceholder: string
-  copyPolicy: string
-  copiedPolicy: string
-  formTitle: string
-  formIntro: string
-  fields: SetupFieldCopy[]
-  pemLabel: string
-  pemWhere: string
-  pemUrlLabel: string
-  submitBusy: string
-  submit: string
   missingSession: string
   paymentUnverified: string
   verifyFailed: string
@@ -83,7 +70,6 @@ export type SetupCopy = {
 const fieldUrls = {
   region: OCI_LINKS.tenancy,
   tenancyOcid: OCI_LINKS.tenancy,
-  compartmentOcid: OCI_LINKS.compartments,
   userOcid: OCI_LINKS.myProfile,
   fingerprint: OCI_LINKS.myProfile,
 } as const
@@ -91,9 +77,129 @@ const fieldUrls = {
 export const SETUP_COPY: Record<string, SetupCopy> = {
   ja: {
     badge: 'MinorWire セットアップ',
-    title: '貼る値はこれだけ',
+    title: 'かんたんセットアップ（管理者キー）',
     intro:
-      'OCI の最小権限キーを一度貼るだけです。Always Free 上に WireGuard サーバを1台作ります。その後は端末用 .conf を何度でも追加できます。OCI API キーは保存しません。',
+      'あなたの Oracle Cloud 上に WireGuard を1台作ります。IAM ポリシーや専用ユーザーは不要です。管理者アカウントの API キーだけで進めます。',
+    needsTitle: '最初に必要なもの',
+    needsItems: [
+      'Oracle Cloud アカウント（ホームリージョンを Japan East / Tokyo で作成）',
+      'Pay As You Go（有料プラン）へのアップグレード（Always Free の枠を安定して使うため。枠内は課金されません）',
+      '管理者ユーザーの API キー（User OCID + Fingerprint + PEM）。IAM 設定は不要',
+    ],
+    flowTitle: '全体の流れ',
+    flowSteps: [
+      '作りたいリージョン（東京）で Oracle Cloud アカウントを新規作成する',
+      'Pay As You Go にアップグレードする',
+      '管理者のまま API キーを作り、Tenancy OCID を控える',
+      '下のフォームに貼って「VPN を作成」',
+      '表示された .conf を公式 WireGuard アプリに入れる',
+    ],
+    guideTitle: '手順ガイド（上から順に）',
+    guideIntro:
+      'スクショを見ながら進めてください。すでにアカウントがある場合は Step 1–2 を飛ばし、Step 3 からで構いません。',
+    guideSteps: [
+      {
+        title: 'Step 1 — Oracle Cloud アカウントを作成',
+        body:
+          'サインアップページで国・氏名・メールを入力し、メール認証を完了します。1人1アカウントです。',
+        image: '/minorwire/guide/signup-01-start.png',
+        imageAlt: 'Oracle Cloud Free Tier signup',
+        link: OCI_LINKS.signup,
+        linkLabel: 'サインアップを開く',
+      },
+      {
+        title: 'Step 2 — ホームリージョンは Japan East (Tokyo)',
+        body:
+          'Cloud Account Name のあと、Home Region で Japan East (Tokyo) を選びます。後から変更できません。MinorWire はこのリージョン前提です。',
+        image: '/minorwire/guide/signup-02-home-region.png',
+        imageAlt: 'Home Region Japan East Tokyo',
+      },
+      {
+        title: 'Step 3 — カードで本人確認（サインアップ時）',
+        body:
+          'クレジットカードで支払い方法を登録します。無料枠の確認用の一時的な与信が付くことがあります。Always Free の範囲では課金されません。',
+        image: '/minorwire/guide/signup-03-payment.png',
+        imageAlt: 'Payment verification',
+        link: OCI_LINKS.signupDocs,
+        linkLabel: '公式サインアップ手順',
+      },
+      {
+        title: 'Step 4 — Pay As You Go（有料アカウント）へアップグレード',
+        body:
+          'コンソール → Billing & Cost Management → Upgrade and Manage Payment → Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。',
+        image: '/minorwire/guide/signup-04-upgrade-payg.png',
+        imageAlt: 'Upgrade to Pay As You Go',
+        link: OCI_LINKS.billingUpgrade,
+        linkLabel: 'Upgrade and Manage Payment を開く',
+      },
+      {
+        title: 'Step 5 — Tenancy OCID をコピー',
+        body:
+          'Profile → Tenancy または Tenancy Details で OCID をコピー。Compartment は root（= Tenancy OCID）を自動使用するので、別途の IAM / Compartment 設定は不要です。',
+        image: '/minorwire/guide/live-tenancy.png',
+        imageAlt: 'Tenancy OCID',
+        link: OCI_LINKS.tenancy,
+        linkLabel: 'Tenancy Details を開く',
+      },
+      {
+        title: 'Step 6 — 管理者の API キーを作成',
+        body:
+          'My profile → Tokens and keys → Add API Key。表示される Fingerprint を控え、.pem を一度だけダウンロード。User OCID も同じ画面の Details からコピー。グループやポリシーは作りません。',
+        image: '/minorwire/guide/live-user-ocid.png',
+        imageAlt: 'User OCID and API key',
+        link: OCI_LINKS.myProfile,
+        linkLabel: 'My profile を開く',
+      },
+    ],
+    formTitle: 'フォームに貼る（これだけ）',
+    formIntro:
+      '管理者 API キー用の4項目です。Compartment / IAM ポリシー欄はありません（Tenancy = root を自動使用）。',
+    fields: [
+      {
+        key: 'region',
+        label: '1. ホームリージョン',
+        placeholder: 'ap-tokyo-1',
+        where: 'Tokyo なら ap-tokyo-1。サインアップ時に Japan East (Tokyo) を選んでいること。',
+        url: fieldUrls.region,
+        urlLabel: 'Tenancy Details',
+      },
+      {
+        key: 'tenancyOcid',
+        label: '2. Tenancy OCID',
+        placeholder: 'ocid1.tenancy.oc1..aaaa...',
+        where: 'Step 5。ocid1.tenancy.oc1.. で始まる文字列。',
+        url: fieldUrls.tenancyOcid,
+        urlLabel: 'Tenancy Details',
+      },
+      {
+        key: 'userOcid',
+        label: '3. User OCID（管理者）',
+        placeholder: 'ocid1.user.oc1..aaaa...',
+        where: 'Step 6。My profile の OCID。',
+        url: fieldUrls.userOcid,
+        urlLabel: 'My profile',
+      },
+      {
+        key: 'fingerprint',
+        label: '4. API Key Fingerprint',
+        placeholder: 'aa:bb:cc:dd:...',
+        where: 'Step 6。Tokens and keys に表示される指紋。',
+        url: fieldUrls.fingerprint,
+        urlLabel: 'Tokens and keys',
+      },
+      {
+        key: 'peerName',
+        label: '5. 最初の端末名',
+        placeholder: 'phone',
+        where: '好きな英数字（例: phone, laptop）。Oracle にはありません。',
+        required: false,
+      },
+    ],
+    pemLabel: '6. API 秘密鍵（PEM）',
+    pemWhere: 'Step 6 でダウンロードした .pem を開き、BEGIN から END まで全部貼る。',
+    pemUrlLabel: 'My profile',
+    submitBusy: '開始中…',
+    submit: 'VPN を作成',
     verifying: '支払いを確認しています…',
     cannotStart: 'セットアップを開始できません',
     back: 'MinorWire に戻る',
@@ -109,102 +215,6 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     addPeerPlaceholder: 'iphone',
     addPeerBusy: '追加中…',
     addPeerSubmit: '端末設定を作成',
-    targetTitle: '「Target Compartment」とは？',
-    targetBody:
-      'フォーム項目ではありません。IAM ポリシー文の中の仮名でした。root コンパートメントの Name はだいたいテナンシ名と同じです（例: jittee）。その Name をセクション B のポリシー欄へ。OCID は下の項目3へ貼ります。',
-    urlsTitle: 'Oracle Console 直リンク（ブックマーク推奨）',
-    urlsIntro: '先にログインしてから各リンクを開いてください。リージョンは ap-tokyo-1（東京）固定です。',
-    urlHome: 'コンソールホーム',
-    urlHomeHint: 'ログアウト時はここから',
-    urlTenancy: 'Tenancy Details',
-    urlTenancyHint: 'Tenancy OCID とホームリージョン確認',
-    urlCompartments: 'Compartments',
-    urlCompartmentsHint: 'root の OCID をコピー / ポリシー用 Name を確認',
-    urlDomains: 'Identity Domains',
-    urlDomainsHint: 'Users / Groups / Policies の入口',
-    urlProfile: 'My profile',
-    urlProfileHint: 'User OCID。Fingerprint と PEM は Tokens and keys タブ',
-    urlPolicies: 'Policies',
-    urlPoliciesHint: 'セクション B の IAM ポリシーを貼る',
-    prepareTitle: 'A. Oracle 側の準備（1回）',
-    prepareSteps: [
-      'コンソールにログインする',
-      'Domains → Default → Groups → グループ MinorWire を作成（無ければ）',
-      '同じドメイン → Users → API 用ユーザーを用意 → グループ MinorWire に追加',
-      'Policies → ポリシー作成 → セクション B を貼る',
-      'My profile → Tokens and keys → Add API Key → .pem を一度だけダウンロード',
-    ],
-    figTenancy: 'Tenancy OCID（ぼかし）。Profile → Tenancy → OCID。',
-    figCompartment: 'Compartment 一覧: Name はポリシー用、OCID は項目3。',
-    figApiKeys: 'User OCID + Fingerprint + 秘密鍵ダウンロード。',
-    policyTitle: 'B. IAM ポリシー（Oracle に貼る）',
-    policyIntroBefore:
-      'コンパートメントの Name を入力（root ならテナンシ名。例: jittee。OCID ではない）。内容をコピーして ',
-    policyIntroAfter: ' に貼ります。',
-    policyNameLabel: 'ポリシー文用のコンパートメント名のみ',
-    policyNamePlaceholder: 'root の名前（多くの場合テナンシ名）',
-    copyPolicy: 'ポリシーをコピー',
-    copiedPolicy: 'コピー済み',
-    formTitle: 'C. このフォームに貼る',
-    formIntro: 'VPN 作成に送るのはこれらの欄だけです。',
-    fields: [
-      {
-        key: 'region',
-        label: '1. ホームリージョン',
-        placeholder: 'ap-tokyo-1',
-        where:
-          '東京なら通常 ap-tokyo-1。Tenancy Details の Home region が NRT なら東京です。',
-        url: fieldUrls.region,
-        urlLabel: 'Tenancy Details を開く',
-      },
-      {
-        key: 'tenancyOcid',
-        label: '2. Tenancy OCID',
-        placeholder: 'ocid1.tenancy.oc1..aaaa...',
-        where: 'Tenancy Details → General information → OCID をコピー。ocid1.tenancy.oc1.. で始まる。',
-        url: fieldUrls.tenancyOcid,
-        urlLabel: 'Tenancy Details を開く（OCID コピー）',
-      },
-      {
-        key: 'compartmentOcid',
-        label: '3. Compartment OCID（VM を作るフォルダ）',
-        placeholder: 'ocid1.tenancy.oc1.. または ocid1.compartment.oc1..',
-        where:
-          'Compartments → root 行（多くは テナンシ名 (root)）の OCID。初心者は Tenancy OCID と同じでOK。Name（例: jittee）はここではなくポリシー欄へ。',
-        url: fieldUrls.compartmentOcid,
-        urlLabel: 'Compartments を開く（root OCID）',
-      },
-      {
-        key: 'userOcid',
-        label: '4. User OCID（API ユーザー）',
-        placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'My profile（または Domains → Users）→ Details → OCID。ocid1.user.oc1.. で始まる。',
-        url: fieldUrls.userOcid,
-        urlLabel: 'My profile を開く（User OCID）',
-      },
-      {
-        key: 'fingerprint',
-        label: '5. API キーの Fingerprint',
-        placeholder: 'aa:bb:cc:dd:...',
-        where:
-          'My profile → Tokens and keys → API Keys → Fingerprint。無ければ Add API Key で .pem を保存してからコピー。',
-        url: fieldUrls.fingerprint,
-        urlLabel: 'My profile → Tokens and keys',
-      },
-      {
-        key: 'peerName',
-        label: '6. 最初の端末名（.conf の名前）',
-        placeholder: 'phone',
-        where: '好きな英数字。例: phone, laptop。Oracle にはありません。',
-        required: false,
-      },
-    ],
-    pemLabel: '7. API 秘密鍵（PEM の中身）',
-    pemWhere:
-      'My profile → Tokens and keys → Add API Key → .pem をダウンロード → メモ帳で開き BEGIN/END ごと貼る。',
-    pemUrlLabel: 'My profile を開く（Tokens and keys）',
-    submitBusy: '開始中…',
-    submit: 'VPN を作成',
     missingSession: 'session_id がありません。先に PayNow で支払いを完了してください。',
     paymentUnverified: '支払いを確認できません',
     verifyFailed: '支払い確認に失敗しました',
@@ -215,246 +225,291 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
 
   en: {
     badge: 'MinorWire setup',
-    title: 'Fill these values only',
+    title: 'Simple setup (admin API key)',
     intro:
-      'Paste a least-privilege OCI API key once. We create one Always Free WireGuard server. Afterwards you can mint more device .conf files. OCI API keys are not stored.',
+      'We create one WireGuard server on your Oracle Cloud tenancy. No IAM policy or dedicated user. Use your Administrators API key only.',
+    needsTitle: 'What you need first',
+    needsItems: [
+      'An Oracle Cloud account whose home region is Japan East (Tokyo)',
+      'Upgrade to Pay As You Go (keeps Always Free resources free; improves capacity reliability)',
+      'An admin user API key (User OCID + Fingerprint + PEM). No IAM setup required',
+    ],
+    flowTitle: 'Overall flow',
+    flowSteps: [
+      'Create an Oracle Cloud account with home region Tokyo',
+      'Upgrade to Pay As You Go',
+      'Create an admin API key and copy the Tenancy OCID',
+      'Paste into the form below and create the VPN',
+      'Import the .conf into the official WireGuard app',
+    ],
+    guideTitle: 'Step-by-step guide',
+    guideIntro:
+      'Follow the screenshots in order. If you already have an account, skip Steps 1–2 and start at Step 3 (or Step 4 if already verified).',
+    guideSteps: [
+      {
+        title: 'Step 1 — Create an Oracle Cloud account',
+        body: 'On the signup page enter country, name, and email, then verify email. One account per person.',
+        image: '/minorwire/guide/signup-01-start.png',
+        imageAlt: 'Oracle Cloud Free Tier signup',
+        link: OCI_LINKS.signup,
+        linkLabel: 'Open signup',
+      },
+      {
+        title: 'Step 2 — Home Region = Japan East (Tokyo)',
+        body:
+          'After Cloud Account Name, set Home Region to Japan East (Tokyo). This cannot be changed later. MinorWire assumes Tokyo.',
+        image: '/minorwire/guide/signup-02-home-region.png',
+        imageAlt: 'Home Region Japan East Tokyo',
+      },
+      {
+        title: 'Step 3 — Card verification at signup',
+        body:
+          'Add a credit card for identity verification. You may see a temporary authorization hold. Always Free usage is not charged.',
+        image: '/minorwire/guide/signup-03-payment.png',
+        imageAlt: 'Payment verification',
+        link: OCI_LINKS.signupDocs,
+        linkLabel: 'Official signup docs',
+      },
+      {
+        title: 'Step 4 — Upgrade to Pay As You Go',
+        body:
+          'Console → Billing & Cost Management → Upgrade and Manage Payment → Pay As You Go → Individual → Upgrade. Always Free resources stay free. Upgrade can take 1–2 days.',
+        image: '/minorwire/guide/signup-04-upgrade-payg.png',
+        imageAlt: 'Upgrade to Pay As You Go',
+        link: OCI_LINKS.billingUpgrade,
+        linkLabel: 'Open Upgrade and Manage Payment',
+      },
+      {
+        title: 'Step 5 — Copy Tenancy OCID',
+        body:
+          'Profile → Tenancy / Tenancy Details → copy OCID. We use root compartment (= Tenancy OCID) automatically — no separate IAM or compartment setup.',
+        image: '/minorwire/guide/live-tenancy.png',
+        imageAlt: 'Tenancy OCID',
+        link: OCI_LINKS.tenancy,
+        linkLabel: 'Open Tenancy Details',
+      },
+      {
+        title: 'Step 6 — Create an admin API key',
+        body:
+          'My profile → Tokens and keys → Add API Key. Save Fingerprint and download the .pem once. Copy User OCID from the same profile. Do not create groups or policies.',
+        image: '/minorwire/guide/live-user-ocid.png',
+        imageAlt: 'User OCID and API key',
+        link: OCI_LINKS.myProfile,
+        linkLabel: 'Open My profile',
+      },
+    ],
+    formTitle: 'Paste into the form (this is all)',
+    formIntro:
+      'Four values from your admin API key. No compartment or IAM policy fields (root = tenancy is used automatically).',
+    fields: [
+      {
+        key: 'region',
+        label: '1. Home region',
+        placeholder: 'ap-tokyo-1',
+        where: 'Use ap-tokyo-1 if Home Region is Japan East (Tokyo).',
+        url: fieldUrls.region,
+        urlLabel: 'Tenancy Details',
+      },
+      {
+        key: 'tenancyOcid',
+        label: '2. Tenancy OCID',
+        placeholder: 'ocid1.tenancy.oc1..aaaa...',
+        where: 'From Step 5. Starts with ocid1.tenancy.oc1..',
+        url: fieldUrls.tenancyOcid,
+        urlLabel: 'Tenancy Details',
+      },
+      {
+        key: 'userOcid',
+        label: '3. User OCID (admin)',
+        placeholder: 'ocid1.user.oc1..aaaa...',
+        where: 'From Step 6 — My profile OCID.',
+        url: fieldUrls.userOcid,
+        urlLabel: 'My profile',
+      },
+      {
+        key: 'fingerprint',
+        label: '4. API Key Fingerprint',
+        placeholder: 'aa:bb:cc:dd:...',
+        where: 'From Step 6 — Tokens and keys.',
+        url: fieldUrls.fingerprint,
+        urlLabel: 'Tokens and keys',
+      },
+      {
+        key: 'peerName',
+        label: '5. First device name',
+        placeholder: 'phone',
+        where: 'Any short label (phone, laptop). Not from Oracle.',
+        required: false,
+      },
+    ],
+    pemLabel: '6. API private key (PEM)',
+    pemWhere: 'Open the .pem from Step 6 and paste BEGIN through END.',
+    pemUrlLabel: 'My profile',
+    submitBusy: 'Starting…',
+    submit: 'Create VPN',
     verifying: 'Verifying payment…',
     cannotStart: 'Cannot start setup',
     back: 'Back to MinorWire',
     purchase: 'Purchase',
     status: 'Status',
     publicIp: 'Public IP',
-    working: 'Working… this can take several minutes.',
+    working: 'Working… this can take a few minutes.',
     doneNote:
-      'OCI server for this purchase is fixed (one server). Device .conf files can be added below anytime.',
+      'This purchase includes one OCI server. You can add more device .conf files below anytime.',
     confTitle: (name) => `WireGuard config (${name})`,
     downloadConf: (name) => `Download ${name}.conf`,
     addPeerTitle: 'Add another device .conf',
     addPeerPlaceholder: 'iphone',
     addPeerBusy: 'Adding…',
     addPeerSubmit: 'Create device config',
-    targetTitle: 'What was "Target Compartment"?',
-    targetBody:
-      'It is not a form field. It was only a placeholder inside the IAM policy text. The root compartment Name is usually the same as the tenancy name (example: jittee). Put that name into section B. Put the compartment OCID into field 3 below.',
-    urlsTitle: 'Direct Oracle Console URLs (bookmark these)',
-    urlsIntro: 'Sign in first, then open each link. Region is fixed to ap-tokyo-1 (Japan East / Tokyo).',
-    urlHome: 'Console home',
-    urlHomeHint: 'start here if logged out',
-    urlTenancy: 'Tenancy Details',
-    urlTenancyHint: 'copy Tenancy OCID + confirm home region',
-    urlCompartments: 'Compartments',
-    urlCompartmentsHint: 'copy root compartment OCID; note the Name for the policy',
-    urlDomains: 'Identity Domains',
-    urlDomainsHint: 'Users / Groups / Policies entry',
-    urlProfile: 'My profile',
-    urlProfileHint: 'User OCID; then Tokens and keys for Fingerprint + PEM',
-    urlPolicies: 'Policies',
-    urlPoliciesHint: 'paste the IAM policy from section B',
-    prepareTitle: 'A. Prepare in Oracle (once)',
-    prepareSteps: [
-      'Sign in at the Console home',
-      'Domains → Default → Groups → create group MinorWire (if missing)',
-      'Same domain → Users → create an API user (or use admin) → add to MinorWire',
-      'Policies → create a policy → paste section B',
-      'My profile → Tokens and keys → Add API Key → download the .pem once',
-    ],
-    figTenancy: 'Tenancy OCID (blurred). Profile → Tenancy → OCID.',
-    figCompartment: 'Compartment list: Name is for the policy text; OCID is field 3.',
-    figApiKeys: 'User OCID + fingerprint + private key download.',
-    policyTitle: 'B. IAM policy (copy into Oracle)',
-    policyIntroBefore:
-      'Type the compartment Name (for root, usually the tenancy name like jittee — not an OCID). Then copy the box and paste into ',
-    policyIntroAfter: '.',
-    policyNameLabel: 'Compartment name for policy text only',
-    policyNamePlaceholder: 'root compartment name (often your tenancy name)',
-    copyPolicy: 'Copy policy',
-    copiedPolicy: 'Copied',
-    formTitle: 'C. Paste into this form',
-    formIntro: 'Only these fields are sent to create the VPN.',
-    fields: [
-      {
-        key: 'region',
-        label: '1. Home region',
-        placeholder: 'ap-tokyo-1',
-        where: 'Usually ap-tokyo-1 for Japan East (Tokyo). Confirm Home region NRT on Tenancy Details.',
-        url: fieldUrls.region,
-        urlLabel: 'Open Tenancy Details',
-      },
-      {
-        key: 'tenancyOcid',
-        label: '2. Tenancy OCID',
-        placeholder: 'ocid1.tenancy.oc1..aaaa...',
-        where: 'Tenancy Details → General information → OCID. Starts with ocid1.tenancy.oc1..',
-        url: fieldUrls.tenancyOcid,
-        urlLabel: 'Open Tenancy Details (copy OCID)',
-      },
-      {
-        key: 'compartmentOcid',
-        label: '3. Compartment OCID (folder for the VM)',
-        placeholder: 'ocid1.tenancy.oc1.. OR ocid1.compartment.oc1..',
-        where:
-          'Compartments → root row OCID. Beginners: often the same as Tenancy OCID. The Name goes into the policy box, not here.',
-        url: fieldUrls.compartmentOcid,
-        urlLabel: 'Open Compartments (copy root OCID)',
-      },
-      {
-        key: 'userOcid',
-        label: '4. User OCID (API user)',
-        placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'My profile → Details → OCID. Starts with ocid1.user.oc1..',
-        url: fieldUrls.userOcid,
-        urlLabel: 'Open My profile (copy User OCID)',
-      },
-      {
-        key: 'fingerprint',
-        label: '5. API key fingerprint',
-        placeholder: 'aa:bb:cc:dd:...',
-        where:
-          'My profile → Tokens and keys → API Keys → Fingerprint. If empty: Add API Key, save .pem, then copy.',
-        url: fieldUrls.fingerprint,
-        urlLabel: 'Open My profile → Tokens and keys',
-      },
-      {
-        key: 'peerName',
-        label: '6. First device name (for the .conf file name)',
-        placeholder: 'phone',
-        where: 'Any short name (letters/numbers). Example: phone, laptop. Not from Oracle.',
-        required: false,
-      },
-    ],
-    pemLabel: '7. API private key (PEM file contents)',
-    pemWhere:
-      'My profile → Tokens and keys → Add API Key → download .pem → open in Notepad → paste including BEGIN / END.',
-    pemUrlLabel: 'Open My profile (then Tokens and keys)',
-    submitBusy: 'Starting…',
-    submit: 'Create VPN',
-    missingSession: 'Missing session_id. Complete PayNow checkout first.',
-    paymentUnverified: 'Payment not verified',
-    verifyFailed: 'Could not verify payment',
+    missingSession: 'Missing session_id. Complete PayNow payment first.',
+    paymentUnverified: 'Could not verify payment',
+    verifyFailed: 'Payment verification failed',
     failedStart: 'Failed to start',
     networkError: 'Network error',
     failedPeer: 'Failed to add device config',
   },
 
   zh: {
-    badge: 'MinorWire 安装向导',
-    title: '只需填写这些值',
+    badge: 'MinorWire 设置',
+    title: '简易设置（管理员 API 密钥）',
     intro:
-      '粘贴一次最小权限 OCI API 密钥。我们会在 Always Free 上创建一台 WireGuard 服务器。之后可随时再生成设备 .conf。不会保存 OCI API 密钥。',
-    verifying: '正在验证付款…',
-    cannotStart: '无法开始安装',
-    back: '返回 MinorWire',
-    purchase: '购买',
-    status: '状态',
-    publicIp: '公网 IP',
-    working: '处理中… 可能需要几分钟。',
-    doneNote: '本次购买只对应一台 OCI 服务器。设备 .conf 可在下方随时追加。',
-    confTitle: (name) => `WireGuard 配置 (${name})`,
-    downloadConf: (name) => `下载 ${name}.conf`,
-    addPeerTitle: '添加另一台设备的 .conf',
-    addPeerPlaceholder: 'iphone',
-    addPeerBusy: '添加中…',
-    addPeerSubmit: '创建设备配置',
-    targetTitle: '什么是 “Target Compartment”？',
-    targetBody:
-      '它不是表单字段，只是 IAM 策略文案里的占位名。根 compartment 的 Name 通常与租户名相同（例如 jittee）。把 Name 填到 B 段策略框；把 OCID 填到下面第 3 项。',
-    urlsTitle: 'Oracle 控制台直达链接（建议收藏）',
-    urlsIntro: '请先登录，再打开各链接。区域固定为 ap-tokyo-1（东京）。',
-    urlHome: '控制台首页',
-    urlHomeHint: '未登录时从这里进入',
-    urlTenancy: 'Tenancy Details',
-    urlTenancyHint: '复制 Tenancy OCID 并确认主区域',
-    urlCompartments: 'Compartments',
-    urlCompartmentsHint: '复制根 compartment OCID；记下策略用 Name',
-    urlDomains: 'Identity Domains',
-    urlDomainsHint: 'Users / Groups / Policies 入口',
-    urlProfile: 'My profile',
-    urlProfileHint: 'User OCID；Fingerprint 与 PEM 在 Tokens and keys',
-    urlPolicies: 'Policies',
-    urlPoliciesHint: '粘贴 B 段 IAM 策略',
-    prepareTitle: 'A. 在 Oracle 中准备（一次）',
-    prepareSteps: [
-      '登录控制台首页',
-      'Domains → Default → Groups → 创建组 MinorWire（如没有）',
-      '同一域名 → Users → 准备 API 用户 → 加入 MinorWire',
-      'Policies → 创建策略 → 粘贴 B 段',
-      'My profile → Tokens and keys → Add API Key → 下载一次 .pem',
+      '我们会在你的 Oracle Cloud 上创建一台 WireGuard。不需要 IAM 策略或专用用户，只用管理员 API 密钥即可。',
+    needsTitle: '首先需要准备',
+    needsItems: [
+      'Oracle Cloud 账号（Home Region 选择 Japan East / Tokyo）',
+      '升级到 Pay As You Go（Always Free 资源仍免费，便于稳定拿到容量）',
+      '管理员用户的 API 密钥（User OCID + Fingerprint + PEM）。无需 IAM 配置',
     ],
-    figTenancy: 'Tenancy OCID（已打码）。Profile → Tenancy → OCID。',
-    figCompartment: 'Compartment 列表：Name 用于策略，OCID 用于第 3 项。',
-    figApiKeys: 'User OCID + Fingerprint + 私钥下载。',
-    policyTitle: 'B. IAM 策略（粘贴到 Oracle）',
-    policyIntroBefore:
-      '填写 compartment 的 Name（根目录通常是租户名，如 jittee，不是 OCID）。复制后粘贴到 ',
-    policyIntroAfter: '。',
-    policyNameLabel: '仅用于策略文案的 compartment 名称',
-    policyNamePlaceholder: '根 compartment 名称（多为租户名）',
-    copyPolicy: '复制策略',
-    copiedPolicy: '已复制',
-    formTitle: 'C. 粘贴到本表单',
-    formIntro: '创建 VPN 只会提交这些字段。',
+    flowTitle: '整体流程',
+    flowSteps: [
+      '在目标区域（东京）创建 Oracle Cloud 账号',
+      '升级到 Pay As You Go',
+      '用管理员创建 API 密钥并复制 Tenancy OCID',
+      '粘贴到下方表单并创建 VPN',
+      '把 .conf 导入官方 WireGuard 应用',
+    ],
+    guideTitle: '分步指南（按顺序）',
+    guideIntro: '对照截图操作。若已有账号，可跳过 Step 1–2，从 Step 3 或 Step 4 开始。',
+    guideSteps: [
+      {
+        title: 'Step 1 — 创建 Oracle Cloud 账号',
+        body: '在注册页填写国家、姓名、邮箱并完成邮箱验证。每人限一个账号。',
+        image: '/minorwire/guide/signup-01-start.png',
+        imageAlt: 'Oracle Cloud Free Tier signup',
+        link: OCI_LINKS.signup,
+        linkLabel: '打开注册页',
+      },
+      {
+        title: 'Step 2 — Home Region 选择 Japan East (Tokyo)',
+        body:
+          '填写 Cloud Account Name 后，Home Region 务必选 Japan East (Tokyo)。之后无法更改。MinorWire 默认东京。',
+        image: '/minorwire/guide/signup-02-home-region.png',
+        imageAlt: 'Home Region Japan East Tokyo',
+      },
+      {
+        title: 'Step 3 — 注册时用信用卡验证',
+        body: '添加信用卡用于身份验证，可能出现临时预授权。Always Free 范围内不收费。',
+        image: '/minorwire/guide/signup-03-payment.png',
+        imageAlt: 'Payment verification',
+        link: OCI_LINKS.signupDocs,
+        linkLabel: '官方注册文档',
+      },
+      {
+        title: 'Step 4 — 升级到 Pay As You Go',
+        body:
+          '控制台 → Billing & Cost Management → Upgrade and Manage Payment → Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。升级可能需要 1–2 天。',
+        image: '/minorwire/guide/signup-04-upgrade-payg.png',
+        imageAlt: 'Upgrade to Pay As You Go',
+        link: OCI_LINKS.billingUpgrade,
+        linkLabel: '打开 Upgrade and Manage Payment',
+      },
+      {
+        title: 'Step 5 — 复制 Tenancy OCID',
+        body:
+          'Profile → Tenancy / Tenancy Details 复制 OCID。我们会自动使用 root（= Tenancy OCID），无需单独 IAM / Compartment。',
+        image: '/minorwire/guide/live-tenancy.png',
+        imageAlt: 'Tenancy OCID',
+        link: OCI_LINKS.tenancy,
+        linkLabel: '打开 Tenancy Details',
+      },
+      {
+        title: 'Step 6 — 创建管理员 API 密钥',
+        body:
+          'My profile → Tokens and keys → Add API Key。保存 Fingerprint 并下载一次 .pem。从同一页面复制 User OCID。不要创建组或策略。',
+        image: '/minorwire/guide/live-user-ocid.png',
+        imageAlt: 'User OCID and API key',
+        link: OCI_LINKS.myProfile,
+        linkLabel: '打开 My profile',
+      },
+    ],
+    formTitle: '粘贴到表单（仅这些）',
+    formIntro: '管理员 API 密钥的四个字段。没有 Compartment / IAM 策略项（自动使用 tenancy = root）。',
     fields: [
       {
         key: 'region',
-        label: '1. 主区域',
+        label: '1. Home region',
         placeholder: 'ap-tokyo-1',
-        where: '东京一般为 ap-tokyo-1。Tenancy Details 中 Home region 为 NRT 即东京。',
+        where: '若 Home Region 为 Japan East (Tokyo)，填写 ap-tokyo-1。',
         url: fieldUrls.region,
-        urlLabel: '打开 Tenancy Details',
+        urlLabel: 'Tenancy Details',
       },
       {
         key: 'tenancyOcid',
         label: '2. Tenancy OCID',
         placeholder: 'ocid1.tenancy.oc1..aaaa...',
-        where: 'Tenancy Details → General information → OCID。以 ocid1.tenancy.oc1.. 开头。',
+        where: '来自 Step 5。以 ocid1.tenancy.oc1.. 开头。',
         url: fieldUrls.tenancyOcid,
-        urlLabel: '打开 Tenancy Details（复制 OCID）',
-      },
-      {
-        key: 'compartmentOcid',
-        label: '3. Compartment OCID（创建 VM 的目录）',
-        placeholder: 'ocid1.tenancy.oc1.. 或 ocid1.compartment.oc1..',
-        where:
-          'Compartments → 根行 OCID。新手可与 Tenancy OCID 相同。Name（如 jittee）只填策略框，不填这里。',
-        url: fieldUrls.compartmentOcid,
-        urlLabel: '打开 Compartments（根 OCID）',
+        urlLabel: 'Tenancy Details',
       },
       {
         key: 'userOcid',
-        label: '4. User OCID（API 用户）',
+        label: '3. User OCID（管理员）',
         placeholder: 'ocid1.user.oc1..aaaa...',
-        where: 'My profile → Details → OCID。以 ocid1.user.oc1.. 开头。',
+        where: '来自 Step 6 — My profile。',
         url: fieldUrls.userOcid,
-        urlLabel: '打开 My profile（User OCID）',
+        urlLabel: 'My profile',
       },
       {
         key: 'fingerprint',
-        label: '5. API 密钥 Fingerprint',
+        label: '4. API Key Fingerprint',
         placeholder: 'aa:bb:cc:dd:...',
-        where:
-          'My profile → Tokens and keys → API Keys → Fingerprint。没有则 Add API Key，保存 .pem 后再复制。',
+        where: '来自 Step 6 — Tokens and keys。',
         url: fieldUrls.fingerprint,
-        urlLabel: '打开 My profile → Tokens and keys',
+        urlLabel: 'Tokens and keys',
       },
       {
         key: 'peerName',
-        label: '6. 首台设备名（.conf 文件名）',
+        label: '5. 第一台设备名',
         placeholder: 'phone',
-        where: '任意英文数字。例如 phone、laptop。不是 Oracle 里的字段。',
+        where: '任意英文短名（phone、laptop）。不是 Oracle 里的值。',
         required: false,
       },
     ],
-    pemLabel: '7. API 私钥（PEM 全文）',
-    pemWhere:
-      'My profile → Tokens and keys → Add API Key → 下载 .pem → 用记事本打开 → 连 BEGIN/END 一起粘贴。',
-    pemUrlLabel: '打开 My profile（Tokens and keys）',
+    pemLabel: '6. API 私钥（PEM）',
+    pemWhere: '打开 Step 6 下载的 .pem，从 BEGIN 到 END 全部粘贴。',
+    pemUrlLabel: 'My profile',
     submitBusy: '启动中…',
     submit: '创建 VPN',
+    verifying: '正在确认付款…',
+    cannotStart: '无法开始设置',
+    back: '返回 MinorWire',
+    purchase: '购买',
+    status: '状态',
+    publicIp: '公网 IP',
+    working: '处理中… 可能需要几分钟。',
+    doneNote: '本次购买仅包含一台 OCI 服务器。下方可随时追加设备 .conf。',
+    confTitle: (name) => `WireGuard 配置 (${name})`,
+    downloadConf: (name) => `下载 ${name}.conf`,
+    addPeerTitle: '追加其他设备 .conf',
+    addPeerPlaceholder: 'iphone',
+    addPeerBusy: '添加中…',
+    addPeerSubmit: '创建设备配置',
     missingSession: '缺少 session_id。请先完成 PayNow 付款。',
-    paymentUnverified: '无法验证付款',
-    verifyFailed: '付款验证失败',
+    paymentUnverified: '无法确认付款',
+    verifyFailed: '付款确认失败',
     failedStart: '启动失败',
     networkError: '网络错误',
-    failedPeer: '添加设备配置失败',
+    failedPeer: '追加设备配置失败',
   },
 }
