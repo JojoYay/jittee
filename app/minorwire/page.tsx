@@ -28,7 +28,14 @@ interface Copy {
   ctaNote: string
   conceptTitle: string
   conceptDesc: string
-  conceptPoints: string[]
+  deliveryTitle: string
+  deliveryLead: string
+  deliveryCloud: string
+  deliveryCloudWho: string
+  deliveryServer: string
+  deliveryServerWho: string
+  deliveryGuide: string
+  deliveryTogether: string
   compareTitle: string
   compareIntro: string
   compareProsTitle: string
@@ -52,6 +59,7 @@ interface Copy {
   planSetupBest: string
   needTitle: string
   needPoints: string[]
+  needLead: string
   faqTitle: string
   faqs: { q: string; a: string }[]
   finalTitle: string
@@ -78,12 +86,14 @@ const COPY: Record<string, Copy> = {
     conceptTitle: '何をするサービスか',
     conceptDesc:
       '帯域を売り続ける VPN 会社ではありません。あなたのクラウドに小さな専用 VPN サーバーを1台作り、スマホや PC からつなげる設定まで自動で用意します。',
-    conceptPoints: [
-      'クラウドはあなた名義（無料枠を想定）',
-      'セットアップ後の毎月の運用費は、無料枠内なら基本ゼロ',
-      '端末用の接続設定はあとから何度でも追加可能',
-      'キーは構築に使うだけで、顧客クラウドの API キーは永続保存しません',
-    ],
+    deliveryTitle: 'いまの提供形態',
+    deliveryLead: 'アプリのダウンロードや CLI の ZIP ではありません。クラウドの中に、あなた専用の VPN サーバーを1台置く形です。',
+    deliveryCloud: 'クラウド',
+    deliveryCloudWho: 'お客様がサインアップして準備',
+    deliveryServer: 'VPN サーバー',
+    deliveryServerWho: 'Jittee が用意・起動',
+    deliveryGuide: 'やり方がわからない場合でも大丈夫。画面の手順は Jittee が説明します。',
+    deliveryTogether: 'それでも不安なときは、一緒に設定するオプションもあります。',
     compareTitle: 'NordVPN / ExpressVPN などとの違い',
     compareIntro:
       '大手 VPN は「いつでもつながる月額サービス」。MinorWire は「自分のクラウドに一度立てて、以後ほぼ無料で使う」道具です。',
@@ -138,12 +148,9 @@ const COPY: Record<string, Copy> = {
       '複数端末の設定も一緒に',
     ],
     planSetupBest: '最短で確実に終わらせたい人向け',
-    needTitle: '用意するもの',
-    needPoints: [
-      '無料枠のあるクラウドアカウント（VPN を置きたい地域で作成）',
-      '管理者用の API キー（登録するだけ）',
-      'スマホや PC（接続用。無料の公式クライアントを利用）',
-    ],
+    needTitle: '必要なもの',
+    needPoints: ['メールアドレス', 'クレジットカード'],
+    needLead: '上記を用意し、PayNow 支払いを行うだけで、あなたのプライベート VPN サーバーを構築できます。',
     faqTitle: 'FAQ',
     faqs: [
       {
@@ -185,12 +192,15 @@ const COPY: Record<string, Copy> = {
     conceptTitle: 'What this is',
     conceptDesc:
       'We are not a bandwidth subscription company. We place a small dedicated VPN server on your cloud and prepare device connection settings automatically.',
-    conceptPoints: [
-      'Cloud account is in your name (free tier intended)',
-      'After setup, monthly ops are basically free within the free allowance',
-      'Add more device connection settings anytime',
-      'Your cloud API key is used for provisioning only and not stored permanently',
-    ],
+    deliveryTitle: 'How it is delivered',
+    deliveryLead:
+      'Not a downloadable app or CLI ZIP. We place one dedicated VPN server inside your cloud account.',
+    deliveryCloud: 'Cloud',
+    deliveryCloudWho: 'You sign up and prepare it',
+    deliveryServer: 'VPN server',
+    deliveryServerWho: 'Jittee provisions and starts it',
+    deliveryGuide: 'If the steps feel unfamiliar, Jittee explains the process on screen.',
+    deliveryTogether: 'Still unsure? There is an option to set it up together with Jittee.',
     compareTitle: 'Compared with NordVPN / ExpressVPN and similar',
     compareIntro:
       'Big VPN brands sell a monthly “always-on” service. MinorWire is a tool to host one VPN on your own cloud and keep ongoing cost near zero.',
@@ -246,11 +256,8 @@ const COPY: Record<string, Copy> = {
     ],
     planSetupBest: 'Best if you want it done quickly and checked live',
     needTitle: 'What you need',
-    needPoints: [
-      'A cloud account with a free allowance (created in your target region)',
-      'An admin API key (you only register it)',
-      'Phone or PC (free official client apps)',
-    ],
+    needPoints: ['Email address', 'Credit card'],
+    needLead: 'Prepare those, pay with PayNow, and we build your private VPN server.',
     faqTitle: 'FAQ',
     faqs: [
       {
@@ -292,12 +299,14 @@ const COPY: Record<string, Copy> = {
     conceptTitle: '这是什么服务',
     conceptDesc:
       '我们不是持续出售带宽的 VPN 公司。我们在你的云上搭建一台小型专属 VPN 服务器，并自动准备手机 / 电脑的连接配置。',
-    conceptPoints: [
-      '云账号在你名下（面向免费额度）',
-      '设置完成后，在免费额度内月运营费基本为零',
-      '可随时追加设备连接配置',
-      '云 API 密钥仅用于部署，不会永久保存',
-    ],
+    deliveryTitle: '当前提供方式',
+    deliveryLead: '不是下载 App，也不是 CLI ZIP。我们在你的云账号里放置一台专属 VPN 服务器。',
+    deliveryCloud: '云',
+    deliveryCloudWho: '由你注册并准备',
+    deliveryServer: 'VPN 服务器',
+    deliveryServerWho: '由 Jittee 准备并启动',
+    deliveryGuide: '即使不熟悉流程也没关系，Jittee 会在页面上说明怎么做。',
+    deliveryTogether: '仍不确定时，也可以选择与 Jittee 一起完成设置。',
     compareTitle: '与 NordVPN / ExpressVPN 等的区别',
     compareIntro:
       '大型 VPN 卖的是按月“随时可连”的服务。MinorWire 是把 VPN 放到你自己的云上、尽量把后续费用压到接近零的工具。',
@@ -343,7 +352,8 @@ const COPY: Record<string, Copy> = {
     planSetupPoints: ['含自助流程', '在线协助（约60分钟）', '确认 VPN 已启动', '一起添加多台设备配置'],
     planSetupBest: '适合想尽快、稳妥完成的人',
     needTitle: '你需要准备',
-    needPoints: ['有免费额度的云账号（在目标区域创建）', '管理员 API 密钥（只需登记）', '手机或电脑（使用免费官方客户端）'],
+    needPoints: ['邮箱地址', '信用卡'],
+    needLead: '准备好以上两项，用 PayNow 付款即可开始搭建你的专属 VPN 服务器。',
     faqTitle: '常见问题',
     faqs: [
       {
@@ -513,14 +523,73 @@ function MinorWireContent() {
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className={`${syne.className} text-3xl font-bold mb-4`}>{c.conceptTitle}</h2>
-        <p className="text-lg text-[#3a4f44] max-w-3xl leading-relaxed mb-6">{c.conceptDesc}</p>
-        <ul className="space-y-3 text-[#3a4f44] max-w-3xl">
-          {c.conceptPoints.map((p) => (
-            <li key={p} className="border-l-2 border-[#7dba98] pl-4">
-              {p}
-            </li>
-          ))}
-        </ul>
+        <p className="text-lg text-[#3a4f44] max-w-3xl leading-relaxed mb-10">{c.conceptDesc}</p>
+
+        <h3 className={`${syne.className} text-2xl font-bold mb-3`}>{c.deliveryTitle}</h3>
+        <p className="text-[#3a4f44] max-w-3xl leading-relaxed mb-8">{c.deliveryLead}</p>
+
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center max-w-5xl">
+          <svg
+            viewBox="0 0 560 320"
+            role="img"
+            aria-label={`${c.deliveryCloud}: ${c.deliveryCloudWho}. ${c.deliveryServer}: ${c.deliveryServerWho}.`}
+            className="w-full h-auto"
+          >
+            <defs>
+              <linearGradient id="mwCloudFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#dff0e7" />
+                <stop offset="100%" stopColor="#c5dfd1" />
+              </linearGradient>
+            </defs>
+            <ellipse cx="280" cy="210" rx="210" ry="58" fill="#b7d4c4" opacity="0.45" />
+            <path
+              d="M145 175c0-48 38-86 86-86 14 0 27 3 39 9 14-36 49-61 90-61 54 0 98 44 98 98 0 4 0 8-1 12 32 8 55 37 55 71 0 41-33 74-74 74H168c-45 0-81-36-81-81 0-33 20-62 48-74z"
+              fill="url(#mwCloudFill)"
+              stroke="#2f6b4f"
+              strokeWidth="3"
+            />
+            <rect x="220" y="145" width="120" height="88" rx="10" fill="#1d3d2e" />
+            <rect x="232" y="158" width="96" height="10" rx="3" fill="#7dba98" />
+            <rect x="232" y="176" width="96" height="10" rx="3" fill="#7dba98" opacity="0.75" />
+            <rect x="232" y="194" width="96" height="10" rx="3" fill="#7dba98" opacity="0.5" />
+            <circle cx="318" cy="214" r="5" fill="#9fd6b8" />
+            <text
+              x="280"
+              y="128"
+              textAnchor="middle"
+              fill="#14201a"
+              fontSize="18"
+              fontWeight="700"
+              fontFamily="system-ui,sans-serif"
+            >
+              {c.deliveryServer}
+            </text>
+            <text
+              x="280"
+              y="268"
+              textAnchor="middle"
+              fill="#2f6b4f"
+              fontSize="16"
+              fontWeight="700"
+              fontFamily="system-ui,sans-serif"
+            >
+              {c.deliveryCloud}
+            </text>
+          </svg>
+
+          <div className="space-y-6">
+            <div className="border-l-2 border-[#7dba98] pl-4">
+              <p className="text-sm uppercase tracking-wider text-[#2f6b4f] font-semibold">{c.deliveryCloud}</p>
+              <p className="mt-1 text-lg text-[#14201a] font-semibold leading-relaxed">{c.deliveryCloudWho}</p>
+            </div>
+            <div className="border-l-2 border-[#1d3d2e] pl-4">
+              <p className="text-sm uppercase tracking-wider text-[#2f6b4f] font-semibold">{c.deliveryServer}</p>
+              <p className="mt-1 text-lg text-[#14201a] font-semibold leading-relaxed">{c.deliveryServerWho}</p>
+            </div>
+            <p className="text-[#3a4f44] leading-relaxed">{c.deliveryGuide}</p>
+            <p className="text-[#3a4f44] leading-relaxed font-medium">{c.deliveryTogether}</p>
+          </div>
+        </div>
       </section>
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -626,6 +695,7 @@ function MinorWireContent() {
             </li>
           ))}
         </ul>
+        <p className="mt-6 text-lg text-[#14201a] font-semibold max-w-3xl leading-relaxed">{c.needLead}</p>
       </section>
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
