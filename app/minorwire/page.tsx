@@ -51,6 +51,8 @@ interface Copy {
   pricingTitle: string
   planAppName: string
   planAppPrice: string
+  planAppListPrice: string
+  planAppPromo: string
   planAppDesc: string
   planAppPoints: string[]
   planAppBest: string
@@ -85,7 +87,7 @@ const COPY: Record<string, Copy> = {
     freeOpsTitle: '毎月の運用費用は無料',
     freeOpsBody:
       'クラウド側の無料枠の範囲で動かすので、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
-    ctaApp: '自分で設定 S$18（PayNow）',
+    ctaApp: '自分で設定 S$18（開始記念・定価 S$30）',
     ctaSetup: 'Jittee に設定してもらう S$100（PayNow）',
     ctaNote: '決済は Stripe PayNow。支払い後にセットアップ画面へ進みます（メールでも URL を送付）。',
     conceptTitle: 'VPNサーバーの真実',
@@ -136,6 +138,8 @@ const COPY: Record<string, Copy> = {
     pricingTitle: '料金（買い切り・SGD）',
     planAppName: '自分で設定',
     planAppPrice: 'S$18',
+    planAppListPrice: 'S$30',
+    planAppPromo: 'サービス開始記念価格（定価 S$30）',
     planAppDesc: 'インストラクションに沿って自分でキー登録〜起動まで進める方向け。',
     planAppPoints: [
       '画面の手順どおりに進めれば完了',
@@ -195,7 +199,7 @@ const COPY: Record<string, Copy> = {
     freeOpsTitle: 'Monthly operating cost: free',
     freeOpsBody:
       'Because it runs within the cloud free allowance, there is no monthly server fee or VPN usage fee. You only pay the one-time setup charge.',
-    ctaApp: 'Do it yourself S$18 (PayNow)',
+    ctaApp: 'Do it yourself S$18 (launch price; list S$30)',
     ctaSetup: 'Have Jittee set it up S$100 (PayNow)',
     ctaNote: 'Stripe PayNow. After payment you open the setup wizard (URL also emailed).',
     conceptTitle: 'The truth about VPN servers',
@@ -246,6 +250,8 @@ const COPY: Record<string, Copy> = {
     pricingTitle: 'Pricing (one-time, SGD)',
     planAppName: 'Do it yourself',
     planAppPrice: 'S$18',
+    planAppListPrice: 'S$30',
+    planAppPromo: 'Launch commemorative price (list S$30)',
     planAppDesc: 'Follow the instructions and finish key registration through first connect on your own.',
     planAppPoints: [
       'Step-by-step on-screen guide',
@@ -305,7 +311,7 @@ const COPY: Record<string, Copy> = {
     freeOpsTitle: '每月运营费用：免费',
     freeOpsBody:
       '因为在云免费额度内运行，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
-    ctaApp: '自己设置 S$18（PayNow）',
+    ctaApp: '自己设置 S$18（上线纪念价 · 定价 S$30）',
     ctaSetup: '请 Jittee 代为设置 S$100（PayNow）',
     ctaNote: 'Stripe PayNow。付款后进入设置向导（邮件也会发送链接）。',
     conceptTitle: 'VPN 服务器的真相',
@@ -356,6 +362,8 @@ const COPY: Record<string, Copy> = {
     pricingTitle: '价格（一次性 · SGD）',
     planAppName: '自己设置',
     planAppPrice: 'S$18',
+    planAppListPrice: 'S$30',
+    planAppPromo: '服务上线纪念价（定价 S$30）',
     planAppDesc: '按说明自行完成密钥登记到首次连通。',
     planAppPoints: ['按页面步骤即可完成', '登记密钥后自动建服务器', '每次购买仅搭建一次服务器', '设备配置可反复追加'],
     planAppBest: '适合愿意自己点几步的人',
@@ -667,8 +675,12 @@ function MinorWireContent() {
         <div className="grid md:grid-cols-2 gap-8">
           <div className="border border-[#1d3d2e]/15 bg-white/80 p-8">
             <p className="text-sm uppercase tracking-wider text-[#2f6b4f] font-medium">{c.planAppName}</p>
-            <p className={`${syne.className} text-5xl font-bold mt-2`}>{c.planAppPrice}</p>
-            <p className="mt-2 text-sm font-semibold text-[#2f6b4f]">{c.planAppBest}</p>
+            <div className="mt-2 flex flex-wrap items-baseline gap-3">
+              <p className={`${syne.className} text-5xl font-bold`}>{c.planAppPrice}</p>
+              <p className="text-lg text-[#5a6f64] line-through">{c.planAppListPrice}</p>
+            </div>
+            <p className="mt-2 text-sm font-semibold text-[#2f6b4f]">{c.planAppPromo}</p>
+            <p className="mt-1 text-sm font-semibold text-[#2f6b4f]">{c.planAppBest}</p>
             <p className="mt-3 text-[#3a4f44]">{c.planAppDesc}</p>
             <ul className="mt-6 space-y-2 text-[#3a4f44]">
               {c.planAppPoints.map((p) => (
