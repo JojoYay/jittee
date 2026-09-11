@@ -76,7 +76,7 @@ interface Copy {
 const COPY: Record<string, Copy> = {
   ja: {
     badge: '自分のクラウドで動く、自分の VPN',
-    heroTitle: '一度つくれば、毎月の運用費は基本ゼロ。',
+    heroTitle: '一度つくれば、毎月の運用費は基本ゼロのVPN',
     heroDesc:
       'あなたが用意するクラウド上に、専用の VPN サーバーを1台自動で立てます。キーを登録するだけで完了。回線もサーバーもあなたのものなので、有名な月額 VPN サービスのような毎月課金はありません。',
     teaserTitle: 'VPNサーバーを立ててテレビを見よう',
@@ -84,22 +84,23 @@ const COPY: Record<string, Copy> = {
       '海外にいても、選んだ国からアクセスしているように見せるためのシンプルな VPN サーバーです。セットアップは約5分で完了します。',
     freeOpsTitle: '毎月の運用費用は無料',
     freeOpsBody:
-      'クラウド側の無料枠の範囲で動かせば、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
+      'クラウド側の無料枠の範囲で動かすので、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
     ctaApp: '自分で設定 S$18（PayNow）',
     ctaSetup: 'Jittee に設定してもらう S$100（PayNow）',
     ctaNote: '決済は Stripe PayNow。支払い後にセットアップ画面へ進みます（メールでも URL を送付）。',
-    conceptTitle: '何をするサービスか',
+    conceptTitle: 'VPNサーバーの真実',
     conceptDesc:
-      '帯域を売り続ける VPN 会社ではありません。あなたのクラウドに小さな専用 VPN サーバーを1台作り、スマホや PC からつなげる設定まで自動で用意します。',
-    deliveryTitle: 'いまの提供形態',
-    deliveryLead: 'アプリのダウンロードや CLI の ZIP ではありません。クラウドの中に、あなた専用の VPN サーバーを1台置く形です。',
+      'VPN は特別なサービスではありません。サーバーを自分で立てるのに、高度な専門知識は不要です。いまはクラウド上にサーバーを置けば、元手ゼロで VPN サーバーを作れます。',
+    deliveryTitle: 'VPN提供するための構成',
+    deliveryLead:
+      'あなたがクラウドを契約します。その契約したクラウド上に VPN サーバーを立てます。クラウドは無料運用が可能なものをこちらから指定するので、実質運用にかかるコストはありません。',
     deliveryCloud: 'クラウド',
     deliveryCloudWho: 'お客様がサインアップして準備',
     deliveryServer: 'VPN サーバー',
     deliveryServerWho: 'Jittee が用意・起動',
     deliveryGuide: 'やり方がわからない場合でも大丈夫。画面の手順は Jittee が説明します。',
     deliveryTogether: 'それでも不安なときは、一緒に設定するオプションもあります。',
-    compareTitle: 'NordVPN / ExpressVPN などとの違い',
+    compareTitle: '大手VPN業者（NordVPN / ExpressVPN など）との違い',
     compareIntro:
       '大手 VPN は「いつでもつながる月額サービス」。MinorWire は「自分のクラウドに一度立てて、以後ほぼ無料で使う」道具です。',
     compareProsTitle: 'メリット',
@@ -185,7 +186,7 @@ const COPY: Record<string, Copy> = {
   },
   en: {
     badge: 'Your cloud. Your private VPN.',
-    heroTitle: 'Set it up once. Monthly ops stay free.',
+    heroTitle: 'A VPN you set up once — monthly ops stay near zero.',
     heroDesc:
       'We automatically create one dedicated VPN server on the cloud account you provide. Just register an admin API key. Because the server and pipe are yours, there is no recurring fee like popular monthly VPN brands.',
     teaserTitle: 'Spin up a VPN server. Watch TV like you\'re home.',
@@ -193,23 +194,23 @@ const COPY: Record<string, Copy> = {
       'A simple VPN server so that while you are overseas, it looks like you are accessing from a country you choose. Setup finishes in about five minutes.',
     freeOpsTitle: 'Monthly operating cost: free',
     freeOpsBody:
-      'Stay within the cloud free allowance and you do not pay monthly server or VPN usage fees. You only pay the one-time setup fee.',
+      'Because it runs within the cloud free allowance, there is no monthly server fee or VPN usage fee. You only pay the one-time setup charge.',
     ctaApp: 'Do it yourself S$18 (PayNow)',
     ctaSetup: 'Have Jittee set it up S$100 (PayNow)',
     ctaNote: 'Stripe PayNow. After payment you open the setup wizard (URL also emailed).',
-    conceptTitle: 'What this is',
+    conceptTitle: 'The truth about VPN servers',
     conceptDesc:
-      'We are not a bandwidth subscription company. We place a small dedicated VPN server on your cloud and prepare device connection settings automatically.',
-    deliveryTitle: 'How it is delivered',
+      'A VPN is not a special service. You do not need deep expertise to run a server, and on today’s clouds you can create a VPN server with essentially no capital outlay.',
+    deliveryTitle: 'How we provide the VPN',
     deliveryLead:
-      'Not a downloadable app or CLI ZIP. We place one dedicated VPN server inside your cloud account.',
+      'You sign up for the cloud. We place a VPN server on that account. We point you to a cloud that can run within a free allowance, so ongoing operating cost is effectively zero.',
     deliveryCloud: 'Cloud',
     deliveryCloudWho: 'You sign up and prepare it',
     deliveryServer: 'VPN server',
     deliveryServerWho: 'Jittee provisions and starts it',
     deliveryGuide: 'If the steps feel unfamiliar, Jittee explains the process on screen.',
     deliveryTogether: 'Still unsure? There is an option to set it up together with Jittee.',
-    compareTitle: 'Compared with NordVPN / ExpressVPN and similar',
+    compareTitle: 'Vs. major VPN vendors (NordVPN / ExpressVPN and similar)',
     compareIntro:
       'Big VPN brands sell a monthly “always-on” service. MinorWire is a tool to host one VPN on your own cloud and keep ongoing cost near zero.',
     compareProsTitle: 'Pros',
@@ -295,7 +296,7 @@ const COPY: Record<string, Copy> = {
   },
   zh: {
     badge: '跑在你自己云上的专属 VPN',
-    heroTitle: '设置一次，之后月费基本为零。',
+    heroTitle: '设置一次，之后月费基本为零的 VPN',
     heroDesc:
       '我们在你准备的云账号上自动创建一台专属 VPN 服务器。只需登记管理员 API 密钥。服务器与线路归你，因此不像常见月付 VPN 品牌那样每月收费。',
     teaserTitle: '搭一台 VPN 服务器，像在家一样看电视',
@@ -303,22 +304,23 @@ const COPY: Record<string, Copy> = {
       '这是一台简单的 VPN 服务器，让你在海外时看起来像从选定的国家访问。大约 5 分钟即可完成设置。',
     freeOpsTitle: '每月运营费用：免费',
     freeOpsBody:
-      '在云免费额度内运行时，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
+      '因为在云免费额度内运行，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
     ctaApp: '自己设置 S$18（PayNow）',
     ctaSetup: '请 Jittee 代为设置 S$100（PayNow）',
     ctaNote: 'Stripe PayNow。付款后进入设置向导（邮件也会发送链接）。',
-    conceptTitle: '这是什么服务',
+    conceptTitle: 'VPN 服务器的真相',
     conceptDesc:
-      '我们不是持续出售带宽的 VPN 公司。我们在你的云上搭建一台小型专属 VPN 服务器，并自动准备手机 / 电脑的连接配置。',
-    deliveryTitle: '当前提供方式',
-    deliveryLead: '不是下载 App，也不是 CLI ZIP。我们在你的云账号里放置一台专属 VPN 服务器。',
+      'VPN 并不是什么特别的服务。自己搭服务器并不需要高深专业知识；如今在云上开一台服务器，几乎不用启动资金就能做出 VPN 服务器。',
+    deliveryTitle: '我们如何提供 VPN',
+    deliveryLead:
+      '由你签约云服务。我们在该账号上搭建 VPN 服务器。云我们指定可免费运营的方案，因此实质运营成本接近于零。',
     deliveryCloud: '云',
     deliveryCloudWho: '由你注册并准备',
     deliveryServer: 'VPN 服务器',
     deliveryServerWho: '由 Jittee 准备并启动',
     deliveryGuide: '即使不熟悉流程也没关系，Jittee 会在页面上说明怎么做。',
     deliveryTogether: '仍不确定时，也可以选择与 Jittee 一起完成设置。',
-    compareTitle: '与 NordVPN / ExpressVPN 等的区别',
+    compareTitle: '与大型 VPN 商家（NordVPN / ExpressVPN 等）的区别',
     compareIntro:
       '大型 VPN 卖的是按月“随时可连”的服务。MinorWire 是把 VPN 放到你自己的云上、尽量把后续费用压到接近零的工具。',
     compareProsTitle: '优点',
@@ -524,11 +526,7 @@ function MinorWireContent() {
               {c.ctaSetup}
             </a>
           </div>
-          <p className="mt-4 text-sm text-[#5a6f64]">
-            {isTest
-              ? 'Test checkout (card). After pay, continue to the setup wizard with a cs_test_ session.'
-              : c.ctaNote}
-          </p>
+          <p className="mt-4 text-sm text-[#5a6f64]">{c.ctaNote}</p>
         </div>
       </section>
 
