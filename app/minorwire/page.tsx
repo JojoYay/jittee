@@ -88,7 +88,7 @@ const COPY: Record<string, Copy> = {
     freeOpsBody:
       'クラウド側の無料枠の範囲で動かすので、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
     ctaApp: '自分で設定 S$18（開始記念・定価 S$30）',
-    ctaSetup: 'Jittee に設定してもらう S$100（PayNow）',
+    ctaSetup: 'Jittee に設定してもらう S$118（PayNow）',
     ctaNote: '決済は Stripe PayNow。支払い後にセットアップ画面へ進みます（メールでも URL を送付）。',
     conceptTitle: 'VPNサーバーの真実',
     conceptDesc:
@@ -149,7 +149,7 @@ const COPY: Record<string, Copy> = {
     ],
     planAppBest: '自分で触るのが苦にならない人向け',
     planSetupName: 'Jittee に設定してもらう',
-    planSetupPrice: 'S$100',
+    planSetupPrice: 'S$118',
     planSetupDesc: '画面共有などで、キー作成から最初の接続まで一緒に完了します。',
     planSetupPoints: [
       'セルフ機能も含む',
@@ -200,7 +200,7 @@ const COPY: Record<string, Copy> = {
     freeOpsBody:
       'Because it runs within the cloud free allowance, there is no monthly server fee or VPN usage fee. You only pay the one-time setup charge.',
     ctaApp: 'Do it yourself S$18 (launch price; list S$30)',
-    ctaSetup: 'Have Jittee set it up S$100 (PayNow)',
+    ctaSetup: 'Have Jittee set it up S$118 (PayNow)',
     ctaNote: 'Stripe PayNow. After payment you open the setup wizard (URL also emailed).',
     conceptTitle: 'The truth about VPN servers',
     conceptDesc:
@@ -261,7 +261,7 @@ const COPY: Record<string, Copy> = {
     ],
     planAppBest: 'Best if you are fine clicking through a short guide',
     planSetupName: 'Have Jittee set it up',
-    planSetupPrice: 'S$100',
+    planSetupPrice: 'S$118',
     planSetupDesc: 'Screen-share from key creation to first successful connection.',
     planSetupPoints: [
       'Includes the self-serve flow',
@@ -312,7 +312,7 @@ const COPY: Record<string, Copy> = {
     freeOpsBody:
       '因为在云免费额度内运行，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
     ctaApp: '自己设置 S$18（上线纪念价 · 定价 S$30）',
-    ctaSetup: '请 Jittee 代为设置 S$100（PayNow）',
+    ctaSetup: '请 Jittee 代为设置 S$118（PayNow）',
     ctaNote: 'Stripe PayNow。付款后进入设置向导（邮件也会发送链接）。',
     conceptTitle: 'VPN 服务器的真相',
     conceptDesc:
@@ -368,7 +368,7 @@ const COPY: Record<string, Copy> = {
     planAppPoints: ['按页面步骤即可完成', '登记密钥后自动建服务器', '每次购买仅搭建一次服务器', '设备配置可反复追加'],
     planAppBest: '适合愿意自己点几步的人',
     planSetupName: '请 Jittee 代为设置',
-    planSetupPrice: 'S$100',
+    planSetupPrice: 'S$118',
     planSetupDesc: '远程协助，从密钥创建到首次连通一起完成。',
     planSetupPoints: ['含自助流程', '在线协助（约60分钟）', '确认 VPN 已启动', '一起添加多台设备配置'],
     planSetupBest: '适合想尽快、稳妥完成的人',

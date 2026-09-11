@@ -7,6 +7,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { Syne, DM_Sans } from 'next/font/google'
 import type { JobPublicStatus } from '@/lib/minorwire/provision/types'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useMinorWireStripeMode } from '../StripeModeContext'
 import { SETUP_COPY } from './copy'
 import { buildOciLinks } from './ociLinks'
 import { parseOciConfig } from './parseOciConfig'
@@ -40,6 +41,7 @@ function emptyFormForLocale(locale: string): FormState {
 function SetupInner() {
   const { locale } = useLanguage()
   const c = SETUP_COPY[locale] ?? SETUP_COPY.ja
+  const { links } = useMinorWireStripeMode()
   const params = useSearchParams()
   const sessionId = params.get('session_id')?.trim() ?? ''
   const [gate, setGate] = useState<'loading' | 'ok' | 'bad'>('loading')
@@ -422,6 +424,29 @@ function SetupInner() {
                         </a>
                       </div>
                     ))}
+
+                    {sku === 'minorwire_app' && (
+                      <div className="border border-[#1d3d2e]/20 bg-[#e8f2ec]/70 rounded-md p-5 space-y-3">
+                        <p className={`${syne.className} text-lg font-bold`}>{c.supportUpsellTitle}</p>
+                        <p className="text-sm text-[#3a4f44] leading-relaxed">{c.supportUpsellBody}</p>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <a
+                            href={links.support}
+                            className="inline-flex justify-center px-5 py-2.5 rounded-md bg-[#1d3d2e] text-white font-semibold text-sm"
+                          >
+                            {c.supportUpsellCta}
+                          </a>
+                          <a
+                            href={c.supportWhatsAppUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex justify-center px-5 py-2.5 rounded-md border border-[#1d3d2e] font-semibold text-sm"
+                          >
+                            {c.supportWhatsAppLabel} ({c.supportWhatsAppPhone})
+                          </a>
+                        </div>
+                      </div>
+                    )}
 
                     <section className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden">
                       <div className="p-5 space-y-3">

@@ -1,4 +1,4 @@
-export type MinorWireSku = 'minorwire_app' | 'minorwire_setup'
+export type MinorWireSku = 'minorwire_app' | 'minorwire_setup' | 'minorwire_support'
 
 const DEFAULT_ENDPOINT =
   'https://yyeleqhfbbjnscaddutx.supabase.co/functions/v1/minorwire-fulfillment'
@@ -11,6 +11,8 @@ export async function sendMinorWireFulfillmentEmail(opts: {
   to: string
   sku: MinorWireSku
   setupUrl: string
+  customerName?: string | null
+  customerPhone?: string | null
 }): Promise<{ sent: boolean; reason?: string }> {
   const secret = (process.env.MINORWIRE_FULFILLMENT_SECRET || '').replace(/^\uFEFF/, '').trim()
   if (!secret) {
@@ -28,6 +30,8 @@ export async function sendMinorWireFulfillmentEmail(opts: {
       to: opts.to,
       sku: opts.sku,
       setupUrl: opts.setupUrl,
+      customerName: opts.customerName || '',
+      customerPhone: opts.customerPhone || '',
     }),
   })
 

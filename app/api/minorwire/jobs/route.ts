@@ -56,6 +56,12 @@ export async function POST(req: NextRequest) {
     if (!sku) {
       return NextResponse.json({ error: 'Unknown purchase' }, { status: 403 })
     }
+    if (sku === 'minorwire_support') {
+      return NextResponse.json(
+        { error: 'Support add-on cannot start provisioning. Use your DIY purchase setup link.' },
+        { status: 403 },
+      )
+    }
 
     // One successful provision per Stripe Checkout session (one paid server).
     const completed = await findCompletedJobForSession(sessionId)

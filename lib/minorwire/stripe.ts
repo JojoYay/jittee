@@ -14,7 +14,7 @@ export const MINORWIRE_PRICE = {
   setup: STRIPE_CATALOG.live.setup.priceId,
 } as const
 
-export type MinorWireSku = 'minorwire_app' | 'minorwire_setup'
+export type MinorWireSku = 'minorwire_app' | 'minorwire_setup' | 'minorwire_support'
 
 const clients: Partial<Record<StripeMode, Stripe>> = {}
 
@@ -89,13 +89,14 @@ export function skuFromPriceId(priceId: string | null | undefined): MinorWireSku
     const c = STRIPE_CATALOG[mode]
     if (priceId === c.app.priceId) return 'minorwire_app'
     if (priceId === c.setup.priceId) return 'minorwire_setup'
+    if (priceId === c.support.priceId) return 'minorwire_support'
   }
   return null
 }
 
 export function skuFromMetadata(meta: Stripe.Metadata | null | undefined): MinorWireSku | null {
   const sku = meta?.sku
-  if (sku === 'minorwire_app' || sku === 'minorwire_setup') return sku
+  if (sku === 'minorwire_app' || sku === 'minorwire_setup' || sku === 'minorwire_support') return sku
   return null
 }
 
@@ -116,4 +117,14 @@ export async function resolveCheckoutSku(
 
 export function customerEmailFromSession(session: Stripe.Checkout.Session): string | null {
   return session.customer_details?.email ?? session.customer_email ?? null
+}
+
+export function customerNameFromSession(session: Stripe.Checkout.Session): string | null {
+  const name = session.customer_details?.name?.trim()
+  return name || null
+}
+
+export function customerPhoneFromSession(session: Stripe.Checkout.Session): string | null {
+  const phone = session.customer_details?.phone?.trim()
+  return phone || null
 }

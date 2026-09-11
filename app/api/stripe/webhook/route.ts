@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import {
   customerEmailFromSession,
+  customerNameFromSession,
+  customerPhoneFromSession,
   getStripe,
   resolveCheckoutSku,
   webhookSecrets,
@@ -74,9 +76,24 @@ export async function POST(req: NextRequest) {
 
     const base = process.env.MINORWIRE_PUBLIC_BASE_URL || 'https://jittee.com'
     const setupUrl = `${base}/minorwire/setup?session_id=${encodeURIComponent(session.id)}`
+    const customerName = customerNameFromSession(session)
+    const customerPhone = customerPhoneFromSession(session)
 
-    const mail = await sendMinorWireFulfillmentEmail({ to: email, sku, setupUrl })
-    console.log('[stripe/webhook] fulfillment', { sku, mode, emailed: mail.sent, reason: mail.reason })
+    const mail = await sendMinorWireFulfillmentEmail({
+      to: email,
+      sku,
+      setupUrl,
+      customerName,
+      customerPhone,
+    })
+    console.log('[stripe/webhook] fulfillment', {
+      sku,
+      mode,
+      emailed: mail.sent,
+      reason: mail.reason,
+      hasName: Boolean(customerName),
+      hasPhone: Boolean(customerPhone),
+    })
     return NextResponse.json({ ok: true, sku, mode, emailed: mail.sent, reason: mail.reason })
   }
 

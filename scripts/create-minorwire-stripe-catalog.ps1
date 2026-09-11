@@ -57,7 +57,7 @@ $setupProd = Invoke-Stripe @(
 $setupPrice = Invoke-Stripe @(
   'prices', 'create',
   '--product', $setupProd.id,
-  '--unit-amount', '10000',
+  '--unit-amount', '11800',
   '--currency', 'sgd',
   '--lookup-key', 'minorwire_setup',
   '-d', 'metadata[sku]=minorwire_setup'
