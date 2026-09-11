@@ -140,7 +140,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     ],
     guideTitle: '手順ガイド',
     guideIntro:
-      'スクショを見ながら進めてください。すでにアカウントがある場合は Step 1–2 を飛ばし、Step 3（カード登録済みなら Step 4）からで構いません。Pay As You Go へのアップグレードは VPN 動作確認後の最後の Step です。',
+      'スクショを見ながら進めてください。すでにアカウントがある場合は Step 1–2 を飛ばし、Step 3（API キー）からで構いません。Pay As You Go へのアップグレードは最後の Step です。',
     guideSteps: [
       {
         id: 'signup',
@@ -162,18 +162,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         fields: ['region'],
       },
       {
-        id: 'payment',
-        title: 'Step 3 — カードで本人確認（サインアップ時）',
-        body:
-          'クレジットカードで支払い方法を登録します。無料枠の確認用の一時的な与信が付くことがあります。Always Free の範囲では課金されません。この時点ではまだ Pay As You Go へのアップグレードは不要です（アップグレードは VPN 動作確認後の最後の Step）。',
-        image: '/minorwire/guide/signup-03-payment.png',
-        imageAlt: 'Payment verification',
-        ociLink: 'signupDocs',
-        linkLabel: '公式サインアップ手順',
-      },
-      {
         id: 'apiKey',
-        title: 'Step 4 — API キーを作り、Copy して貼る',
+        title: 'Step 3 — API キーを作り、Copy して貼る',
         body:
           '下のリンクで Tokens and keys を開き、スクショと同じ操作で進めます。先に「Download private key」で .pem を保存し、Add のあと Configuration file preview で Copy した全文を貼ります。入力欄もその順（.pem → Copy 内容 → 端末名）です。登録した API キーは再作成用に暗号化して保管します。鍵は安全に管理し、コンソールで削除しないでください（削除すると再作成できず、Jittee は責任を負いません）。',
         clickSteps: [
@@ -213,7 +203,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'verifyInstance',
-        title: 'Step 5 — 成功後: Compute でインスタンスを確認',
+        title: 'Step 4 — 成功後: Compute でインスタンスを確認',
         body:
           '「VPN を作成」が成功すると、あなたのテナンシー上に Always Free Micro（VM.Standard.E2.1.Micro）のコンピュート・インスタンスが1台できます。MinorWire が作る名前は minorwire- で始まります（下のスクショは Instances 画面の見本です）。セットアップ画面に公開 IP も表示されます。インスタンスを Stop または Terminate すると VPN に接続できなくなります。誤って削除した場合、再作成は登録済み API キーが有効なときだけ可能です。',
         clickSteps: [
@@ -231,9 +221,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'upgrade',
-        title: 'Step 6 — Pay As You Go（有料アカウント）へアップグレード',
+        title: 'Step 5 — Pay As You Go（有料アカウント）へアップグレード',
         body:
-          'VPN が動くことを確認してから行います。メニューは Billing & Cost Management → Billing → Upgrade and Manage Payment です（下の直リンクでも開けます）。Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。カード未登録・アップグレード未実施のままでも当面動くことがありますが、アイドル整理でサーバーが削除されることがあります。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。アップグレード時、カードに USD $100 の与信枠の確保が発生します。これは実課金ではなく、確認後に取り消されます。成功すると Plan type が Pay As You Go と表示されます。',
+          'メニューは Billing & Cost Management → Billing → Upgrade and Manage Payment です（下の直リンクでも開けます）。Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。カード未登録・アップグレード未実施のままでも当面動くことがありますが、アイドル整理でサーバーが削除されることがあります。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。アップグレード時、カードに USD $100 の与信枠の確保が発生します。これは実課金ではなく、確認後に取り消されます。成功すると Plan type が Pay As You Go と表示されます。',
         clickSteps: [
           'コンソール左上メニュー（≡）→ Billing & Cost Management',
           'Billing → Upgrade and Manage Payment（または下の直リンク）',
@@ -420,7 +410,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     ],
     guideTitle: 'Step-by-step guide',
     guideIntro:
-      'Follow the screenshots in order. If you already have an account, skip Steps 1–2 and start at Step 3 (or Step 4 if the card is already on file). Upgrade to Pay As You Go is the last step, after the VPN works.',
+      'Follow the screenshots in order. If you already have an account, skip Steps 1–2 and start at Step 3 (API key). Upgrade to Pay As You Go is the last step.',
     guideSteps: [
       {
         id: 'signup',
@@ -441,18 +431,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         fields: ['region'],
       },
       {
-        id: 'payment',
-        title: 'Step 3 — Card verification at signup',
-        body:
-          'Add a credit card for identity verification. You may see a temporary authorization hold. Always Free usage is not charged. You do not need to upgrade to Pay As You Go yet — that is the last step after the VPN works.',
-        image: '/minorwire/guide/signup-03-payment.png',
-        imageAlt: 'Payment verification',
-        ociLink: 'signupDocs',
-        linkLabel: 'Official signup docs',
-      },
-      {
         id: 'apiKey',
-        title: 'Step 4 — Create an API key, Copy, and paste',
+        title: 'Step 3 — Create an API key, Copy, and paste',
         body:
           'Open Tokens and keys with the link below and follow the screenshots. First download the .pem (Download private key), then after Add click Copy on Configuration file preview and paste it. The form fields follow that order (.pem → Copy text → device name). We store the registered API key encrypted for recreate. Keep it secure and do not delete it in the console — if you delete it, recreation is impossible and Jittee accepts no liability.',
         clickSteps: [
@@ -492,7 +472,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'verifyInstance',
-        title: 'Step 5 — After success: confirm the instance in Compute',
+        title: 'Step 4 — After success: confirm the instance in Compute',
         body:
           'When Create VPN succeeds, one Always Free Micro instance (VM.Standard.E2.1.Micro) is created in your tenancy. MinorWire names it starting with minorwire- (the screenshot below is an Instances page example). The setup page also shows the public IP. If you Stop or Terminate the instance, the VPN becomes unreachable. If you delete it by mistake, recreation is possible only while the registered API key remains valid.',
         clickSteps: [
@@ -510,9 +490,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'upgrade',
-        title: 'Step 6 — Upgrade to Pay As You Go',
+        title: 'Step 5 — Upgrade to Pay As You Go',
         body:
-          'Do this after the VPN works. Menu path: Billing & Cost Management → Billing → Upgrade and Manage Payment (or use the direct link below). Choose Pay As You Go → Individual → Upgrade. Always Free resources stay free. It may keep working without upgrade for a while, but idle cleanup can delete the server if you stay on unpaid / free-only status. Upgrade can take 1–2 days. During upgrade, a USD $100 authorization hold occurs on your card. This is not a charge and is reversed after verification. When done, Plan type shows Pay As You Go.',
+          'Menu path: Billing & Cost Management → Billing → Upgrade and Manage Payment (or use the direct link below). Choose Pay As You Go → Individual → Upgrade. Always Free resources stay free. It may keep working without upgrade for a while, but idle cleanup can delete the server if you stay on unpaid / free-only status. Upgrade can take 1–2 days. During upgrade, a USD $100 authorization hold occurs on your card. This is not a charge and is reversed after verification. When done, Plan type shows Pay As You Go.',
         clickSteps: [
           'Open the console hamburger (≡) → Billing & Cost Management',
           'Billing → Upgrade and Manage Payment (or the direct link below)',
@@ -699,7 +679,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     ],
     guideTitle: '分步指南',
     guideIntro:
-      '对照截图操作。若已有账号，可跳过 Step 1–2，从 Step 3（若已绑卡则从 Step 4）开始。Pay As You Go 升级放在 VPN 可用之后的最后一步。',
+      '对照截图操作。若已有账号，可跳过 Step 1–2，从 Step 3（API 密钥）开始。Pay As You Go 升级是最后一步。',
     guideSteps: [
       {
         id: 'signup',
@@ -720,18 +700,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         fields: ['region'],
       },
       {
-        id: 'payment',
-        title: 'Step 3 — 注册时用信用卡验证',
-        body:
-          '添加信用卡用于身份验证，可能出现临时预授权。Always Free 范围内不收费。此时尚不必升级到 Pay As You Go——升级是 VPN 可用之后的最后一步。',
-        image: '/minorwire/guide/signup-03-payment.png',
-        imageAlt: 'Payment verification',
-        ociLink: 'signupDocs',
-        linkLabel: '官方注册文档',
-      },
-      {
         id: 'apiKey',
-        title: 'Step 4 — 创建 API 密钥，Copy 后粘贴',
+        title: 'Step 3 — 创建 API 密钥，Copy 后粘贴',
         body:
           '用下方链接打开 Tokens and keys，按截图操作。先点击 Download private key 保存 .pem，Add 之后在 Configuration file preview 点 Copy 并粘贴。下方输入栏也是该顺序（.pem → Copy 全文 → 设备名）。登记的 API 密钥会加密保存以便重建。请妥善保管，勿在控制台删除——删除后无法重建，Jittee 不承担责任。',
         clickSteps: [
@@ -771,7 +741,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'verifyInstance',
-        title: 'Step 5 — 成功后：在 Compute 确认实例',
+        title: 'Step 4 — 成功后：在 Compute 确认实例',
         body:
           '「创建 VPN」成功后，会在你的租户中创建一台 Always Free Micro（VM.Standard.E2.1.Micro）计算实例。MinorWire 创建的名称以 minorwire- 开头（下方截图为 Instances 页面示例）。设置页也会显示公网 IP。若 Stop 或 Terminate 实例，将无法连接 VPN。误删时，仅在登记的 API 密钥仍有效时可重建。',
         clickSteps: [
@@ -789,9 +759,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'upgrade',
-        title: 'Step 6 — 升级到 Pay As You Go',
+        title: 'Step 5 — 升级到 Pay As You Go',
         body:
-          '请在确认 VPN 可用之后再执行。菜单路径：Billing & Cost Management → Billing → Upgrade and Manage Payment（也可用下方直链）。选择 Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。未升级时短期内可能仍能用，但闲置清理可能删除服务器。升级可能需要 1–2 天。升级时会发生 USD $100 的额度预授权（占用额度）。这不是实际扣款，验证后会撤销。完成后 Plan type 会显示为 Pay As You Go。',
+          '菜单路径：Billing & Cost Management → Billing → Upgrade and Manage Payment（也可用下方直链）。选择 Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。未升级时短期内可能仍能用，但闲置清理可能删除服务器。升级可能需要 1–2 天。升级时会发生 USD $100 的额度预授权（占用额度）。这不是实际扣款，验证后会撤销。完成后 Plan type 会显示为 Pay As You Go。',
         clickSteps: [
           '打开控制台左上菜单（≡）→ Billing & Cost Management',
           'Billing → Upgrade and Manage Payment（或使用下方直链）',
