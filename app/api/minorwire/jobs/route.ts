@@ -11,9 +11,8 @@ import {
   getJob,
   toPublicStatus,
   appendJobLog,
-  updateJob,
 } from '@/lib/minorwire/jobs/store'
-import { encryptSecret } from '@/lib/minorwire/jobs/crypto'
+import { decryptSecret, encryptSecret } from '@/lib/minorwire/jobs/crypto'
 import { triggerJobRun } from '@/lib/minorwire/jobs/triggerRun'
 import { redactFingerprint, redactOcid } from '@/lib/minorwire/jobs/redact'
 
@@ -29,6 +28,47 @@ function internalSecret(): string {
   )
 }
 
+async function queueProvisionJob(opts: {
+  sessionId: string
+  sku: string
+  creds: OciCredentials
+  peerName: string
+  resumable?: {
+    publicIp?: string
+    displayName?: string
+    sshPrivateKeyEnc?: string
+    ociCredsEnc?: string
+  } | null
+  /** Fresh recreate: do not resume old instance IP/SSH. */
+  freshProvision?: boolean
+}): Promise<{ jobId: string }> {
+  const { sessionId, sku, creds, peerName, resumable, freshProvision } = opts
+  const jobId = `mw_${randomBytes(8).toString('hex')}`
+  const payloadEnc = encryptSecret(JSON.stringify({ creds, peerName }))
+  await createJobDoc({
+    id: jobId,
+    sessionId,
+    sku,
+    payloadEnc,
+    peerName,
+    resumePublicIp: freshProvision ? undefined : resumable?.publicIp,
+    resumeDisplayName: freshProvision ? undefined : resumable?.displayName,
+    resumeSshPrivateKeyEnc: freshProvision ? undefined : resumable?.sshPrivateKeyEnc,
+    resumeOciCredsEnc: resumable?.ociCredsEnc || encryptSecret(JSON.stringify(creds)),
+  })
+  await appendJobLog(jobId, {
+    level: 'info',
+    step: 'create',
+    message: freshProvision
+      ? `Accepted recreate with stored API key region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`
+      : resumable?.publicIp
+        ? `Accepted provision retry (resume ip=${resumable.publicIp}) region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`
+        : `Accepted provision request region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`,
+    phase: 'queued',
+  })
+  return { jobId }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as {
@@ -40,6 +80,8 @@ export async function POST(req: NextRequest) {
       userOcid?: string
       fingerprint?: string
       privateKeyPem?: string
+      /** Recreate VPN using encrypted OCI API creds stored on the completed job. */
+      recreate?: boolean
     }
 
     const sessionId = body.sessionId?.trim()
@@ -63,16 +105,6 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // One successful provision per Stripe Checkout session (one paid server).
-    const completed = await findCompletedJobForSession(sessionId)
-    if (completed) {
-      return NextResponse.json({
-        job: toPublicStatus(completed),
-        locked: true,
-        message: 'This purchase already provisioned one OCI server. You can still add more device .conf files.',
-      })
-    }
-
     const existing = await findActiveJobForSession(sessionId)
     if (existing && existing.phase !== 'done' && existing.phase !== 'error') {
       return NextResponse.json({
@@ -80,59 +112,95 @@ export async function POST(req: NextRequest) {
         needsClientKick: existing.phase === 'queued',
       })
     }
-    // phase === error: allow one retry under the same paid session
 
-    const tenancyOcid = body.tenancyOcid ?? ''
-    const creds: OciCredentials = {
-      region: body.region ?? '',
-      tenancyOcid,
-      // Simple admin path: root compartment is the tenancy OCID
-      compartmentOcid: body.compartmentOcid?.trim() || tenancyOcid,
-      userOcid: body.userOcid ?? '',
-      fingerprint: body.fingerprint ?? '',
-      privateKeyPem: body.privateKeyPem ?? '',
-    }
-    try {
-      requireCreds(creds)
-    } catch (e) {
-      return NextResponse.json(
-        { error: e instanceof Error ? e.message : 'Invalid credentials' },
-        { status: 400 },
-      )
+    // One successful provision per Stripe Checkout session — unless customer requests recreate.
+    const completed = await findCompletedJobForSession(sessionId)
+    if (completed && !body.recreate) {
+      return NextResponse.json({
+        job: toPublicStatus(completed),
+        locked: true,
+        message: 'This purchase already provisioned one OCI server. You can still add more device .conf files.',
+      })
     }
 
-    const peerName = (body.peerName || 'device1').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'device1'
-    const jobId = `mw_${randomBytes(8).toString('hex')}`
-    const payloadEnc = encryptSecret(JSON.stringify({ creds, peerName }))
-    const resumable = await findResumableErrorJobForSession(sessionId)
-    await createJobDoc({
-      id: jobId,
-      sessionId,
-      sku,
-      payloadEnc,
-      peerName,
-      resumePublicIp: resumable?.publicIp,
-      resumeDisplayName: resumable?.displayName,
-      resumeSshPrivateKeyEnc: resumable?.sshPrivateKeyEnc,
-    })
-    await appendJobLog(jobId, {
-      level: 'info',
-      step: 'create',
-      message: resumable?.publicIp
-        ? `Accepted provision retry (resume ip=${resumable.publicIp}) region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`
-        : `Accepted provision request region=${creds.region} tenancy=${redactOcid(creds.tenancyOcid)} user=${redactOcid(creds.userOcid)} fp=${redactFingerprint(creds.fingerprint)} peer=${peerName}`,
-      phase: 'queued',
-    })
+    let creds: OciCredentials
+    let peerName: string
+    let freshProvision = false
+    let resumable: {
+      publicIp?: string
+      displayName?: string
+      sshPrivateKeyEnc?: string
+      ociCredsEnc?: string
+    } | null = null
+
+    if (completed && body.recreate) {
+      if (!completed.ociCredsEnc) {
+        return NextResponse.json(
+          {
+            error:
+              'No registered API key is stored for recreate. Recreation requires the API key registered at first setup; if that key was deleted, Jittee cannot recreate the server.',
+          },
+          { status: 400 },
+        )
+      }
+      try {
+        creds = JSON.parse(decryptSecret(completed.ociCredsEnc)) as OciCredentials
+        requireCreds(creds)
+      } catch (e) {
+        return NextResponse.json(
+          {
+            error:
+              e instanceof Error
+                ? e.message
+                : 'Could not decrypt stored API credentials for recreate',
+          },
+          { status: 400 },
+        )
+      }
+      peerName =
+        (body.peerName || completed.peerName || 'device1')
+          .replace(/[^A-Za-z0-9_-]/g, '')
+          .slice(0, 32) || 'device1'
+      freshProvision = true
+      resumable = { ociCredsEnc: completed.ociCredsEnc }
+    } else {
+      const tenancyOcid = body.tenancyOcid ?? ''
+      creds = {
+        region: body.region ?? '',
+        tenancyOcid,
+        // Simple admin path: root compartment is the tenancy OCID
+        compartmentOcid: body.compartmentOcid?.trim() || tenancyOcid,
+        userOcid: body.userOcid ?? '',
+        fingerprint: body.fingerprint ?? '',
+        privateKeyPem: body.privateKeyPem ?? '',
+      }
+      try {
+        requireCreds(creds)
+      } catch (e) {
+        return NextResponse.json(
+          { error: e instanceof Error ? e.message : 'Invalid credentials' },
+          { status: 400 },
+        )
+      }
+      peerName =
+        (body.peerName || 'device1').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'device1'
+      // phase === error: allow one retry under the same paid session
+      resumable = await findResumableErrorJobForSession(sessionId)
+    }
 
     const runSecret = internalSecret()
     if (!runSecret) {
-      await updateJob(jobId, {
-        phase: 'error',
-        message: 'Failed',
-        error: 'Server misconfigured (job run secret)',
-      })
       return NextResponse.json({ error: 'Server misconfigured (job run secret)' }, { status: 500 })
     }
+
+    const { jobId } = await queueProvisionJob({
+      sessionId,
+      sku,
+      creds,
+      peerName,
+      resumable,
+      freshProvision,
+    })
 
     // Backup path: keep running after the create response when the platform supports it.
     // Primary path is the browser POST to /run (needsClientKick) which gets its own

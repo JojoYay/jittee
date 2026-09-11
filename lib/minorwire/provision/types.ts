@@ -4,7 +4,7 @@ export type OciCredentials = {
   compartmentOcid: string
   userOcid: string
   fingerprint: string
-  /** PEM private key contents (never persist). */
+  /** PEM private key contents (encrypted at rest as ociCredsEnc after provision). */
   privateKeyPem: string
 }
 
@@ -17,7 +17,7 @@ export type ProvisionResult = {
   subnetId: string
   vcnId: string
   region: string
-  /** Ephemeral SSH private key PEM for the instance (memory only). */
+  /** Instance SSH private key PEM (encrypted at rest as sshPrivateKeyEnc). */
   sshPrivateKeyPem: string
 }
 
@@ -64,4 +64,6 @@ export type JobPublicStatus = {
   canRetry?: boolean
   /** True when OCI server provision already succeeded for this purchase. */
   serverProvisioned?: boolean
+  /** True when encrypted OCI API creds are stored and recreate is allowed. */
+  canRecreate?: boolean
 }

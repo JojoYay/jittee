@@ -84,6 +84,9 @@ export type SetupCopy = {
   recentSteps: string
   retryHint: string
   doneNote: string
+  recreateCta: string
+  recreateBusy: string
+  recreateFailed: string
   confTitle: (name: string) => string
   downloadConf: (name: string) => string
   addPeerTitle: string
@@ -132,20 +135,20 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     needsTitle: '最初に必要なもの',
     needsItems: [
       'Oracle Cloud アカウント（VPN を置きたいリージョンをホームリージョンにして作成。日本語UIの推奨は Japan East / Tokyo）',
-      'Pay As You Go（有料プラン）へのアップグレード（Always Free の枠を安定して使うため。枠内は課金されません。アップグレード時に約 USD $100 のオーソリがかかり、後で取り消されます）',
       '管理者ユーザーの API キー（Configuration file preview の Copy 内容 + 秘密鍵 .pem）。IAM 設定は不要',
+      'VPN 動作確認のあと、Pay As You Go（有料プラン）へのアップグレード（未アップグレードだとアイドル整理でサーバーが消えることがあります。枠内は課金されません）',
     ],
     flowTitle: '全体の流れ',
     flowSteps: [
       '作りたいリージョンをホームリージョンにして Oracle Cloud アカウントを作成する（推奨: 東京）',
-      'Pay As You Go にアップグレードする',
       '管理者のまま API キーを作り、Configuration file preview を Copy、.pem を保存',
       '下に .pem をアップロードし、Copy 内容を貼って「VPN を作成」',
-      '成功後、Compute → Instances で minorwire-* が Running か確認し、.conf を WireGuard アプリに入れる',
+      '成功後、Compute → Instances で minorwire-* が Running か確認し、.conf を WireGuard に入れて動作確認',
+      '最後に Pay As You Go へアップグレードする（カード登録・有料化しないと、アイドル整理でサーバーが削除されることがあります）',
     ],
     guideTitle: '手順ガイド（上から順に）',
     guideIntro:
-      'スクショを見ながら進めてください。すでにアカウントがある場合は Step 1–2 を飛ばし、Step 3 からで構いません。',
+      'スクショを見ながら進めてください。すでにアカウントがある場合は Step 1–2 を飛ばし、Step 3（カード登録済みなら Step 4）からで構いません。Pay As You Go へのアップグレードは VPN 動作確認後の最後の Step です。',
     guideSteps: [
       {
         id: 'signup',
@@ -170,34 +173,17 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'payment',
         title: 'Step 3 — カードで本人確認（サインアップ時）',
         body:
-          'クレジットカードで支払い方法を登録します。無料枠の確認用の一時的な与信が付くことがあります。Always Free の範囲では課金されません。',
+          'クレジットカードで支払い方法を登録します。無料枠の確認用の一時的な与信が付くことがあります。Always Free の範囲では課金されません。この時点ではまだ Pay As You Go へのアップグレードは不要です（アップグレードは VPN 動作確認後の最後の Step）。',
         image: '/minorwire/guide/signup-03-payment.png',
         imageAlt: 'Payment verification',
         ociLink: 'signupDocs',
         linkLabel: '公式サインアップ手順',
       },
       {
-        id: 'upgrade',
-        title: 'Step 4 — Pay As You Go（有料アカウント）へアップグレード',
-        body:
-          'メニューは Billing & Cost Management → Billing → Upgrade and Manage Payment です（下の直リンクでも開けます）。Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。アップグレード時、カードに約 USD $100 のオーソリ（与信枠の確保）がかかることがあります。これは実課金ではなく、確認後に取り消されます。成功すると Plan type が Pay As You Go と表示されます。',
-        clickSteps: [
-          'コンソール左上メニュー（≡）→ Billing & Cost Management',
-          'Billing → Upgrade and Manage Payment（または下の直リンク）',
-          'Pay As You Go を選び、Account type は Individual',
-          'Upgrade を実行（約 USD $100 のオーソリがかかることがあります。後で取消）',
-          '完了後、Plan type が Pay As You Go になっていることを確認',
-        ],
-        image: '/minorwire/guide/signup-04-upgrade-payg.png',
-        imageAlt: 'Billing & Cost Management > Billing > Upgrade and Manage Payment',
-        ociLink: 'billingUpgrade',
-        linkLabel: 'Upgrade and Manage Payment を開く',
-      },
-      {
         id: 'apiKey',
-        title: 'Step 5 — API キーを作り、Copy して貼る',
+        title: 'Step 4 — API キーを作り、Copy して貼る',
         body:
-          '下のリンクで Tokens and keys を開き、スクショと同じ操作で進めます。先に「Download private key」で .pem を保存し、Add のあと Configuration file preview で Copy した全文を貼ります。入力欄もその順（.pem → Copy 内容 → 端末名）です。',
+          '下のリンクで Tokens and keys を開き、スクショと同じ操作で進めます。先に「Download private key」で .pem を保存し、Add のあと Configuration file preview で Copy した全文を貼ります。入力欄もその順（.pem → Copy 内容 → 端末名）です。登録した API キーは再作成用に暗号化して保管します。鍵は安全に管理し、コンソールで削除しないでください（削除すると再作成できず、Jittee は責任を負いません）。',
         clickSteps: [
           'Tokens and keys ページを開く（下のリンク）',
           'API keys セクションの「Add API key」をクリック',
@@ -235,20 +221,38 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'verifyInstance',
-        title: 'Step 6 — 成功後: Compute でインスタンスを確認',
+        title: 'Step 5 — 成功後: Compute でインスタンスを確認',
         body:
-          '「VPN を作成」が成功すると、あなたのテナンシー上に Always Free Micro（VM.Standard.E2.1.Micro）のコンピュート・インスタンスが1台できます。MinorWire が作る名前は minorwire- で始まります（下のスクショは Instances 画面の見本です）。セットアップ画面に公開 IP も表示されます。',
+          '「VPN を作成」が成功すると、あなたのテナンシー上に Always Free Micro（VM.Standard.E2.1.Micro）のコンピュート・インスタンスが1台できます。MinorWire が作る名前は minorwire- で始まります（下のスクショは Instances 画面の見本です）。セットアップ画面に公開 IP も表示されます。インスタンスを Stop または Terminate すると VPN に接続できなくなります。誤って削除した場合、再作成は登録済み API キーが有効なときだけ可能です。',
         clickSteps: [
           'セットアップ画面の状態が done になり、公開 IP と .conf が表示されることを確認',
           'コンソール左上メニュー（≡）→ Compute → Instances（または下の直リンク）',
           'リージョンが VPN 作成時と同じ（例: Japan East / Tokyo）であることを確認',
           '一覧で State が Running、Shape が VM.Standard.E2.1.Micro、Public IP がセットアップ画面と一致することを確認（MinorWire 作成時は名前が minorwire-…）',
           '表示された .conf を公式 WireGuard アプリにインポートして接続',
+          'OCI コンソールでインスタンスを Stop / Terminate しない（接続不能になります）',
         ],
         image: '/minorwire/guide/verify-01-instances.png',
         imageAlt: 'Compute → Instances — Running (Always Free)',
         ociLink: 'computeInstances',
         linkLabel: 'Instances 一覧を開く',
+      },
+      {
+        id: 'upgrade',
+        title: 'Step 6 — Pay As You Go（有料アカウント）へアップグレード',
+        body:
+          'VPN が動くことを確認してから行います。メニューは Billing & Cost Management → Billing → Upgrade and Manage Payment です（下の直リンクでも開けます）。Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。カード未登録・アップグレード未実施のままでも当面動くことがありますが、アイドル整理でサーバーが削除されることがあります。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。アップグレード時、カードに約 USD $100 のオーソリ（与信枠の確保）がかかることがあります。これは実課金ではなく、確認後に取り消されます。成功すると Plan type が Pay As You Go と表示されます。',
+        clickSteps: [
+          'コンソール左上メニュー（≡）→ Billing & Cost Management',
+          'Billing → Upgrade and Manage Payment（または下の直リンク）',
+          'Pay As You Go を選び、Account type は Individual',
+          'Upgrade を実行（約 USD $100 のオーソリがかかることがあります。後で取消）',
+          '完了後、Plan type が Pay As You Go になっていることを確認',
+        ],
+        image: '/minorwire/guide/signup-04-upgrade-payg.png',
+        imageAlt: 'Billing & Cost Management > Billing > Upgrade and Manage Payment',
+        ociLink: 'billingUpgrade',
+        linkLabel: 'Upgrade and Manage Payment を開く',
       },
     ],
     formTitle: '',
@@ -305,7 +309,10 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     recentSteps: '進捗ログ',
     retryHint: '失敗したため、下のフォームから同じ購入でもう一度実行できます。',
     doneNote:
-      'この購入での OCI サーバは1台までです。端末用 .conf はこのページの下（テキスト／ダウンロード）から取得・追加できます。OCI Console の Compute → Instances でも同名インスタンスを確認できます。',
+      'この購入での OCI サーバは1台までです。端末用 .conf はこのページの下（テキスト／ダウンロード）から取得・追加できます。OCI Console の Compute → Instances でも同名インスタンスを確認できます。インスタンスを Stop / Terminate すると接続不能になります。誤削除時の再作成は、初回登録の API キーが有効な場合のみ可能です（キー削除時は責任を負いません）。動作確認後に Pay As You Go へアップグレードしてください（未実施だとアイドル整理で消えることがあります）。',
+    recreateCta: '登録キーで VPN を再作成',
+    recreateBusy: '再作成を開始中…',
+    recreateFailed: '再作成に失敗しました',
     confTitle: (name) => `WireGuard 設定 (${name})`,
     downloadConf: (name) => `${name}.conf をダウンロード`,
     addPeerTitle: '別端末の .conf を追加',
@@ -414,20 +421,20 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     needsTitle: 'What you need first',
     needsItems: [
       'An Oracle Cloud account with Home Region set to where you want the VPN (English UI default: Singapore)',
-      'Upgrade to Pay As You Go (keeps Always Free resources free; improves capacity reliability. Upgrade may place an ~USD $100 authorization hold that is later reversed)',
       'An admin API key (Configuration file preview Copy text + private key .pem). No IAM setup required',
+      'After the VPN works, upgrade to Pay As You Go (without upgrade, idle cleanup may delete the server; Always Free resources stay free)',
     ],
     flowTitle: 'Overall flow',
     flowSteps: [
       'Create an Oracle Cloud account whose home region is where you want the VPN (recommended: Singapore)',
-      'Upgrade to Pay As You Go',
       'Create an admin API key, Copy the Configuration file preview, and save the .pem',
       'Paste the Copy text below after uploading the .pem, then create the VPN',
-      'After success, confirm minorwire-* is Running under Compute → Instances, then import the .conf into WireGuard',
+      'After success, confirm minorwire-* is Running under Compute → Instances, import the .conf into WireGuard, and verify it works',
+      'Finally upgrade to Pay As You Go (without a paid plan / card upgrade, idle cleanup may delete the server)',
     ],
     guideTitle: 'Step-by-step guide',
     guideIntro:
-      'Follow the screenshots in order. If you already have an account, skip Steps 1–2 and start at Step 3 (or Step 4 if already verified).',
+      'Follow the screenshots in order. If you already have an account, skip Steps 1–2 and start at Step 3 (or Step 4 if the card is already on file). Upgrade to Pay As You Go is the last step, after the VPN works.',
     guideSteps: [
       {
         id: 'signup',
@@ -451,34 +458,17 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'payment',
         title: 'Step 3 — Card verification at signup',
         body:
-          'Add a credit card for identity verification. You may see a temporary authorization hold. Always Free usage is not charged.',
+          'Add a credit card for identity verification. You may see a temporary authorization hold. Always Free usage is not charged. You do not need to upgrade to Pay As You Go yet — that is the last step after the VPN works.',
         image: '/minorwire/guide/signup-03-payment.png',
         imageAlt: 'Payment verification',
         ociLink: 'signupDocs',
         linkLabel: 'Official signup docs',
       },
       {
-        id: 'upgrade',
-        title: 'Step 4 — Upgrade to Pay As You Go',
-        body:
-          'Menu path: Billing & Cost Management → Billing → Upgrade and Manage Payment (or use the direct link below). Choose Pay As You Go → Individual → Upgrade. Always Free resources stay free. Upgrade can take 1–2 days. During upgrade, Oracle may place an authorization hold of about USD $100 on your card. This is not a charge and is reversed after verification. When done, Plan type shows Pay As You Go.',
-        clickSteps: [
-          'Open the console hamburger (≡) → Billing & Cost Management',
-          'Billing → Upgrade and Manage Payment (or the direct link below)',
-          'Select Pay As You Go, Account type Individual',
-          'Click Upgrade (about USD $100 authorization may appear; it is reversed later)',
-          'Confirm Plan type is Pay As You Go',
-        ],
-        image: '/minorwire/guide/signup-04-upgrade-payg.png',
-        imageAlt: 'Billing & Cost Management > Billing > Upgrade and Manage Payment',
-        ociLink: 'billingUpgrade',
-        linkLabel: 'Open Upgrade and Manage Payment',
-      },
-      {
         id: 'apiKey',
-        title: 'Step 5 — Create an API key, Copy, and paste',
+        title: 'Step 4 — Create an API key, Copy, and paste',
         body:
-          'Open Tokens and keys with the link below and follow the screenshots. First download the .pem (Download private key), then after Add click Copy on Configuration file preview and paste it. The form fields follow that order (.pem → Copy text → device name).',
+          'Open Tokens and keys with the link below and follow the screenshots. First download the .pem (Download private key), then after Add click Copy on Configuration file preview and paste it. The form fields follow that order (.pem → Copy text → device name). We store the registered API key encrypted for recreate. Keep it secure and do not delete it in the console — if you delete it, recreation is impossible and Jittee accepts no liability.',
         clickSteps: [
           'Open the Tokens and keys page (link below)',
           'In API keys, click Add API key',
@@ -516,20 +506,38 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'verifyInstance',
-        title: 'Step 6 — After success: confirm the instance in Compute',
+        title: 'Step 5 — After success: confirm the instance in Compute',
         body:
-          'When Create VPN succeeds, one Always Free Micro instance (VM.Standard.E2.1.Micro) is created in your tenancy. MinorWire names it starting with minorwire- (the screenshot below is an Instances page example). The setup page also shows the public IP.',
+          'When Create VPN succeeds, one Always Free Micro instance (VM.Standard.E2.1.Micro) is created in your tenancy. MinorWire names it starting with minorwire- (the screenshot below is an Instances page example). The setup page also shows the public IP. If you Stop or Terminate the instance, the VPN becomes unreachable. If you delete it by mistake, recreation is possible only while the registered API key remains valid.',
         clickSteps: [
           'Confirm the setup status is done and the public IP plus .conf are shown',
           'Console menu (≡) → Compute → Instances (or the direct link below)',
           'Confirm the region matches the one used for VPN creation (e.g. Singapore)',
           'In the list, confirm State is Running, Shape is VM.Standard.E2.1.Micro, and Public IP matches the setup page (MinorWire names start with minorwire-…)',
           'Import the .conf into the official WireGuard app and connect',
+          'Do not Stop or Terminate the instance in the OCI console (it will become unreachable)',
         ],
         image: '/minorwire/guide/verify-01-instances.png',
         imageAlt: 'Compute → Instances — Running (Always Free)',
         ociLink: 'computeInstances',
         linkLabel: 'Open Instances list',
+      },
+      {
+        id: 'upgrade',
+        title: 'Step 6 — Upgrade to Pay As You Go',
+        body:
+          'Do this after the VPN works. Menu path: Billing & Cost Management → Billing → Upgrade and Manage Payment (or use the direct link below). Choose Pay As You Go → Individual → Upgrade. Always Free resources stay free. It may keep working without upgrade for a while, but idle cleanup can delete the server if you stay on unpaid / free-only status. Upgrade can take 1–2 days. During upgrade, Oracle may place an authorization hold of about USD $100 on your card. This is not a charge and is reversed after verification. When done, Plan type shows Pay As You Go.',
+        clickSteps: [
+          'Open the console hamburger (≡) → Billing & Cost Management',
+          'Billing → Upgrade and Manage Payment (or the direct link below)',
+          'Select Pay As You Go, Account type Individual',
+          'Click Upgrade (about USD $100 authorization may appear; it is reversed later)',
+          'Confirm Plan type is Pay As You Go',
+        ],
+        image: '/minorwire/guide/signup-04-upgrade-payg.png',
+        imageAlt: 'Billing & Cost Management > Billing > Upgrade and Manage Payment',
+        ociLink: 'billingUpgrade',
+        linkLabel: 'Open Upgrade and Manage Payment',
       },
     ],
     formTitle: '',
@@ -586,7 +594,10 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     recentSteps: 'Progress log',
     retryHint: 'This run failed. You can submit the form again for the same purchase.',
     doneNote:
-      'This purchase includes one OCI server. Get or add device .conf files below on this page (textarea / download). You can also confirm the same instance under Compute → Instances.',
+      'This purchase includes one OCI server. Get or add device .conf files below on this page (textarea / download). You can also confirm the same instance under Compute → Instances. Stopping or terminating the instance makes the VPN unreachable. Recreation after accidental deletion uses only the API key registered at first setup; if you delete that key, Jittee accepts no liability. After it works, upgrade to Pay As You Go — without upgrade, idle cleanup may delete the server.',
+    recreateCta: 'Recreate VPN with registered key',
+    recreateBusy: 'Starting recreate…',
+    recreateFailed: 'Recreate failed',
     confTitle: (name) => `WireGuard config (${name})`,
     downloadConf: (name) => `Download ${name}.conf`,
     addPeerTitle: 'Add another device .conf',
@@ -695,19 +706,20 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     needsTitle: '首先需要准备',
     needsItems: [
       'Oracle Cloud 账号（Home Region 选你想放 VPN 的区域；中文界面默认推荐 Singapore）',
-      '升级到 Pay As You Go（Always Free 资源仍免费，便于稳定拿到容量。升级时可能出现约 USD $100 预授权，随后会撤销）',
       '管理员 API 密钥（Configuration file preview 的 Copy 全文 + 私钥 .pem）。无需 IAM 配置',
+      'VPN 可用之后，再升级到 Pay As You Go（不升级时，闲置清理可能删除服务器；Always Free 资源仍免费）',
     ],
     flowTitle: '整体流程',
     flowSteps: [
       '用目标区域作为 Home Region 创建 Oracle Cloud 账号（推荐：Singapore）',
-      '升级到 Pay As You Go',
       '用管理员创建 API 密钥，Copy Configuration file preview，并保存 .pem',
       '先上传 .pem，再粘贴 Copy 内容，然后创建 VPN',
-      '成功后在 Compute → Instances 确认 minorwire-* 为 Running，再把 .conf 导入 WireGuard',
+      '成功后在 Compute → Instances 确认 minorwire-* 为 Running，把 .conf 导入 WireGuard 并验证可用',
+      '最后升级到 Pay As You Go（未付费升级时，闲置清理可能删除服务器）',
     ],
     guideTitle: '分步指南（按顺序）',
-    guideIntro: '对照截图操作。若已有账号，可跳过 Step 1–2，从 Step 3 或 Step 4 开始。',
+    guideIntro:
+      '对照截图操作。若已有账号，可跳过 Step 1–2，从 Step 3（若已绑卡则从 Step 4）开始。Pay As You Go 升级放在 VPN 可用之后的最后一步。',
     guideSteps: [
       {
         id: 'signup',
@@ -730,34 +742,18 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       {
         id: 'payment',
         title: 'Step 3 — 注册时用信用卡验证',
-        body: '添加信用卡用于身份验证，可能出现临时预授权。Always Free 范围内不收费。',
+        body:
+          '添加信用卡用于身份验证，可能出现临时预授权。Always Free 范围内不收费。此时尚不必升级到 Pay As You Go——升级是 VPN 可用之后的最后一步。',
         image: '/minorwire/guide/signup-03-payment.png',
         imageAlt: 'Payment verification',
         ociLink: 'signupDocs',
         linkLabel: '官方注册文档',
       },
       {
-        id: 'upgrade',
-        title: 'Step 4 — 升级到 Pay As You Go',
-        body:
-          '菜单路径：Billing & Cost Management → Billing → Upgrade and Manage Payment（也可用下方直链）。选择 Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。升级可能需要 1–2 天。升级时卡片上可能出现约 USD $100 的预授权（占用额度），这不是实际扣款，验证后会撤销。完成后 Plan type 会显示为 Pay As You Go。',
-        clickSteps: [
-          '打开控制台左上菜单（≡）→ Billing & Cost Management',
-          'Billing → Upgrade and Manage Payment（或使用下方直链）',
-          '选择 Pay As You Go，Account type 选 Individual',
-          '点击 Upgrade（可能出现约 USD $100 预授权，之后会撤销）',
-          '确认 Plan type 为 Pay As You Go',
-        ],
-        image: '/minorwire/guide/signup-04-upgrade-payg.png',
-        imageAlt: 'Billing & Cost Management > Billing > Upgrade and Manage Payment',
-        ociLink: 'billingUpgrade',
-        linkLabel: '打开 Upgrade and Manage Payment',
-      },
-      {
         id: 'apiKey',
-        title: 'Step 5 — 创建 API 密钥，Copy 后粘贴',
+        title: 'Step 4 — 创建 API 密钥，Copy 后粘贴',
         body:
-          '用下方链接打开 Tokens and keys，按截图操作。先点击 Download private key 保存 .pem，Add 之后在 Configuration file preview 点 Copy 并粘贴。下方输入栏也是该顺序（.pem → Copy 全文 → 设备名）。',
+          '用下方链接打开 Tokens and keys，按截图操作。先点击 Download private key 保存 .pem，Add 之后在 Configuration file preview 点 Copy 并粘贴。下方输入栏也是该顺序（.pem → Copy 全文 → 设备名）。登记的 API 密钥会加密保存以便重建。请妥善保管，勿在控制台删除——删除后无法重建，Jittee 不承担责任。',
         clickSteps: [
           '打开 Tokens and keys 页面（下方链接）',
           '在 API keys 区域点击 Add API key',
@@ -795,20 +791,38 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'verifyInstance',
-        title: 'Step 6 — 成功后：在 Compute 确认实例',
+        title: 'Step 5 — 成功后：在 Compute 确认实例',
         body:
-          '「创建 VPN」成功后，会在你的租户中创建一台 Always Free Micro（VM.Standard.E2.1.Micro）计算实例。MinorWire 创建的名称以 minorwire- 开头（下方截图为 Instances 页面示例）。设置页也会显示公网 IP。',
+          '「创建 VPN」成功后，会在你的租户中创建一台 Always Free Micro（VM.Standard.E2.1.Micro）计算实例。MinorWire 创建的名称以 minorwire- 开头（下方截图为 Instances 页面示例）。设置页也会显示公网 IP。若 Stop 或 Terminate 实例，将无法连接 VPN。误删时，仅在登记的 API 密钥仍有效时可重建。',
         clickSteps: [
           '确认设置页状态为 done，并显示公网 IP 与 .conf',
           '控制台左上菜单（≡）→ Compute → Instances（或下方直链）',
           '确认区域与创建 VPN 时一致（例如 Singapore）',
           '列表中确认 State 为 Running、Shape 为 VM.Standard.E2.1.Micro、Public IP 与设置页一致（MinorWire 创建时名称以 minorwire-… 开头）',
           '将 .conf 导入官方 WireGuard 应用并连接',
+          '不要在 OCI 控制台 Stop / Terminate 实例（会导致无法连接）',
         ],
         image: '/minorwire/guide/verify-01-instances.png',
         imageAlt: 'Compute → Instances — Running (Always Free)',
         ociLink: 'computeInstances',
         linkLabel: '打开 Instances 列表',
+      },
+      {
+        id: 'upgrade',
+        title: 'Step 6 — 升级到 Pay As You Go',
+        body:
+          '请在确认 VPN 可用之后再执行。菜单路径：Billing & Cost Management → Billing → Upgrade and Manage Payment（也可用下方直链）。选择 Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。未升级时短期内可能仍能用，但闲置清理可能删除服务器。升级可能需要 1–2 天。升级时卡片上可能出现约 USD $100 的预授权（占用额度），这不是实际扣款，验证后会撤销。完成后 Plan type 会显示为 Pay As You Go。',
+        clickSteps: [
+          '打开控制台左上菜单（≡）→ Billing & Cost Management',
+          'Billing → Upgrade and Manage Payment（或使用下方直链）',
+          '选择 Pay As You Go，Account type 选 Individual',
+          '点击 Upgrade（可能出现约 USD $100 预授权，之后会撤销）',
+          '确认 Plan type 为 Pay As You Go',
+        ],
+        image: '/minorwire/guide/signup-04-upgrade-payg.png',
+        imageAlt: 'Billing & Cost Management > Billing > Upgrade and Manage Payment',
+        ociLink: 'billingUpgrade',
+        linkLabel: '打开 Upgrade and Manage Payment',
       },
     ],
     formTitle: '',
@@ -864,7 +878,10 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     recentSteps: '进度日志',
     retryHint: '本次失败。可对同一笔购买再次提交下方表单。',
     doneNote:
-      '本次购买仅包含一台 OCI 服务器。设备 .conf 可在本页下方（文本框／下载）获取或追加。也可在 Compute → Instances 确认同名实例。',
+      '本次购买仅包含一台 OCI 服务器。设备 .conf 可在本页下方（文本框／下载）获取或追加。也可在 Compute → Instances 确认同名实例。Stop / Terminate 实例会导致无法连接。误删后重建仅可使用首次登记的 API 密钥；若删除该密钥，Jittee 不承担责任。确认可用后请升级到 Pay As You Go——未升级时闲置清理可能删除服务器。',
+    recreateCta: '用登记密钥重建 VPN',
+    recreateBusy: '正在开始重建…',
+    recreateFailed: '重建失败',
     confTitle: (name) => `WireGuard 配置 (${name})`,
     downloadConf: (name) => `下载 ${name}.conf`,
     addPeerTitle: '追加其他设备 .conf',

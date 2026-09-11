@@ -51,6 +51,8 @@ function SetupInner() {
   const [job, setJob] = useState<JobPublicStatus | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [recreating, setRecreating] = useState(false)
+  const [recreateError, setRecreateError] = useState('')
   const [extraPeerName, setExtraPeerName] = useState('device2')
   const [peerBusy, setPeerBusy] = useState(false)
   const [peerError, setPeerError] = useState('')
@@ -223,6 +225,13 @@ function SetupInner() {
           return
         }
         setJob(data.job)
+        // Clear secrets from the browser after accept; server retains encrypted OCI creds.
+        setForm((f) => ({
+          ...emptyFormForLocale(locale),
+          region: f.region,
+          peerName: f.peerName,
+        }))
+        setPemFileName('')
         // Primary runner start: dedicated /run request (Cloud Run CPU). Pass creds so
         // provision can start even if encrypted payload read fails.
         if (data.job?.id && (data.needsClientKick || data.job.phase === 'queued')) {
@@ -234,8 +243,34 @@ function SetupInner() {
         setSubmitting(false)
       }
     },
-    [sessionId, submitting, form, c.failedStart, c.networkError, c.ociConfigInvalid, kickRun],
+    [sessionId, submitting, form, locale, c.failedStart, c.networkError, c.ociConfigInvalid, kickRun],
   )
+
+  const onRecreate = useCallback(async () => {
+    if (!sessionId || recreating) return
+    setRecreating(true)
+    setRecreateError('')
+    try {
+      const res = await fetch('/api/minorwire/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, recreate: true }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setRecreateError(data.error || c.recreateFailed)
+        return
+      }
+      setJob(data.job)
+      if (data.job?.id && (data.needsClientKick || data.job.phase === 'queued')) {
+        void kickRun(data.job.id, { force: true })
+      }
+    } catch {
+      setRecreateError(c.networkError)
+    } finally {
+      setRecreating(false)
+    }
+  }, [sessionId, recreating, c.recreateFailed, c.networkError, kickRun])
 
   const onAddPeer = useCallback(
     async (e: React.FormEvent) => {
@@ -402,6 +437,19 @@ function SetupInner() {
                 {job.phase === 'done' && (
                   <div className="mt-4 space-y-6">
                     <p className="text-sm text-[#5a6f64]">{c.doneNote}</p>
+                    {job.canRecreate && (
+                      <div className="space-y-2">
+                        <button
+                          type="button"
+                          disabled={recreating}
+                          onClick={() => void onRecreate()}
+                          className="inline-flex px-4 py-2 border border-[#1d3d2e] rounded-md font-semibold text-sm disabled:opacity-60"
+                        >
+                          {recreating ? c.recreateBusy : c.recreateCta}
+                        </button>
+                        {recreateError && <p className="text-sm text-red-700">{recreateError}</p>}
+                      </div>
+                    )}
                     {(job.peers?.length
                       ? job.peers
                       : job.peerConf

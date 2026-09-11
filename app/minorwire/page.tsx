@@ -161,7 +161,8 @@ const COPY: Record<string, Copy> = {
     planSetupBest: '最初から一緒に進めたい人向け',
     needTitle: '必要なもの',
     needPoints: ['メールアドレス', 'クレジットカード'],
-    needLead: '上記を用意し、PayNow 支払いを行うだけで、あなたのプライベート VPN サーバーを構築できます。',
+    needLead:
+      '上記を用意し、Jittee が指定するクラウドをそのメールとカードで契約します。契約したクラウド上に、あなたのプライベート VPN サーバーを構築します（ツール代は PayNow）。',
     faqTitle: 'FAQ',
     faqs: [
       {
@@ -169,16 +170,24 @@ const COPY: Record<string, Copy> = {
         a: 'ありません。無料枠の範囲で動かせば、運用の月額は基本ゼロです。Stripe で払うのは最初のツール代（と希望者向けの設定代行）だけです。',
       },
       {
+        q: 'クラウドの運用ができるか不安です',
+        a: '無料枠のまま運用できるクラウドを選定しているので、つけっぱなしで問題ありません。やめたいときはクラウドアカウントごと解約すれば追加料金もなく、即日でやめられます。',
+      },
+      {
         q: 'NordVPN などと何が違いますか？',
         a: '大手は月額で帯域とサーバーを借りるサービスです。こちらは自分のクラウドに専用サーバーを一度立てる方式で、以後の月額を抑えられます。その代わり、大規模利用やクラウド規約変更のリスクは自分側にあります。',
       },
       {
         q: 'API キーは保存されますか？',
-        a: 'お客様のクラウド API キーは構築中だけ使い、永続保存しません。あとから端末設定を追加するため、サーバー接続用の鍵だけ暗号化して保持します。',
+        a: 'はい。登録したクラウド API キーは、サーバー再作成のために暗号化して保管します（ブラウザの入力欄は送信後に残しません）。鍵の管理はお客様の責任です。誤って削除した API キーでは再作成できず、その場合 Jittee は責任を負いません。端末追加用にインスタンス接続鍵も暗号化して保持します。',
+      },
+      {
+        q: 'インスタンスを Stop / Terminate したらどうなりますか？',
+        a: 'OCI コンソールでインスタンスを Stop または Terminate すると、VPN サーバーへ接続できなくなります。誤って削除した場合、再作成は初回登録の API キーが有効なときだけ可能です。',
       },
       {
         q: '何台までつながりますか？',
-        a: '購入1回あたりサーバー構築は1回です。端末ごとの接続設定は何度でも追加できます。同時利用の現実目安は数台〜十台前後のライト利用です。',
+        a: '購入1回あたりサーバー構築は1回です（登録キーによる再作成は可）。端末ごとの接続設定は何度でも追加できます。同時利用の現実目安は数台〜十台前後のライト利用です。',
       },
     ],
     finalTitle: 'まず、自分でやるか・任せるかを選んでください。',
@@ -274,7 +283,8 @@ const COPY: Record<string, Copy> = {
     planSetupBest: 'Best if you want help from the start',
     needTitle: 'What you need',
     needPoints: ['Email address', 'Credit card'],
-    needLead: 'Prepare those, pay with PayNow, and we build your private VPN server.',
+    needLead:
+      'With that email and credit card you sign up for the cloud Jittee specifies. We then build your private VPN server on that contracted cloud (tool fee via PayNow).',
     faqTitle: 'FAQ',
     faqs: [
       {
@@ -282,16 +292,24 @@ const COPY: Record<string, Copy> = {
         a: 'No. Within the free cloud allowance, monthly ops are basically free. Stripe only charges the one-time tool fee (and optional assisted setup).',
       },
       {
+        q: 'I am worried about operating the cloud myself.',
+        a: 'We pick a cloud that can run within a free allowance, so leaving it on is fine. When you want to stop, cancel the cloud account entirely — no extra fees, and you can close it the same day.',
+      },
+      {
         q: 'How is this different from NordVPN and similar?',
         a: 'Those services rent shared capacity monthly. Here you host one dedicated server on your own cloud after a one-time setup, so ongoing cost stays low — with trade-offs on scale and cloud-policy risk.',
       },
       {
         q: 'Do you store my API key?',
-        a: 'Your cloud API key is used in memory during provisioning and not persisted. An encrypted instance key is kept only so you can add more device profiles later.',
+        a: 'Yes. The cloud API key you register is stored encrypted so we can recreate the server later (form fields are cleared in the browser after submit). You must keep that key secure. If you delete the API key, recreation is impossible and Jittee accepts no liability. An encrypted instance SSH key is also kept so you can add device profiles.',
+      },
+      {
+        q: 'What if I Stop or Terminate the instance?',
+        a: 'If you Stop or Terminate the instance in the OCI console, the VPN server becomes unreachable. If you delete it by mistake, recreation is possible only with the currently registered API key from first setup.',
       },
       {
         q: 'How many devices can connect?',
-        a: 'One server provision per purchase. Device profiles can be added anytime. Concurrent light use is realistically a handful to about ten devices.',
+        a: 'One server provision per purchase (recreate with the registered key is allowed). Device profiles can be added anytime. Concurrent light use is realistically a handful to about ten devices.',
       },
     ],
     finalTitle: 'Pick DIY or assisted — then start.',
@@ -376,7 +394,8 @@ const COPY: Record<string, Copy> = {
     planSetupBest: '适合希望一开始就有人一起做的人',
     needTitle: '你需要准备',
     needPoints: ['邮箱地址', '信用卡'],
-    needLead: '准备好以上两项，用 PayNow 付款即可开始搭建你的专属 VPN 服务器。',
+    needLead:
+      '用上述邮箱与信用卡，在 Jittee 指定的云上签约；随后我们在该云账号上搭建你的专属 VPN 服务器（工具费通过 PayNow 支付）。',
     faqTitle: '常见问题',
     faqs: [
       {
@@ -384,16 +403,24 @@ const COPY: Record<string, Copy> = {
         a: '没有。在云免费额度内，月运营费基本为零。Stripe 只收一次性工具费（以及可选的代设费）。',
       },
       {
+        q: '我担心自己用不了云服务。',
+        a: '我们选用可在免费额度内长期运行的云，一直开着没问题。想停用时直接注销云账号即可，没有额外费用，当天就能解约。',
+      },
+      {
         q: '和 NordVPN 等有什么不同？',
         a: '那些服务按月租用共享带宽。这里是在你自己的云上搭建一台专属服务器，后续费用更低，但大规模使用与云政策变更风险由你承担。',
       },
       {
         q: '会保存我的 API 密钥吗？',
-        a: '云 API 密钥只在部署时使用，不会持久保存。为追加设备配置，仅加密保存实例连接密钥。',
+        a: '会。登记的云 API 密钥会加密保存，以便日后重建服务器（浏览器表单在提交后清空）。请妥善保管该密钥。若你删除 API 密钥，将无法重建，Jittee 对此不承担责任。为追加设备配置，实例连接密钥也会加密保存。',
+      },
+      {
+        q: '如果 Stop / Terminate 实例会怎样？',
+        a: '在 OCI 控制台 Stop 或 Terminate 实例后，将无法连接 VPN 服务器。误删时，仅可使用首次登记且仍有效的 API 密钥重建。',
       },
       {
         q: '可以连多少台设备？',
-        a: '每次购买只搭建一次服务器。设备配置可随时追加。同时轻度使用更现实的是数台到约十台。',
+        a: '每次购买搭建一次服务器（可用登记密钥重建）。设备配置可随时追加。同时轻度使用更现实的是数台到约十台。',
       },
     ],
     finalTitle: '先选自己设置，还是请人设置。',

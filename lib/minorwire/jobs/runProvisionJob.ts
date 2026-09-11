@@ -28,10 +28,15 @@ export async function runProvisionJob(opts: {
       phase: 'validating',
     })
     await validateCredentials(creds)
+    // Persist encrypted OCI API creds for later recreate (same AES-GCM as other secrets).
+    // payloadEnc remains ephemeral and is cleared after the run.
+    await updateJob(jobId, {
+      ociCredsEnc: encryptSecret(JSON.stringify(creds)),
+    })
     await appendJobLog(jobId, {
       level: 'info',
       step: 'validate_creds',
-      message: 'OCI credentials OK',
+      message: 'OCI credentials OK (encrypted API key retained for recreate)',
       phase: 'validating',
     })
 
@@ -161,6 +166,7 @@ export async function runProvisionJob(opts: {
       peerConf,
       peers: [{ name: peerName, conf: peerConf, createdAt: now }],
       sshPrivateKeyEnc: encryptSecret(sshPrivateKeyPem),
+      ociCredsEnc: encryptSecret(JSON.stringify(creds)),
     })
     await appendJobLog(jobId, {
       level: 'info',

@@ -70,6 +70,12 @@ export type JobRecord = {
   peers?: { name: string; conf: string; createdAt: number }[]
   /** AES-GCM blob of instance SSH private key (OpenSSH) — never expose via API. */
   sshPrivateKeyEnc?: string
+  /**
+   * AES-GCM blob of OCI API credentials retained after successful validate/provision
+   * so the customer can recreate a deleted server with the same registered key.
+   * Never expose via API. Distinct from ephemeral payloadEnc.
+   */
+  ociCredsEnc?: string
   /** Temporary AES-GCM blob of OCI creds + peerName for the runner; cleared after run. */
   payloadEnc?: string
   runStartedAt?: number
@@ -88,6 +94,8 @@ export async function createJobDoc(input: {
   resumePublicIp?: string
   resumeDisplayName?: string
   resumeSshPrivateKeyEnc?: string
+  /** Carry forward registered OCI API creds (encrypted) across retries / recreate. */
+  resumeOciCredsEnc?: string
 }): Promise<void> {
   const now = Date.now()
   const bootLog: JobLogEntry = {
@@ -114,6 +122,7 @@ export async function createJobDoc(input: {
   if (input.resumePublicIp) doc.publicIp = input.resumePublicIp
   if (input.resumeDisplayName) doc.displayName = input.resumeDisplayName
   if (input.resumeSshPrivateKeyEnc) doc.sshPrivateKeyEnc = input.resumeSshPrivateKeyEnc
+  if (input.resumeOciCredsEnc) doc.ociCredsEnc = input.resumeOciCredsEnc
   await db().collection(COLLECTION).doc(input.id).set(doc)
   await db()
     .collection(COLLECTION)
@@ -212,6 +221,7 @@ export async function claimQueuedJob(id: string): Promise<JobRecord | null> {
   })
 }
 
+/** Clears ephemeral runner payload only. Does not delete ociCredsEnc or sshPrivateKeyEnc. */
 export async function clearJobPayload(id: string): Promise<void> {
   await db()
     .collection(COLLECTION)
@@ -325,5 +335,6 @@ export function toPublicStatus(job: JobRecord): JobPublicStatus {
     serverProvisioned:
       Boolean(job.publicIp) &&
       (job.phase === 'done' || (job.phase === 'error' && Boolean(job.sshPrivateKeyEnc))),
+    canRecreate: job.phase === 'done' && Boolean(job.ociCredsEnc),
   }
 }
