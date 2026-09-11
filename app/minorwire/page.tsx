@@ -40,10 +40,24 @@ interface Copy {
   deliveryTogether: string
   compareTitle: string
   compareIntro: string
-  compareProsTitle: string
-  comparePros: string[]
-  compareConsTitle: string
-  compareCons: string[]
+  compareThesis: string
+  compareColSelf: string
+  compareColCommercial: string
+  compareRows: { label: string; self: string; commercial: string }[]
+  compareStrengthsTitle: string
+  compareStrengths: string[]
+  compareWhenTitle: string
+  compareWhenSelf: string
+  compareWhenCommercial: string
+  compareWhenBoth: string
+  compareLatencyNote: string
+  verifiedTitle: string
+  verifiedIntro: string
+  verifiedReputation: string
+  verifiedWhy: string
+  verifiedRows: { service: string; note: string }[]
+  verifiedCaveatsTitle: string
+  verifiedCaveats: string[]
   howTitle: string
   steps: { title: string; desc: string }[]
   chooseTitle: string
@@ -102,20 +116,122 @@ const COPY: Record<string, Copy> = {
     deliveryServerWho: 'Jittee が用意・起動',
     deliveryGuide: 'やり方がわからない場合でも大丈夫。画面の手順は Jittee が説明します。',
     deliveryTogether: 'それでも不安なときは、一緒に設定するオプションもあります。',
-    compareTitle: '大手VPN業者（NordVPN / ExpressVPN など）との違い',
+    compareTitle: '大手 VPN 業者（NordVPN / ExpressVPN など）との違い',
     compareIntro:
-      '大手 VPN は「いつでもつながる月額サービス」。MinorWire は「自分のクラウドに一度立てて、以後ほぼ無料で使う」道具です。',
-    compareProsTitle: 'メリット',
-    comparePros: [
-      '一度設定すれば、以後の毎月の運用費用は基本無料（クラウド等の無料枠・ポリシーが変わらない前提）',
-      'サーバーと回線が自分名義なので、誰かの共有 VPN に乗らない',
-      '買い切りのツール代のみ。月額サブスクを払い続けなくてよい',
+      'どちらも「VPN」と呼ばれますが、道具としては別物です。匿名性のモデルがほぼ逆で、向く用途も分かれます。',
+    compareThesis:
+      '「Minor」＝あなた1人の薄い出口。Nord / Express のような共有出口はブロックリストに積み上がりやすいが、MinorWire は載りにくい — それが製品の芯です。',
+    compareColSelf: '自前（MinorWire / 自分のクラウド）',
+    compareColCommercial: '大手 VPN（NordVPN 等）',
+    compareRows: [
+      {
+        label: '出口 IP',
+        self: '専用・固定に近い。あなた専用の1本（Minor）',
+        commercial: '多数の利用者で共有される出口',
+      },
+      {
+        label: 'IP レピュテーション',
+        self: '例: Fraud Score 低・Anonymizing VPN = No（測定時点）。データセンターでも「匿名化 VPN」未登録が通過の鍵',
+        commercial: '共有出口は「既知の匿名化 VPN」に載りやすい',
+      },
+      {
+        label: '出口の場所',
+        self: '選んだクラウド地域に1か所',
+        commercial: '多数の国・都市から選べる',
+      },
+      {
+        label: 'ログ',
+        self: 'サーバーは自分管理。残す／残さないも自分次第',
+        commercial: 'ポリシーは業者次第（ノーログを掲げる所が多い）',
+      },
+      {
+        label: '法的・不正利用',
+        self: '悪用通報はテナント名義のあなたに届く',
+        commercial: '業者側が受け皿になることが多い',
+      },
+      {
+        label: '匿名性',
+        self: '専用 IP は追跡しやすい。群衆の中には紛れない',
+        commercial: '共有出口で群衆に紛れるのが強み',
+      },
+      {
+        label: 'ストリーミング／地理制限',
+        self: '専用・薄い出口は「既知 VPN」リストに載りにくいことがある。ページ到達は通る例もあるが、再生ブロックは後から起きうる（永続保証なし）',
+        commercial: '共有 IP は VPN リストに載りやすい。出口を回し、配信向けに最適化していることが多い',
+      },
+      {
+        label: '帯域・同時利用',
+        self: '無料枠インスタンス相当。ライト利用向け',
+        commercial: 'プラン内で広めの帯域・多端末向き',
+      },
+      {
+        label: '料金',
+        self: '買い切りツール代＋クラウド無料枠（条件次第）',
+        commercial: '月額／年額のサブスク',
+      },
+      {
+        label: 'その他',
+        self: 'DNS・スプリットトンネルなど構成を自分で決められる',
+        commercial: 'アプリ・キルスイッチ・多機能 UI が揃っている',
+      },
     ],
-    compareConsTitle: 'デメリット',
-    compareCons: [
-      'エンタープライズ級で大量同時接続・高帯域が必要な用途にはスペックが足りない',
-      '利用しているクラウドの規約や無料枠が変わると、将来料金が発生する可能性がある',
-      '最初にクラウド口座の準備と短いセットアップが必要（大手 VPN の「すぐ契約して使う」より手間）',
+    compareStrengthsTitle: '自前ホストだけができること',
+    compareStrengths: [
+      '固定の出口 IP を、自宅・会社の許可リストに登録できる',
+      '自分の端末どうしを、インターネットを経由しない私有 LAN のように結べる',
+      'DNS やスプリットトンネルまで、構成を自分で完全にコントロールできる',
+      'ISP や同じ Wi‑Fi 上の他人からは通信先を隠しやすい（訪問先サイトからは、出口 IP は見える）',
+      '共有商用 VPN のような「既知の匿名化 VPN」リストに載りにくいことがある（専用・軽トラフィック＝Minor）',
+    ],
+    compareWhenTitle: 'どちらを使うか',
+    compareWhenSelf:
+      '公共 Wi‑Fi での盗聴対策、ISP からの通信先の秘匿、許可リスト用の固定 IP、自分の端末同士の接続 — 自前向き。地理制限サービスは、共有 VPN リスト回避が効く場合もあるが保証はない。',
+    compareWhenCommercial:
+      '群衆の中に紛れる匿名性、多国の出口、配信向けに出口を回したい用途 — 大手 VPN 向き。',
+    compareWhenBoth: '用途が違うので、両方使う人も少なくありません。',
+    compareLatencyNote:
+      '出口が自分から遠いクラウド地域だと、往復遅延（RTT）が増えます。必要な用途に絞って使うのがおすすめです。',
+    verifiedTitle: '動作確認済みサービス（2026-09-11 時点）',
+    verifiedIntro:
+      'お客様の OCI Always Free 上の WireGuard 出口での一例です（特定 IP を全員が得るわけではありません）。ページ到達・カタログ表示中心。ログイン後の再生や追加認証までは未確認の項目があります。',
+    verifiedReputation:
+      'Scamalytics（2026-09-11 測定の一例・永続保証なし）: Fraud Score 5/100 Low Risk。Datacenter Yes / Server Yes は想定どおり。決定打は Anonymizing VPN = No — レピュテーション上「VPN」として未登録。主要ブロックリストもクリア。',
+    verifiedWhy:
+      '製品の芯: MinorWire の「Minor」は、あなた1人の薄い出口のこと。Nord / Express の共有出口は何千人分のノイズが積み上がり「既知の匿名化 VPN」に載りやすい。あなた専用なら同じ積み上がりが起きにくい — だからデータセンターでも通過しやすいことがあります。',
+    verifiedRows: [
+      {
+        service: 'Netflix JP',
+        note: 'JP ページ / ¥890 / JP カタログ表示まで。再生は未確認（ログイン再生時に M7111-5059 等が起きうる）',
+      },
+      {
+        service: 'Disney+ JP',
+        note: 'JP TOP 10・ドコモ提携 UI の表示まで確認',
+      },
+      {
+        service: 'Google 検索',
+        note: 'CAPTCHA なし。AI Overview も表示',
+      },
+      {
+        service: 'ChatGPT',
+        note: 'Cloudflare チャレンジなし',
+      },
+      {
+        service: 'DBS iBanking',
+        note: 'ログイン画面到達まで（ログイン後の追加認証は未確認）',
+      },
+      {
+        service: 'SBI 証券',
+        note: 'リアルタイム気配付きのフル UI まで。それ以降の認証は未確認',
+      },
+    ],
+    verifiedCaveatsTitle: '注意（短く）',
+    verifiedCaveats: [
+      'Fraud Score や VPN 判定は測定時点の一例。永続保証ではありません',
+      'Netflix の再生は未確認です',
+      '評価はあなたのトラフィック次第。悪用・ノイズが多いと自分の IP が傷つく',
+      'Oracle 等クラウド事業者のアドレス帯が後から一括リスト入りすることがある（制御外）',
+      'サービス側がデータセンター帯を再スキャンし、半年後には結果が変わりうる',
+      '金融はログイン画面までの確認。ログイン後のステップアップ認証は未検証 — 実運用で判断してください',
     ],
     howTitle: '流れ',
     steps: [
@@ -175,7 +291,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'NordVPN などと何が違いますか？',
-        a: '大手は月額で帯域とサーバーを借りるサービスです。こちらは自分のクラウドに専用サーバーを一度立てる方式で、以後の月額を抑えられます。その代わり、大規模利用やクラウド規約変更のリスクは自分側にあります。',
+        a: '根本的に別の道具です。大手は共有出口で群衆の匿名性を売り、自前は専用・薄い出口（Minor）です。共有 VPN IP は「既知の匿名化 VPN」に載りやすく、専用の薄い出口は載りにくいことがあります — 測定例では Fraud Score が低く Anonymizing VPN = No（永続保証なし）。だからストリーミングが「ほぼ不可」とは限りません（再生保証はなし）。許可リスト用の固定 IP や端末同士の私有接続は自前向きです。詳細は上の比較表と確認結果を参照してください。',
       },
       {
         q: 'API キーは保存されますか？',
@@ -226,18 +342,120 @@ const COPY: Record<string, Copy> = {
     deliveryTogether: 'Still unsure? There is an option to set it up together with Jittee.',
     compareTitle: 'Vs. major VPN vendors (NordVPN / ExpressVPN and similar)',
     compareIntro:
-      'Big VPN brands sell a monthly “always-on” service. MinorWire is a tool to host one VPN on your own cloud and keep ongoing cost near zero.',
-    compareProsTitle: 'Pros',
-    comparePros: [
-      'Once configured, ongoing monthly cost is basically free (assuming cloud free-tier policy does not change)',
-      'Server and traffic sit on your own account — not a shared commercial VPN pool',
-      'One-time tool fee instead of paying a subscription forever',
+      'Both are called “VPNs,” but they are different tools. Their anonymity models are nearly opposite, and the right use cases diverge.',
+    compareThesis:
+      '“Minor” = a light exit used by you alone. Shared Nord / Express exits pile onto blocklists; a MinorWire exit often does not — that is the product thesis.',
+    compareColSelf: 'Self-hosted (MinorWire / your cloud)',
+    compareColCommercial: 'Major VPN (NordVPN etc.)',
+    compareRows: [
+      {
+        label: 'Exit IP',
+        self: 'Dedicated / near-fixed — yours alone (Minor)',
+        commercial: 'Shared exits used by many customers',
+      },
+      {
+        label: 'IP reputation',
+        self: 'Example: low Fraud Score + Anonymizing VPN = No (as measured). Datacenter is expected; not listed as anonymizing VPN is the win',
+        commercial: 'Shared exits often land on “known anonymizing VPN” lists',
+      },
+      {
+        label: 'Exit locations',
+        self: 'One place: the cloud region you choose',
+        commercial: 'Many countries and cities to pick from',
+      },
+      {
+        label: 'Logs',
+        self: 'You run the server; what you keep is up to you',
+        commercial: 'Provider policy (many advertise no-logs)',
+      },
+      {
+        label: 'Legal / abuse',
+        self: 'Abuse reports go to you as the tenancy owner',
+        commercial: 'Provider often absorbs the first contact',
+      },
+      {
+        label: 'Anonymity',
+        self: 'A dedicated IP is easy to track; you do not blend into a crowd',
+        commercial: 'Shared exits — crowd anonymity is the strength',
+      },
+      {
+        label: 'Streaming / geo-unblock',
+        self: 'A dedicated, light exit may avoid “known VPN” lists. Catalog pages sometimes load; playback blocks can still appear later (no permanence guarantee)',
+        commercial: 'Shared IPs often land on VPN lists. Rotating exits, often tuned for streaming',
+      },
+      {
+        label: 'Bandwidth / concurrent use',
+        self: 'Free-tier instance class — light personal use',
+        commercial: 'Broader bandwidth and multi-device plans',
+      },
+      {
+        label: 'Price',
+        self: 'One-time tool fee + cloud free allowance (policy permitting)',
+        commercial: 'Monthly or yearly subscription',
+      },
+      {
+        label: 'Extras',
+        self: 'Full control of DNS, split tunnel, and layout',
+        commercial: 'Polished apps, kill switch, feature-rich UI',
+      },
     ],
-    compareConsTitle: 'Cons',
-    compareCons: [
-      'Not enough capacity for enterprise-scale concurrent use or heavy bandwidth',
-      'If the cloud provider changes terms or free allowances, fees may appear later',
-      'Needs a short one-time cloud + setup step (more effort than “subscribe and connect” apps)',
+    compareStrengthsTitle: 'What only self-hosting can do well',
+    compareStrengths: [
+      'A stable exit IP you can put on home or office allowlists',
+      'A private LAN-style path between your own devices',
+      'Full control of DNS, split tunneling, and how traffic is routed',
+      'Hides destinations from your ISP or others on the same Wi‑Fi — not from the sites you visit (they still see the exit IP)',
+      'May stay off commercial “known anonymizing VPN” lists — dedicated, light traffic (the Minor idea)',
+    ],
+    compareWhenTitle: 'When to use which',
+    compareWhenSelf:
+      'Public Wi‑Fi protection, hiding destinations from your ISP, a fixed IP for allowlists, linking your own devices — prefer self-hosted. Geo-restricted services may work when shared-VPN lists are the blocker, but that is not guaranteed.',
+    compareWhenCommercial:
+      'Crowd anonymity, many country exits, rotating exits tuned for streaming — prefer a major commercial VPN.',
+    compareWhenBoth: 'They solve different jobs; many people use both.',
+    compareLatencyNote:
+      'If the exit sits in a distant cloud region, round-trip time (RTT) rises. Use it for focused purposes rather than everything.',
+    verifiedTitle: 'Services checked (as of 2026-09-11)',
+    verifiedIntro:
+      'One example on a customer OCI Always Free WireGuard exit (not every customer gets the same IP). Focus is page / catalog reach; logged-in playback or step-up auth is not claimed where noted.',
+    verifiedReputation:
+      'Scamalytics (one measurement on 2026-09-11 — not a forever guarantee): Fraud Score 5/100 Low Risk. Datacenter Yes / Server Yes is expected. The decisive flag is Anonymizing VPN = No — not registered as a VPN on reputation lists. Major public blocklists also clear.',
+    verifiedWhy:
+      'Product thesis: “Minor” in MinorWire means a light exit used by you alone. Shared Nord / Express exits accumulate thousands of users’ noise and land on “known anonymizing VPN” lists. Yours alone often does not pile up the same way — so a datacenter IP can still pass where shared VPN exits fail.',
+    verifiedRows: [
+      {
+        service: 'Netflix JP',
+        note: 'JP page / ¥890 / JP catalog. Playback not verified (logged-in play may hit M7111-5059 etc.)',
+      },
+      {
+        service: 'Disney+ JP',
+        note: 'JP TOP 10 and docomo partnership UI shown',
+      },
+      {
+        service: 'Google Search',
+        note: 'No CAPTCHA; AI Overview OK',
+      },
+      {
+        service: 'ChatGPT',
+        note: 'No Cloudflare challenge',
+      },
+      {
+        service: 'DBS iBanking',
+        note: 'Reached login screen only (post-login step-up not verified)',
+      },
+      {
+        service: 'SBI Securities',
+        note: 'Full UI with live quotes; further auth not claimed',
+      },
+    ],
+    verifiedCaveatsTitle: 'Caveats (brief)',
+    verifiedCaveats: [
+      'Fraud Score and VPN flags are a point-in-time example — not permanent',
+      'Netflix playback is still unverified',
+      'Reputation depends on your own traffic; noisy abuse burns your IP',
+      'Oracle (and other cloud) address ranges may later be bulk-listed (out of your control)',
+      'Services may re-scan datacenter ranges; results can differ half a year later',
+      'Finance: login screen OK in the test; post-login step-up auth not verified — judge in practice',
     ],
     howTitle: 'How it works',
     steps: [
@@ -297,7 +515,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'How is this different from NordVPN and similar?',
-        a: 'Those services rent shared capacity monthly. Here you host one dedicated server on your own cloud after a one-time setup, so ongoing cost stays low — with trade-offs on scale and cloud-policy risk.',
+        a: 'They are fundamentally different tools. Commercial VPNs sell shared-exit crowd anonymity; self-hosted gives you a dedicated, light exit (Minor). Shared VPN IPs land on “known anonymizing VPN” lists fast; a light dedicated exit often does not — in one measurement, Fraud Score was low and Anonymizing VPN = No (not a forever guarantee). So streaming is not “almost never works,” though playback is not guaranteed. Allowlisted fixed IPs and private device-to-device links favor self-hosted. See the comparison table and checked-services section above.',
       },
       {
         q: 'Do you store my API key?',
@@ -348,18 +566,120 @@ const COPY: Record<string, Copy> = {
     deliveryTogether: '仍不确定时，也可以选择与 Jittee 一起完成设置。',
     compareTitle: '与大型 VPN 商家（NordVPN / ExpressVPN 等）的区别',
     compareIntro:
-      '大型 VPN 卖的是按月“随时可连”的服务。MinorWire 是把 VPN 放到你自己的云上、尽量把后续费用压到接近零的工具。',
-    compareProsTitle: '优点',
-    comparePros: [
-      '设置一次后，后续月运营费基本免费（前提是云免费额度与政策不变）',
-      '服务器与流量在你自己的账号上，不进入别人的共享 VPN 池',
-      '一次性工具费，不必长期付订阅',
+      '虽然都叫「VPN」，但其实是不同的工具。匿名模型几乎相反，适合的场景也不同。',
+    compareThesis:
+      '「Minor」＝只属于你的轻量出口。Nord / Express 一类共享出口容易堆进封锁名单；MinorWire 往往不会 — 这就是产品的核心。',
+    compareColSelf: '自建（MinorWire / 你自己的云）',
+    compareColCommercial: '大型 VPN（NordVPN 等）',
+    compareRows: [
+      {
+        label: '出口 IP',
+        self: '专用、接近固定，只属于你（Minor）',
+        commercial: '大量用户共享出口',
+      },
+      {
+        label: 'IP 信誉',
+        self: '例：低 Fraud Score + Anonymizing VPN = No（测量当时）。数据中心属预期；未标为匿名化 VPN 才是关键',
+        commercial: '共享出口容易进入「已知匿名化 VPN」名单',
+      },
+      {
+        label: '出口位置',
+        self: '你所选的一个云区域',
+        commercial: '可选多个国家与城市',
+      },
+      {
+        label: '日志',
+        self: '服务器由你管理，是否留存由你决定',
+        commercial: '取决于商家政策（许多宣传无日志）',
+      },
+      {
+        label: '法律 / 滥用',
+        self: '滥用投诉会发到租户名义的你',
+        commercial: '通常由商家先承接',
+      },
+      {
+        label: '匿名性',
+        self: '专用 IP 易被追踪，无法融入人群',
+        commercial: '共享出口，人群匿名是其强项',
+      },
+      {
+        label: '流媒体 / 地理限制',
+        self: '专用、轻量出口有时不易进入「已知 VPN」名单。目录页可能能打开，但播放拦截仍可能随后出现（无永久保证）',
+        commercial: '共享 IP 容易进入 VPN 名单；会轮换出口，并常针对流媒体优化',
+      },
+      {
+        label: '带宽 / 并发',
+        self: '免费额度实例级别，适合轻度使用',
+        commercial: '套餐内带宽更宽、更适合多设备',
+      },
+      {
+        label: '价格',
+        self: '一次性工具费 + 云免费额度（视政策而定）',
+        commercial: '月付或年付订阅',
+      },
+      {
+        label: '其他',
+        self: 'DNS、分流等可完全自行决定',
+        commercial: '应用、Kill Switch、功能丰富的界面',
+      },
     ],
-    compareConsTitle: '缺点',
-    compareCons: [
-      '不适合企业级大量并发或高带宽场景，规格有限',
-      '若云厂商条款或免费额度变更，将来可能产生费用',
-      '需要一次性准备云账号并完成短设置（比“订阅即用”多一步）',
+    compareStrengthsTitle: '只有自建才擅长的事',
+    compareStrengths: [
+      '固定出口 IP，可加入家庭或公司的允许列表',
+      '在你自己的设备之间建立类似私有局域网的连接',
+      'DNS、分流等路由方式由你完全掌控',
+      '可对 ISP 或同一 Wi‑Fi 上的他人隐藏目的地（访问的网站仍能看到出口 IP）',
+      '有时不易进入商业「已知匿名化 VPN」名单 — 因为是专用、轻流量（Minor 的思路）',
+    ],
+    compareWhenTitle: '该用哪一种',
+    compareWhenSelf:
+      '公共 Wi‑Fi 防护、对 ISP 隐藏目的地、允许列表用的固定 IP、连接自己的设备 — 更适合自建。地理限制服务在共享 VPN 名单是主因时也可能通，但无保证。',
+    compareWhenCommercial:
+      '融入人群的匿名性、多国出口、需要为流媒体轮换出口 — 更适合大型商业 VPN。',
+    compareWhenBoth: '用途不同，不少人两者都会用。',
+    compareLatencyNote:
+      '若出口落在较远的云区域，往返延迟（RTT）会增加。建议按需要的用途来用，而不是什么都走它。',
+    verifiedTitle: '已验证服务（截至 2026-09-11）',
+    verifiedIntro:
+      '以客户 OCI Always Free 上的 WireGuard 出口实测为例（并非每位客户都会分到同一 IP）。以页面 / 目录可达为主；注明处不含登录后播放或二次认证。',
+    verifiedReputation:
+      'Scamalytics（2026-09-11 一次测量示例 · 非永久保证）：Fraud Score 5/100 Low Risk。Datacenter Yes / Server Yes 属预期。决定性标志是 Anonymizing VPN = No — 信誉名单上未登记为 VPN。主要公开封锁名单亦清空。',
+    verifiedWhy:
+      '产品核心：MinorWire 的「Minor」指只属于你的轻量出口。Nord / Express 的共享出口会堆上千人噪声，很快进入「已知匿名化 VPN」名单。专属于你则往往不会同样堆积 — 因此即便是数据中心 IP，有时也能在共享 VPN 失败处通过。',
+    verifiedRows: [
+      {
+        service: 'Netflix JP',
+        note: 'JP 页面 / ¥890 / JP 目录展示。播放未验证（登录播放可能出现 M7111-5059 等）',
+      },
+      {
+        service: 'Disney+ JP',
+        note: '已显示 JP TOP 10 与 docomo 合作界面',
+      },
+      {
+        service: 'Google 搜索',
+        note: '无 CAPTCHA；AI Overview 正常',
+      },
+      {
+        service: 'ChatGPT',
+        note: '无 Cloudflare 挑战',
+      },
+      {
+        service: 'DBS iBanking',
+        note: '仅到达登录页（登录后二次认证未验证）',
+      },
+      {
+        service: 'SBI 证券',
+        note: '含实时报价的完整 UI；再往后的认证不作声明',
+      },
+    ],
+    verifiedCaveatsTitle: '注意（简要）',
+    verifiedCaveats: [
+      'Fraud Score 与 VPN 判定仅为当时一例，非永久保证',
+      'Netflix 播放仍未验证',
+      '信誉取决于你自己的流量；滥用或噪声会毁掉你的 IP',
+      'Oracle 等云厂商地址段日后可能被批量列入名单（无法控制）',
+      '服务方可能重新扫描数据中心段；半年后结果可能不同',
+      '金融：测试仅确认登录页；登录后二次认证未验证 — 请按实际使用自行判断',
     ],
     howTitle: '流程',
     steps: [
@@ -408,7 +728,7 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: '和 NordVPN 等有什么不同？',
-        a: '那些服务按月租用共享带宽。这里是在你自己的云上搭建一台专属服务器，后续费用更低，但大规模使用与云政策变更风险由你承担。',
+        a: '本质上是不同的工具。商业 VPN 卖的是共享出口的人群匿名性；自建则是专用、轻量出口（Minor）。共享 VPN IP 很快进入「已知匿名化 VPN」名单；轻量专用出口往往不易进入 — 某次测量中 Fraud Score 较低且 Anonymizing VPN = No（非永久保证）。因此流媒体并非「几乎不可用」，但播放不作保证。允许列表固定 IP 与设备间私有连接更适合自建。详见上方对比表与已验证服务。',
       },
       {
         q: '会保存我的 API 密钥吗？',
@@ -620,32 +940,102 @@ function MinorWireContent() {
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h2 className={`${syne.className} text-3xl font-bold mb-4`}>{c.compareTitle}</h2>
-        <p className="text-lg text-[#3a4f44] max-w-3xl leading-relaxed mb-10">{c.compareIntro}</p>
-        <div className="grid md:grid-cols-2 gap-10 max-w-5xl">
-          <div>
-            <h3 className={`${syne.className} text-xl font-bold text-[#2f6b4f] mb-4`}>
-              {c.compareProsTitle}
-            </h3>
-            <ul className="space-y-3 text-[#3a4f44]">
-              {c.comparePros.map((p) => (
-                <li key={p} className="border-l-2 border-[#7dba98] pl-4 leading-relaxed">
-                  {p}
-                </li>
+        <p className="text-lg text-[#3a4f44] max-w-3xl leading-relaxed mb-4">{c.compareIntro}</p>
+        <p
+          className={`${syne.className} text-xl sm:text-2xl font-bold text-[#1d3d2e] max-w-3xl leading-snug mb-8`}
+        >
+          {c.compareThesis}
+        </p>
+
+        <div className="overflow-x-auto border border-[#1d3d2e]/15 bg-white/70">
+          <table className="w-full min-w-[40rem] text-left text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-[#1d3d2e]/15 bg-[#e8f2ec]">
+                <th className={`${syne.className} px-4 py-3 font-bold text-[#14201a] w-[22%]`} />
+                <th className={`${syne.className} px-4 py-3 font-bold text-[#1d3d2e]`}>{c.compareColSelf}</th>
+                <th className={`${syne.className} px-4 py-3 font-bold text-[#1d3d2e]`}>
+                  {c.compareColCommercial}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {c.compareRows.map((row) => (
+                <tr key={row.label} className="border-b border-[#1d3d2e]/10 last:border-b-0 align-top">
+                  <th
+                    scope="row"
+                    className="px-4 py-3.5 font-semibold text-[#2f6b4f] bg-[#f7faf8]/80 whitespace-nowrap"
+                  >
+                    {row.label}
+                  </th>
+                  <td className="px-4 py-3.5 text-[#3a4f44] leading-relaxed">{row.self}</td>
+                  <td className="px-4 py-3.5 text-[#3a4f44] leading-relaxed">{row.commercial}</td>
+                </tr>
               ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className={`${syne.className} text-xl font-bold text-[#6b4f2f] mb-4`}>
-              {c.compareConsTitle}
-            </h3>
-            <ul className="space-y-3 text-[#3a4f44]">
-              {c.compareCons.map((p) => (
-                <li key={p} className="border-l-2 border-[#c4a574] pl-4 leading-relaxed">
-                  {p}
-                </li>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-10 max-w-3xl">
+          <h3 className={`${syne.className} text-xl font-bold text-[#1d3d2e] mb-4`}>
+            {c.compareStrengthsTitle}
+          </h3>
+          <ul className="space-y-3 text-[#3a4f44]">
+            {c.compareStrengths.map((p) => (
+              <li key={p} className="border-l-2 border-[#7dba98] pl-4 leading-relaxed">
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-10 max-w-3xl">
+          <h3 className={`${syne.className} text-xl font-bold text-[#1d3d2e] mb-3`}>
+            {c.compareWhenTitle}
+          </h3>
+          <p className="text-[#3a4f44] leading-relaxed">{c.compareWhenSelf}</p>
+          <p className="mt-3 text-[#3a4f44] leading-relaxed">{c.compareWhenCommercial}</p>
+          <p className="mt-3 text-[#14201a] font-medium leading-relaxed">{c.compareWhenBoth}</p>
+          <p className="mt-5 text-sm text-[#5a6f64] leading-relaxed border-l-2 border-[#1d3d2e]/20 pl-4">
+            {c.compareLatencyNote}
+          </p>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <h2 className={`${syne.className} text-3xl font-bold mb-4`}>{c.verifiedTitle}</h2>
+        <p className="text-[#3a4f44] max-w-3xl leading-relaxed mb-4">{c.verifiedIntro}</p>
+        <p className="text-[#3a4f44] max-w-3xl leading-relaxed mb-4">{c.verifiedReputation}</p>
+        <p className="text-[#14201a] font-medium max-w-3xl leading-relaxed mb-8">{c.verifiedWhy}</p>
+
+        <div className="overflow-x-auto border border-[#1d3d2e]/15 bg-white/70 mb-10">
+          <table className="w-full min-w-[32rem] text-left text-sm sm:text-base">
+            <tbody>
+              {c.verifiedRows.map((row) => (
+                <tr key={row.service} className="border-b border-[#1d3d2e]/10 last:border-b-0 align-top">
+                  <th
+                    scope="row"
+                    className="px-4 py-3.5 font-semibold text-[#2f6b4f] bg-[#f7faf8]/80 whitespace-nowrap w-[28%]"
+                  >
+                    {row.service}
+                  </th>
+                  <td className="px-4 py-3.5 text-[#3a4f44] leading-relaxed">{row.note}</td>
+                </tr>
               ))}
-            </ul>
-          </div>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="max-w-3xl">
+          <h3 className={`${syne.className} text-xl font-bold text-[#1d3d2e] mb-4`}>
+            {c.verifiedCaveatsTitle}
+          </h3>
+          <ul className="space-y-3 text-[#3a4f44]">
+            {c.verifiedCaveats.map((p) => (
+              <li key={p} className="border-l-2 border-[#1d3d2e]/20 pl-4 leading-relaxed text-sm sm:text-base">
+                {p}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
