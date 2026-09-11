@@ -1,5 +1,9 @@
 import Stripe from 'stripe'
-import { STRIPE_CATALOG, type StripeMode } from './stripeCatalog'
+import {
+  STRIPE_CATALOG,
+  type StripeMode,
+  defaultStripeModeFromEnv,
+} from './stripeCatalog'
 
 export type { StripeMode }
 export { STRIPE_CATALOG, defaultStripeModeFromEnv, normalizeStripeMode, paymentLinksFor } from './stripeCatalog'
@@ -48,43 +52,33 @@ function secretForMode(mode: StripeMode): string {
 
 export function modeFromSessionId(sessionId: string | null | undefined): StripeMode | null {
   if (!sessionId) return null
+  if (sessionId.startsWith('cs_test_')) return 'test'
   if (sessionId.startsWith('cs_live_')) return 'live'
-  // Test checkout sessions are not accepted on the public product.
-  if (sessionId.startsWith('cs_test_')) return null
   return null
 }
 
-export function assertLiveCheckoutSessionId(sessionId: string): void {
-  if (sessionId.startsWith('cs_test_')) {
-    throw new Error('Test checkout is disabled. Use a live payment session.')
-  }
-  if (!sessionId.startsWith('cs_live_') && !sessionId.startsWith('cs_')) {
-    throw new Error('Invalid checkout session')
-  }
-}
-
-export function getStripe(mode: StripeMode = 'live'): Stripe {
-  if (mode !== 'live') {
-    throw new Error('Stripe test mode is disabled for MinorWire')
-  }
-  const existing = clients.live
+export function getStripe(mode: StripeMode = defaultStripeModeFromEnv()): Stripe {
+  const existing = clients[mode]
   if (existing) return existing
-  const key = secretForMode('live')
+  const key = secretForMode(mode)
   const client = new Stripe(key, { apiVersion: '2026-08-26.dahlia' })
-  clients.live = client
+  clients[mode] = client
   return client
 }
 
-/** Live Stripe client only. Rejects cs_test_ session ids. */
+/** Pick live/test Stripe client from Checkout session id (cs_live_ / cs_test_). */
 export function getStripeForSessionId(sessionId: string): Stripe {
-  assertLiveCheckoutSessionId(sessionId)
-  return getStripe('live')
+  const mode = modeFromSessionId(sessionId) ?? defaultStripeModeFromEnv()
+  return getStripe(mode)
 }
 
 export function webhookSecrets(): { mode: StripeMode; secret: string }[] {
+  const out: { mode: StripeMode; secret: string }[] = []
   const live = process.env.STRIPE_WEBHOOK_SECRET_LIVE || process.env.STRIPE_WEBHOOK_SECRET
-  if (!live) return []
-  return [{ mode: 'live', secret: live }]
+  const test = process.env.STRIPE_WEBHOOK_SECRET_TEST
+  if (live) out.push({ mode: 'live', secret: live })
+  if (test) out.push({ mode: 'test', secret: test })
+  return out
 }
 
 export function skuFromPriceId(priceId: string | null | undefined): MinorWireSku | null {

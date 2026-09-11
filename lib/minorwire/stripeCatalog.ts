@@ -32,16 +32,18 @@ export const STRIPE_CATALOG: Record<StripeMode, StripeSkuCatalog> = {
   },
 }
 
-export function normalizeStripeMode(_value?: string | null): StripeMode {
-  return 'live'
+export function normalizeStripeMode(value: string | null | undefined): StripeMode {
+  return value?.trim().toLowerCase() === 'test' ? 'test' : 'live'
 }
 
-/** Public site is live-only; env overrides are ignored. */
+/** Default mode from env (build/runtime). Query/UI may override on the client. */
 export function defaultStripeModeFromEnv(): StripeMode {
-  return 'live'
+  return normalizeStripeMode(
+    process.env.NEXT_PUBLIC_MINORWIRE_STRIPE_MODE || process.env.MINORWIRE_STRIPE_MODE,
+  )
 }
 
-export function paymentLinksFor(_mode?: StripeMode) {
-  const c = STRIPE_CATALOG.live
+export function paymentLinksFor(mode: StripeMode) {
+  const c = STRIPE_CATALOG[mode]
   return { app: c.app.paymentLinkUrl, setup: c.setup.paymentLinkUrl }
 }
