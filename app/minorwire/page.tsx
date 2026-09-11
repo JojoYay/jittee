@@ -106,7 +106,7 @@ const COPY: Record<string, Copy> = {
     ctaNote: '決済は Stripe PayNow。支払い後にセットアップ画面へ進みます（メールでも URL を送付）。',
     conceptTitle: 'VPNサーバーの真実',
     conceptDesc:
-      'VPN は特別なサービスではありません。サーバーを自分で立てるのに、高度な専門知識は不要です。いまはクラウド上にサーバーを置けば、元手ゼロで VPN サーバーを作れます。',
+      'VPN は特別なサービスではありません。サーバーを自分で立てるのに、高度な専門知識は不要です。いまはクラウド上にサーバーを置けば、元手ゼロで VPN サーバーを作れます。有名ブランドほど「既知の VPN」として弾かれやすい — その逆を行くのが、次世代の VPN です。',
     deliveryTitle: 'VPN提供するための構成',
     deliveryLead:
       'あなたがクラウドを契約します。その契約したクラウド上に VPN サーバーを立てます。クラウドは無料運用が可能なものをこちらから指定するので、実質運用にかかるコストはありません。',
@@ -118,9 +118,9 @@ const COPY: Record<string, Copy> = {
     deliveryTogether: 'それでも不安なときは、一緒に設定するオプションもあります。',
     compareTitle: '大手 VPN 業者（NordVPN / ExpressVPN など）との違い',
     compareIntro:
-      'どちらも「VPN」と呼ばれますが、道具としては別物です。匿名性のモデルがほぼ逆で、向く用途も分かれます。',
+      'どちらも「VPN」と呼ばれますが、道具としては別物です。絶対的な匿名を競う話ではなく、「VPN だから」と弾かれにくいかどうかが分かれ目です。',
     compareThesis:
-      '「Minor」＝あなた1人の薄い出口。Nord / Express のような共有出口はブロックリストに積み上がりやすいが、MinorWire は載りにくい — それが製品の芯です。',
+      '有名なほどリストに載る。あなた1人の薄い出口は、そうは見えない。次世代の VPN — それが MinorWire。',
     compareColSelf: '自前（MinorWire / 自分のクラウド）',
     compareColCommercial: '大手 VPN（NordVPN 等）',
     compareRows: [
@@ -131,8 +131,8 @@ const COPY: Record<string, Copy> = {
       },
       {
         label: 'IP レピュテーション',
-        self: '例: Fraud Score 低・Anonymizing VPN = No（測定時点）。データセンターでも「匿名化 VPN」未登録が通過の鍵',
-        commercial: '共有出口は「既知の匿名化 VPN」に載りやすい',
+        self: '測定例: Anonymizing VPN = No — 典型的な判定では「既知の VPN」と扱われにくい → 「VPN だから」で弾かれにくい',
+        commercial: '有名なほどブロックリストに載りやすい',
       },
       {
         label: '出口の場所',
@@ -142,22 +142,22 @@ const COPY: Record<string, Copy> = {
       {
         label: 'ログ',
         self: 'サーバーは自分管理。残す／残さないも自分次第',
-        commercial: 'ポリシーは業者次第（ノーログを掲げる所が多い）',
+        commercial: 'ノーログ方針は業者のポリシー。重大な不正・犯罪では開示に応じる',
       },
       {
         label: '法的・不正利用',
-        self: '悪用通報はテナント名義のあなたに届く',
-        commercial: '業者側が受け皿になることが多い',
+        self: '悪用通報はテナント名義のあなたに届く。クラウドは法令に基づく開示請求に応じうる',
+        commercial: '業者側が受け皿になることが多いが、重大事案では開示される',
       },
       {
         label: '匿名性',
-        self: '専用 IP は追跡しやすい。群衆の中には紛れない',
-        commercial: '共有出口で群衆に紛れるのが強み',
+        self: '絶対的な匿名は売りません。出口だけでは第三者に身元が分かりにくいことが多いが、群衆に紛れるモデルではない',
+        commercial: '群衆に紛れるのが売り。それでも犯罪の盾にはならない',
       },
       {
         label: 'ストリーミング／地理制限',
-        self: '専用・薄い出口は「既知 VPN」リストに載りにくいことがある。ページ到達は通る例もあるが、再生ブロックは後から起きうる（永続保証なし）',
-        commercial: '共有 IP は VPN リストに載りやすい。出口を回し、配信向けに最適化していることが多い',
+        self: '「既知 VPN」リスト回避が効くことがある。ページ到達の例はあるが、再生ブロックは後から起きうる（保証なし）',
+        commercial: '共有 IP はリストに載りやすい。出口を回し、配信向けに最適化していることが多い',
       },
       {
         label: '帯域・同時利用',
@@ -177,17 +177,17 @@ const COPY: Record<string, Copy> = {
     ],
     compareStrengthsTitle: '自前ホストだけができること',
     compareStrengths: [
+      'レピュテーション上「匿名化 VPN」と見なされにくいことがある — 「VPN だから」で弾かれにくい出口',
       '固定の出口 IP を、自宅・会社の許可リストに登録できる',
       '自分の端末どうしを、インターネットを経由しない私有 LAN のように結べる',
       'DNS やスプリットトンネルまで、構成を自分で完全にコントロールできる',
       'ISP や同じ Wi‑Fi 上の他人からは通信先を隠しやすい（訪問先サイトからは、出口 IP は見える）',
-      '共有商用 VPN のような「既知の匿名化 VPN」リストに載りにくいことがある（専用・軽トラフィック＝Minor）',
     ],
     compareWhenTitle: 'どちらを使うか',
     compareWhenSelf:
-      '公共 Wi‑Fi での盗聴対策、ISP からの通信先の秘匿、許可リスト用の固定 IP、自分の端末同士の接続 — 自前向き。地理制限サービスは、共有 VPN リスト回避が効く場合もあるが保証はない。',
+      '日常の出口として「VPN 扱い」を避けたい、許可リスト用の固定 IP、公共 Wi‑Fi 対策、端末同士の接続 — 自前向き。犯罪のための群衆匿名は求めていません。',
     compareWhenCommercial:
-      '群衆の中に紛れる匿名性、多国の出口、配信向けに出口を回したい用途 — 大手 VPN 向き。',
+      '多国の出口や、配信向けに出口を回したい用途 — 大手 VPN 向き。有名なほどリストに載りやすいトレードオフがあります。',
     compareWhenBoth: '用途が違うので、両方使う人も少なくありません。',
     compareLatencyNote:
       '出口が自分から遠いクラウド地域だと、往復遅延（RTT）が増えます。必要な用途に絞って使うのがおすすめです。',
@@ -195,9 +195,9 @@ const COPY: Record<string, Copy> = {
     verifiedIntro:
       'お客様の OCI Always Free 上の WireGuard 出口での一例です（特定 IP を全員が得るわけではありません）。ページ到達・カタログ表示中心。ログイン後の再生や追加認証までは未確認の項目があります。',
     verifiedReputation:
-      'Scamalytics（2026-09-11 測定の一例・永続保証なし）: Fraud Score 5/100 Low Risk。Datacenter Yes / Server Yes は想定どおり。決定打は Anonymizing VPN = No — レピュテーション上「VPN」として未登録。主要ブロックリストもクリア。',
+      'Scamalytics（2026-09-11 測定の一例・永続保証なし）: Fraud Score 5/100 Low Risk。Datacenter Yes / Server Yes は想定どおり。決定打は Anonymizing VPN = No — レピュテーション上「VPN」として未登録。だから「VPN だから」で弾かれにくい。主要ブロックリストもクリア。',
     verifiedWhy:
-      '製品の芯: MinorWire の「Minor」は、あなた1人の薄い出口のこと。Nord / Express の共有出口は何千人分のノイズが積み上がり「既知の匿名化 VPN」に載りやすい。あなた専用なら同じ積み上がりが起きにくい — だからデータセンターでも通過しやすいことがあります。',
+      'MinorWire の「Minor」は、あなた1人の薄い出口のこと。お客様が欲しいのは犯罪用の匿名ではなく、日常で使える出口です。有名 VPN ほどリストに積み上がりブロックされやすい。MinorWire はその逆 — 絶対的な匿名ではない（クラウドは法令開示に応じうる）が、出口だけでは第三者が誰かを知るのは通常難しい。それが次世代の VPN です。',
     verifiedRows: [
       {
         service: 'Netflix JP',
@@ -229,9 +229,9 @@ const COPY: Record<string, Copy> = {
       'Fraud Score や VPN 判定は測定時点の一例。永続保証ではありません',
       'Netflix の再生は未確認です',
       '評価はあなたのトラフィック次第。悪用・ノイズが多いと自分の IP が傷つく',
-      'Oracle 等クラウド事業者のアドレス帯が後から一括リスト入りすることがある（制御外）',
-      'サービス側がデータセンター帯を再スキャンし、半年後には結果が変わりうる',
-      '金融はログイン画面までの確認。ログイン後のステップアップ認証は未検証 — 実運用で判断してください',
+      'クラウド事業者のアドレス帯が後から一括リスト入りすることがある（制御外）',
+      'サービス側の再スキャンで、半年後には結果が変わりうる',
+      '金融はログイン画面までの確認。ログイン後の追加認証は未検証 — 実運用で判断してください',
     ],
     howTitle: '流れ',
     steps: [
@@ -291,7 +291,11 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'NordVPN などと何が違いますか？',
-        a: '根本的に別の道具です。大手は共有出口で群衆の匿名性を売り、自前は専用・薄い出口（Minor）です。共有 VPN IP は「既知の匿名化 VPN」に載りやすく、専用の薄い出口は載りにくいことがあります — 測定例では Fraud Score が低く Anonymizing VPN = No（永続保証なし）。だからストリーミングが「ほぼ不可」とは限りません（再生保証はなし）。許可リスト用の固定 IP や端末同士の私有接続は自前向きです。詳細は上の比較表と確認結果を参照してください。',
+        a: '根本的に別の道具です。有名 VPN ほどブロックリストに載り、「VPN だから」と弾かれやすい。MinorWire はその逆 — あなた1人の薄い出口で、測定例では Anonymizing VPN = No（永続保証なし）。お客様が欲しいのは犯罪用の群衆匿名ではなく、日常の出口です。絶対的な匿名は売りません（クラウドは法令開示に応じうる）。大手もノーログを掲げても重大事案では開示します。許可リスト用の固定 IP や端末同士の接続は自前向きです。詳細は上の比較表と確認結果を参照してください。',
+      },
+      {
+        q: '匿名になれますか？',
+        a: '絶対的な匿名は製品の目的ではありません。クラウド事業者は法令に基づく開示請求に応じうるし、悪用通報はテナント名義のあなたに届きます。一方、出口 IP だけでは第三者が誰かを知るのは通常難しいです。犯罪のための群衆匿名が必要なら、この製品の対象外です。',
       },
       {
         q: 'API キーは保存されますか？',
@@ -330,7 +334,7 @@ const COPY: Record<string, Copy> = {
     ctaNote: 'Stripe PayNow. After payment you open the setup wizard (URL also emailed).',
     conceptTitle: 'The truth about VPN servers',
     conceptDesc:
-      'A VPN is not a special service. You do not need deep expertise to run a server, and on today’s clouds you can create a VPN server with essentially no capital outlay.',
+      'A VPN is not a special service. You do not need deep expertise to run a server, and on today’s clouds you can create a VPN server with essentially no capital outlay. The more famous the brand, the more often it is blocked as a “known VPN.” The opposite of that — a next-generation VPN.',
     deliveryTitle: 'How we provide the VPN',
     deliveryLead:
       'You sign up for the cloud. We place a VPN server on that account. We point you to a cloud that can run within a free allowance, so ongoing operating cost is effectively zero.',
@@ -342,9 +346,9 @@ const COPY: Record<string, Copy> = {
     deliveryTogether: 'Still unsure? There is an option to set it up together with Jittee.',
     compareTitle: 'Vs. major VPN vendors (NordVPN / ExpressVPN and similar)',
     compareIntro:
-      'Both are called “VPNs,” but they are different tools. Their anonymity models are nearly opposite, and the right use cases diverge.',
+      'Both are called “VPNs,” but they are different tools. This is not a race for absolute anonymity — the split is whether you get blocked for “being a VPN.”',
     compareThesis:
-      '“Minor” = a light exit used by you alone. Shared Nord / Express exits pile onto blocklists; a MinorWire exit often does not — that is the product thesis.',
+      'The more famous the VPN, the more it lands on blocklists. A light exit used by you alone often does not. That next-generation VPN is MinorWire.',
     compareColSelf: 'Self-hosted (MinorWire / your cloud)',
     compareColCommercial: 'Major VPN (NordVPN etc.)',
     compareRows: [
@@ -355,8 +359,8 @@ const COPY: Record<string, Copy> = {
       },
       {
         label: 'IP reputation',
-        self: 'Example: low Fraud Score + Anonymizing VPN = No (as measured). Datacenter is expected; not listed as anonymizing VPN is the win',
-        commercial: 'Shared exits often land on “known anonymizing VPN” lists',
+        self: 'Example: Anonymizing VPN = No — typical systems do not treat it as a known VPN → less likely blocked for “being a VPN”',
+        commercial: 'The more famous, the more often it lands on blocklists',
       },
       {
         label: 'Exit locations',
@@ -366,21 +370,21 @@ const COPY: Record<string, Copy> = {
       {
         label: 'Logs',
         self: 'You run the server; what you keep is up to you',
-        commercial: 'Provider policy (many advertise no-logs)',
+        commercial: 'No-logs is the provider’s policy; serious abuse or crime still leads to disclosure',
       },
       {
         label: 'Legal / abuse',
-        self: 'Abuse reports go to you as the tenancy owner',
-        commercial: 'Provider often absorbs the first contact',
+        self: 'Abuse reports go to you as the tenancy owner. Your cloud can disclose under a lawful request',
+        commercial: 'Provider often takes first contact — and discloses for serious cases',
       },
       {
         label: 'Anonymity',
-        self: 'A dedicated IP is easy to track; you do not blend into a crowd',
-        commercial: 'Shared exits — crowd anonymity is the strength',
+        self: 'Not anonymity theater. Third parties usually cannot tell who you are from the exit alone — but you do not blend into a crowd',
+        commercial: 'Crowd anonymity is the pitch. It is still not a crime shield',
       },
       {
         label: 'Streaming / geo-unblock',
-        self: 'A dedicated, light exit may avoid “known VPN” lists. Catalog pages sometimes load; playback blocks can still appear later (no permanence guarantee)',
+        self: 'Avoiding “known VPN” lists can help. Catalog pages sometimes load; playback blocks can still appear later (no guarantee)',
         commercial: 'Shared IPs often land on VPN lists. Rotating exits, often tuned for streaming',
       },
       {
@@ -401,17 +405,17 @@ const COPY: Record<string, Copy> = {
     ],
     compareStrengthsTitle: 'What only self-hosting can do well',
     compareStrengths: [
+      'May stay off “anonymizing VPN” reputation flags — an exit less likely blocked for “being a VPN”',
       'A stable exit IP you can put on home or office allowlists',
       'A private LAN-style path between your own devices',
       'Full control of DNS, split tunneling, and how traffic is routed',
       'Hides destinations from your ISP or others on the same Wi‑Fi — not from the sites you visit (they still see the exit IP)',
-      'May stay off commercial “known anonymizing VPN” lists — dedicated, light traffic (the Minor idea)',
     ],
     compareWhenTitle: 'When to use which',
     compareWhenSelf:
-      'Public Wi‑Fi protection, hiding destinations from your ISP, a fixed IP for allowlists, linking your own devices — prefer self-hosted. Geo-restricted services may work when shared-VPN lists are the blocker, but that is not guaranteed.',
+      'An everyday exit that avoids “VPN treatment,” a fixed IP for allowlists, public Wi‑Fi protection, linking your own devices — prefer self-hosted. You are not shopping for crowd anonymity for crime.',
     compareWhenCommercial:
-      'Crowd anonymity, many country exits, rotating exits tuned for streaming — prefer a major commercial VPN.',
+      'Many country exits or rotating exits tuned for streaming — prefer a major commercial VPN. Fame is the tradeoff: the more famous, the more it gets listed.',
     compareWhenBoth: 'They solve different jobs; many people use both.',
     compareLatencyNote:
       'If the exit sits in a distant cloud region, round-trip time (RTT) rises. Use it for focused purposes rather than everything.',
@@ -419,9 +423,9 @@ const COPY: Record<string, Copy> = {
     verifiedIntro:
       'One example on a customer OCI Always Free WireGuard exit (not every customer gets the same IP). Focus is page / catalog reach; logged-in playback or step-up auth is not claimed where noted.',
     verifiedReputation:
-      'Scamalytics (one measurement on 2026-09-11 — not a forever guarantee): Fraud Score 5/100 Low Risk. Datacenter Yes / Server Yes is expected. The decisive flag is Anonymizing VPN = No — not registered as a VPN on reputation lists. Major public blocklists also clear.',
+      'Scamalytics (one measurement on 2026-09-11 — not a forever guarantee): Fraud Score 5/100 Low Risk. Datacenter Yes / Server Yes is expected. The decisive flag is Anonymizing VPN = No — not registered as a VPN on reputation lists, so less likely blocked for “being a VPN.” Major public blocklists also clear.',
     verifiedWhy:
-      'Product thesis: “Minor” in MinorWire means a light exit used by you alone. Shared Nord / Express exits accumulate thousands of users’ noise and land on “known anonymizing VPN” lists. Yours alone often does not pile up the same way — so a datacenter IP can still pass where shared VPN exits fail.',
+      '“Minor” in MinorWire means a light exit used by you alone. Customers want a usable everyday exit — not anonymity for crime. Famous VPNs pile onto blocklists; MinorWire is the opposite. Absolute anonymity is not the product (your cloud can disclose under a lawful request), yet third parties usually cannot tell who you are from the exit alone. That next-generation VPN is MinorWire.',
     verifiedRows: [
       {
         service: 'Netflix JP',
@@ -453,8 +457,8 @@ const COPY: Record<string, Copy> = {
       'Fraud Score and VPN flags are a point-in-time example — not permanent',
       'Netflix playback is still unverified',
       'Reputation depends on your own traffic; noisy abuse burns your IP',
-      'Oracle (and other cloud) address ranges may later be bulk-listed (out of your control)',
-      'Services may re-scan datacenter ranges; results can differ half a year later',
+      'Cloud address ranges may later be bulk-listed (out of your control)',
+      'Services may re-scan; results can differ half a year later',
       'Finance: login screen OK in the test; post-login step-up auth not verified — judge in practice',
     ],
     howTitle: 'How it works',
@@ -515,7 +519,11 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: 'How is this different from NordVPN and similar?',
-        a: 'They are fundamentally different tools. Commercial VPNs sell shared-exit crowd anonymity; self-hosted gives you a dedicated, light exit (Minor). Shared VPN IPs land on “known anonymizing VPN” lists fast; a light dedicated exit often does not — in one measurement, Fraud Score was low and Anonymizing VPN = No (not a forever guarantee). So streaming is not “almost never works,” though playback is not guaranteed. Allowlisted fixed IPs and private device-to-device links favor self-hosted. See the comparison table and checked-services section above.',
+        a: 'They are fundamentally different tools. Famous VPNs land on blocklists and get rejected for “being a VPN.” MinorWire is the opposite — a light exit used by you alone; in one measurement, Anonymizing VPN = No (not a forever guarantee). Customers want an everyday exit, not crowd anonymity for crime. Absolute anonymity is not the product (your cloud can disclose under a lawful request). Big VPNs advertise no-logs and still disclose for serious cases. Allowlisted fixed IPs and private device links favor self-hosted. See the comparison table and checked-services section above.',
+      },
+      {
+        q: 'Will this make me anonymous?',
+        a: 'Absolute anonymity is not the goal. Your cloud can disclose under a lawful request, and abuse reports go to you as the tenancy owner. Otherwise, third parties usually cannot tell who you are from the exit alone. If you need crowd anonymity for crime, this product is not for you.',
       },
       {
         q: 'Do you store my API key?',
@@ -554,7 +562,7 @@ const COPY: Record<string, Copy> = {
     ctaNote: 'Stripe PayNow。付款后进入设置向导（邮件也会发送链接）。',
     conceptTitle: 'VPN 服务器的真相',
     conceptDesc:
-      'VPN 并不是什么特别的服务。自己搭服务器并不需要高深专业知识；如今在云上开一台服务器，几乎不用启动资金就能做出 VPN 服务器。',
+      'VPN 并不是什么特别的服务。自己搭服务器并不需要高深专业知识；如今在云上开一台服务器，几乎不用启动资金就能做出 VPN 服务器。品牌越有名，越容易被当成「已知 VPN」拦截 — 走相反方向的，才是下一代 VPN。',
     deliveryTitle: '我们如何提供 VPN',
     deliveryLead:
       '由你签约云服务。我们在该账号上搭建 VPN 服务器。云我们指定可免费运营的方案，因此实质运营成本接近于零。',
@@ -566,9 +574,9 @@ const COPY: Record<string, Copy> = {
     deliveryTogether: '仍不确定时，也可以选择与 Jittee 一起完成设置。',
     compareTitle: '与大型 VPN 商家（NordVPN / ExpressVPN 等）的区别',
     compareIntro:
-      '虽然都叫「VPN」，但其实是不同的工具。匿名模型几乎相反，适合的场景也不同。',
+      '虽然都叫「VPN」，但其实是不同的工具。重点不是绝对匿名的竞赛，而是会不会因为「看起来像 VPN」而被拦截。',
     compareThesis:
-      '「Minor」＝只属于你的轻量出口。Nord / Express 一类共享出口容易堆进封锁名单；MinorWire 往往不会 — 这就是产品的核心。',
+      '越有名，越容易进名单。只属于你的轻量出口，往往不会。下一代 VPN — 就是 MinorWire。',
     compareColSelf: '自建（MinorWire / 你自己的云）',
     compareColCommercial: '大型 VPN（NordVPN 等）',
     compareRows: [
@@ -579,8 +587,8 @@ const COPY: Record<string, Copy> = {
       },
       {
         label: 'IP 信誉',
-        self: '例：低 Fraud Score + Anonymizing VPN = No（测量当时）。数据中心属预期；未标为匿名化 VPN 才是关键',
-        commercial: '共享出口容易进入「已知匿名化 VPN」名单',
+        self: '测量例：Anonymizing VPN = No — 典型系统不把它当「已知 VPN」→ 更不易因「是 VPN」被拦',
+        commercial: '越有名，越容易进封锁名单',
       },
       {
         label: '出口位置',
@@ -590,21 +598,21 @@ const COPY: Record<string, Copy> = {
       {
         label: '日志',
         self: '服务器由你管理，是否留存由你决定',
-        commercial: '取决于商家政策（许多宣传无日志）',
+        commercial: '无日志是商家政策；严重滥用或犯罪仍会披露',
       },
       {
         label: '法律 / 滥用',
-        self: '滥用投诉会发到租户名义的你',
-        commercial: '通常由商家先承接',
+        self: '滥用投诉会发到租户名义的你。云厂商可依法令请求披露',
+        commercial: '通常由商家先承接 — 重大案件仍会披露',
       },
       {
         label: '匿名性',
-        self: '专用 IP 易被追踪，无法融入人群',
-        commercial: '共享出口，人群匿名是其强项',
+        self: '不是匿名表演。仅凭出口，第三方通常难以认出你是谁 — 但你不会融入人群',
+        commercial: '人群匿名是卖点。仍不是犯罪的盾牌',
       },
       {
         label: '流媒体 / 地理限制',
-        self: '专用、轻量出口有时不易进入「已知 VPN」名单。目录页可能能打开，但播放拦截仍可能随后出现（无永久保证）',
+        self: '避开「已知 VPN」名单有时有效。目录页可能能打开，但播放拦截仍可能随后出现（无保证）',
         commercial: '共享 IP 容易进入 VPN 名单；会轮换出口，并常针对流媒体优化',
       },
       {
@@ -625,17 +633,17 @@ const COPY: Record<string, Copy> = {
     ],
     compareStrengthsTitle: '只有自建才擅长的事',
     compareStrengths: [
+      '有时信誉上不标为「匿名化 VPN」— 更不易因「是 VPN」被拦的出口',
       '固定出口 IP，可加入家庭或公司的允许列表',
       '在你自己的设备之间建立类似私有局域网的连接',
       'DNS、分流等路由方式由你完全掌控',
       '可对 ISP 或同一 Wi‑Fi 上的他人隐藏目的地（访问的网站仍能看到出口 IP）',
-      '有时不易进入商业「已知匿名化 VPN」名单 — 因为是专用、轻流量（Minor 的思路）',
     ],
     compareWhenTitle: '该用哪一种',
     compareWhenSelf:
-      '公共 Wi‑Fi 防护、对 ISP 隐藏目的地、允许列表用的固定 IP、连接自己的设备 — 更适合自建。地理限制服务在共享 VPN 名单是主因时也可能通，但无保证。',
+      '想要日常出口、少被当成「VPN」对待、允许列表固定 IP、公共 Wi‑Fi 防护、连接自己的设备 — 更适合自建。你要的不是犯罪用的人群匿名。',
     compareWhenCommercial:
-      '融入人群的匿名性、多国出口、需要为流媒体轮换出口 — 更适合大型商业 VPN。',
+      '需要多国出口或为流媒体轮换出口 — 更适合大型商业 VPN。有名是代价：越有名越容易进名单。',
     compareWhenBoth: '用途不同，不少人两者都会用。',
     compareLatencyNote:
       '若出口落在较远的云区域，往返延迟（RTT）会增加。建议按需要的用途来用，而不是什么都走它。',
@@ -643,9 +651,9 @@ const COPY: Record<string, Copy> = {
     verifiedIntro:
       '以客户 OCI Always Free 上的 WireGuard 出口实测为例（并非每位客户都会分到同一 IP）。以页面 / 目录可达为主；注明处不含登录后播放或二次认证。',
     verifiedReputation:
-      'Scamalytics（2026-09-11 一次测量示例 · 非永久保证）：Fraud Score 5/100 Low Risk。Datacenter Yes / Server Yes 属预期。决定性标志是 Anonymizing VPN = No — 信誉名单上未登记为 VPN。主要公开封锁名单亦清空。',
+      'Scamalytics（2026-09-11 一次测量示例 · 非永久保证）：Fraud Score 5/100 Low Risk。Datacenter Yes / Server Yes 属预期。决定性标志是 Anonymizing VPN = No — 信誉名单上未登记为 VPN，因此更不易因「是 VPN」被拦。主要公开封锁名单亦清空。',
     verifiedWhy:
-      '产品核心：MinorWire 的「Minor」指只属于你的轻量出口。Nord / Express 的共享出口会堆上千人噪声，很快进入「已知匿名化 VPN」名单。专属于你则往往不会同样堆积 — 因此即便是数据中心 IP，有时也能在共享 VPN 失败处通过。',
+      'MinorWire 的「Minor」指只属于你的轻量出口。客户要的是日常可用的出口，不是犯罪用的匿名。有名 VPN 更容易堆进名单被拦；MinorWire 走相反方向。绝对匿名不是产品目标（云厂商可依法令披露），但仅凭出口，第三方通常难以认出你是谁。这就是下一代 VPN。',
     verifiedRows: [
       {
         service: 'Netflix JP',
@@ -677,8 +685,8 @@ const COPY: Record<string, Copy> = {
       'Fraud Score 与 VPN 判定仅为当时一例，非永久保证',
       'Netflix 播放仍未验证',
       '信誉取决于你自己的流量；滥用或噪声会毁掉你的 IP',
-      'Oracle 等云厂商地址段日后可能被批量列入名单（无法控制）',
-      '服务方可能重新扫描数据中心段；半年后结果可能不同',
+      '云厂商地址段日后可能被批量列入名单（无法控制）',
+      '服务方可能重新扫描；半年后结果可能不同',
       '金融：测试仅确认登录页；登录后二次认证未验证 — 请按实际使用自行判断',
     ],
     howTitle: '流程',
@@ -728,7 +736,11 @@ const COPY: Record<string, Copy> = {
       },
       {
         q: '和 NordVPN 等有什么不同？',
-        a: '本质上是不同的工具。商业 VPN 卖的是共享出口的人群匿名性；自建则是专用、轻量出口（Minor）。共享 VPN IP 很快进入「已知匿名化 VPN」名单；轻量专用出口往往不易进入 — 某次测量中 Fraud Score 较低且 Anonymizing VPN = No（非永久保证）。因此流媒体并非「几乎不可用」，但播放不作保证。允许列表固定 IP 与设备间私有连接更适合自建。详见上方对比表与已验证服务。',
+        a: '本质上是不同的工具。有名 VPN 更容易进封锁名单，因「是 VPN」被拦。MinorWire 走相反方向 — 只属于你的轻量出口；某次测量中 Anonymizing VPN = No（非永久保证）。客户要的是日常出口，不是犯罪用的人群匿名。绝对匿名不是产品目标（云厂商可依法令披露）。大型 VPN 即使宣传无日志，重大案件仍会披露。允许列表固定 IP 与设备间私有连接更适合自建。详见上方对比表与已验证服务。',
+      },
+      {
+        q: '能让我匿名吗？',
+        a: '绝对匿名不是目标。云厂商可依法令请求披露，滥用投诉也会发到租户名义的你。另一方面，仅凭出口 IP，第三方通常难以认出你是谁。若需要犯罪用的人群匿名，本产品不适合。',
       },
       {
         q: '会保存我的 API 密钥吗？',
