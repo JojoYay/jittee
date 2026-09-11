@@ -18,6 +18,9 @@ export async function GET(req: NextRequest) {
     if (!sessionId?.startsWith('cs_')) {
       return NextResponse.json({ error: 'session_id required' }, { status: 400 })
     }
+    if (sessionId.startsWith('cs_test_')) {
+      return NextResponse.json({ error: 'Test checkout is disabled' }, { status: 403 })
+    }
     const stripe = getStripeForSessionId(sessionId)
     const session = await stripe.checkout.sessions.retrieve(sessionId)
     if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
