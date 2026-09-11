@@ -111,6 +111,7 @@ export type SetupCopy = {
   failedStart: string
   networkError: string
   failedPeer: string
+  supportUpsellPrompt: string
   supportUpsellTitle: string
   supportUpsellBody: string
   supportUpsellCta: string
@@ -386,6 +387,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     failedStart: '開始に失敗しました',
     networkError: 'ネットワークエラー',
     failedPeer: '端末設定の追加に失敗しました',
+    supportUpsellPrompt: 'これは、お困りではないですか？',
     supportUpsellTitle: 'サポートを購入（S$100）',
     supportUpsellBody:
       '自分で進めていて行き詰まったとき用です。画面共有で一緒に設定します。購入後は WhatsApp（+65 8815 4153）へ連絡してください。',
@@ -655,6 +657,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     failedStart: 'Failed to start',
     networkError: 'Network error',
     failedPeer: 'Failed to add device config',
+    supportUpsellPrompt: 'Having trouble with this?',
     supportUpsellTitle: 'Buy support (S$100)',
     supportUpsellBody:
       'If you get stuck on DIY, buy live screen-share help. After payment, message us on WhatsApp (+65 8815 4153).',
@@ -923,6 +926,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     failedStart: '启动失败',
     networkError: '网络错误',
     failedPeer: '追加设备配置失败',
+    supportUpsellPrompt: '这一步卡住了吗？',
     supportUpsellTitle: '购买支持（S$100）',
     supportUpsellBody:
       '自助过程中卡住时，可购买远程协助。付款后请通过 WhatsApp（+65 8815 4153）联系我们。',

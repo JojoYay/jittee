@@ -8,13 +8,57 @@ import { Syne, DM_Sans } from 'next/font/google'
 import type { JobPublicStatus } from '@/lib/minorwire/provision/types'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useMinorWireStripeMode } from '../StripeModeContext'
-import { SETUP_COPY } from './copy'
+import { SETUP_COPY, type SetupCopy } from './copy'
 import { buildOciLinks } from './ociLinks'
 import { parseOciConfig } from './parseOciConfig'
 import { defaultRegionForLocale, REGION_OPTIONS } from './regions'
 
 const syne = Syne({ subsets: ['latin'], weight: ['600', '700', '800'] })
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'] })
+
+const SUPPORT_UPSELL_STEP_IDS = new Set(['verifyInstance', 'upgrade'])
+
+function SupportUpsellBlock({
+  copy,
+  supportHref,
+  showPrompt = false,
+  className = '',
+}: {
+  copy: SetupCopy
+  supportHref: string
+  showPrompt?: boolean
+  className?: string
+}) {
+  return (
+    <div className={`space-y-2 ${className}`.trim()}>
+      {showPrompt && (
+        <p className={`${syne.className} text-base font-bold text-[#1d3d2e]`}>
+          {copy.supportUpsellPrompt}
+        </p>
+      )}
+      <div className="border border-[#1d3d2e]/20 bg-[#e8f2ec]/70 rounded-md p-5 space-y-3">
+        <p className={`${syne.className} text-lg font-bold`}>{copy.supportUpsellTitle}</p>
+        <p className="text-sm text-[#3a4f44] leading-relaxed">{copy.supportUpsellBody}</p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a
+            href={supportHref}
+            className="inline-flex justify-center px-5 py-2.5 rounded-md bg-[#1d3d2e] text-white font-semibold text-sm"
+          >
+            {copy.supportUpsellCta}
+          </a>
+          <a
+            href={copy.supportWhatsAppUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex justify-center px-5 py-2.5 rounded-md border border-[#1d3d2e] font-semibold text-sm"
+          >
+            {copy.supportWhatsAppLabel} ({copy.supportWhatsAppPhone})
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 type FormState = {
   region: string
@@ -571,26 +615,7 @@ function SetupInner() {
             )}
 
             {showForm && sku === 'minorwire_app' && (
-              <div className="mb-8 border border-[#1d3d2e]/20 bg-[#e8f2ec]/70 rounded-md p-5 space-y-3">
-                <p className={`${syne.className} text-lg font-bold`}>{c.supportUpsellTitle}</p>
-                <p className="text-sm text-[#3a4f44] leading-relaxed">{c.supportUpsellBody}</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <a
-                    href={links.support}
-                    className="inline-flex justify-center px-5 py-2.5 rounded-md bg-[#1d3d2e] text-white font-semibold text-sm"
-                  >
-                    {c.supportUpsellCta}
-                  </a>
-                  <a
-                    href={c.supportWhatsAppUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex justify-center px-5 py-2.5 rounded-md border border-[#1d3d2e] font-semibold text-sm"
-                  >
-                    {c.supportWhatsAppLabel} ({c.supportWhatsAppPhone})
-                  </a>
-                </div>
-              </div>
+              <SupportUpsellBlock copy={c} supportHref={links.support} className="mb-8" />
             )}
 
             {showForm && (
@@ -610,173 +635,179 @@ function SetupInner() {
                         ? step.images
                         : [{ src: step.image, alt: step.imageAlt }]
                     return (
-                      <article
-                        key={step.id}
-                        className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden"
-                      >
-                        <div className="p-5 space-y-3">
-                          <h3 className={`${syne.className} text-lg font-bold`}>{step.title}</h3>
-                          <p className="text-sm text-[#3a4f44] leading-relaxed">{step.body}</p>
-                          {stepHref && (
-                            <p className="text-sm">
-                              <a
-                                className="underline font-semibold text-[#2f6b4f]"
-                                href={stepHref}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {step.linkLabel || stepHref}
-                              </a>
-                            </p>
-                          )}
-                          {step.clickSteps && step.clickSteps.length > 0 && (
-                            <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#3a4f44]">
-                              {step.clickSteps.map((s) => (
-                                <li key={s}>{s}</li>
-                              ))}
-                            </ol>
-                          )}
-                        </div>
-                        {stepImages.map((img) => (
-                          <figure key={img.src + (img.caption || '')}>
-                            <Image
-                              src={img.src}
-                              alt={img.alt}
-                              width={1280}
-                              height={720}
-                              className="w-full h-auto border-t border-[#1d3d2e]/10"
-                            />
-                            {img.caption && (
-                              <figcaption className="px-5 py-2 text-xs text-[#5a6f64] bg-[#f7faf8] border-t border-[#1d3d2e]/5">
-                                {img.caption}
-                              </figcaption>
-                            )}
-                          </figure>
-                        ))}
-
-                        {(stepFields.length > 0 || step.showPem || step.showSubmit) && (
-                          <div className="space-y-4 border-t border-[#2f6b4f]/20 bg-[#e8f2ec]/60 p-5">
-                            {step.showPem && (
-                              <div>
-                                <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
-                                <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{c.pemWhere}</p>
-                                <p className="text-xs mb-2">
-                                  <a
-                                    className="underline font-semibold text-[#2f6b4f]"
-                                    href={ociLinks.authTokens}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {c.pemUrlLabel}
-                                  </a>
-                                </p>
-                                <input
-                                  required={!form.privateKeyPem}
-                                  type="file"
-                                  accept=".pem,application/x-pem-file,application/pkcs8,*/*"
-                                  className="block w-full text-sm text-[#3a4f44] file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#1d3d2e] file:text-white file:font-semibold"
-                                  onChange={onPemFile}
-                                />
-                                {pemFileName && (
-                                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[#2f6b4f]">
-                                    <span>{c.pemFileReady(pemFileName)}</span>
-                                    <button
-                                      type="button"
-                                      onClick={clearPemFile}
-                                      className="underline text-[#5a6f64]"
-                                    >
-                                      {c.pemFileClear}
-                                    </button>
-                                  </div>
-                                )}
-                                {pemFileError && (
-                                  <p className="mt-2 text-sm text-red-700">{pemFileError}</p>
-                                )}
-                              </div>
-                            )}
-
-                            {stepFields.map((f) => {
-                              const fieldHref = f.ociLink ? ociLinks[f.ociLink] : undefined
-                              return (
-                                <div key={f.key}>
-                                  <label className="block text-sm font-medium mb-1">{f.label}</label>
-                                  <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
-                                  {fieldHref && (
-                                    <p className="text-xs mb-2">
-                                      <a
-                                        className="underline font-semibold text-[#2f6b4f]"
-                                        href={fieldHref}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {f.urlLabel}
-                                      </a>
-                                    </p>
-                                  )}
-                                  {f.key === 'region' ? (
-                                    <select
-                                      required
-                                      className="w-full border px-3 py-2 rounded text-sm bg-white"
-                                      value={form.region}
-                                      onChange={(e) =>
-                                        setForm((prev) => ({ ...prev, region: e.target.value }))
-                                      }
-                                    >
-                                      {regionSelectOptions.map((r) => (
-                                        <option key={r.id} value={r.id}>
-                                          {r.name} ({r.id})
-                                        </option>
-                                      ))}
-                                    </select>
-                                  ) : f.key === 'ociConfig' ? (
-                                    <>
-                                      <textarea
-                                        required
-                                        rows={8}
-                                        className="w-full border px-3 py-2 rounded font-mono text-xs bg-white"
-                                        value={form.ociConfig}
-                                        onChange={(e) => applyOciConfig(e.target.value)}
-                                        placeholder={f.placeholder}
-                                        autoComplete="off"
-                                        spellCheck={false}
-                                      />
-                                      {form.ociConfig.trim() && (
-                                        <p
-                                          className={`mt-2 text-xs ${ociConfigOk ? 'text-[#2f6b4f]' : 'text-red-700'}`}
-                                        >
-                                          {ociConfigOk ? c.ociConfigOk : c.ociConfigInvalid}
-                                        </p>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <input
-                                      required={f.required !== false}
-                                      className="w-full border px-3 py-2 rounded font-mono text-sm bg-white"
-                                      value={form[f.key]}
-                                      onChange={set(f.key)}
-                                      placeholder={f.placeholder}
-                                      autoComplete="off"
-                                    />
-                                  )}
-                                </div>
-                              )
-                            })}
-
-                            {step.showSubmit && (
-                              <div className="space-y-3 pt-1">
-                                {submitError && <p className="text-red-700 text-sm">{submitError}</p>}
-                                <button
-                                  type="submit"
-                                  disabled={submitting}
-                                  className="px-6 py-3 rounded-md bg-[#1d3d2e] text-white font-semibold disabled:opacity-60"
+                      <div key={step.id} className="space-y-4">
+                        <article className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden">
+                          <div className="p-5 space-y-3">
+                            <h3 className={`${syne.className} text-lg font-bold`}>{step.title}</h3>
+                            <p className="text-sm text-[#3a4f44] leading-relaxed">{step.body}</p>
+                            {stepHref && (
+                              <p className="text-sm">
+                                <a
+                                  className="underline font-semibold text-[#2f6b4f]"
+                                  href={stepHref}
+                                  target="_blank"
+                                  rel="noreferrer"
                                 >
-                                  {submitting ? c.submitBusy : c.submit}
-                                </button>
-                              </div>
+                                  {step.linkLabel || stepHref}
+                                </a>
+                              </p>
+                            )}
+                            {step.clickSteps && step.clickSteps.length > 0 && (
+                              <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#3a4f44]">
+                                {step.clickSteps.map((s) => (
+                                  <li key={s}>{s}</li>
+                                ))}
+                              </ol>
                             )}
                           </div>
+                          {stepImages.map((img) => (
+                            <figure key={img.src + (img.caption || '')}>
+                              <Image
+                                src={img.src}
+                                alt={img.alt}
+                                width={1280}
+                                height={720}
+                                className="w-full h-auto border-t border-[#1d3d2e]/10"
+                              />
+                              {img.caption && (
+                                <figcaption className="px-5 py-2 text-xs text-[#5a6f64] bg-[#f7faf8] border-t border-[#1d3d2e]/5">
+                                  {img.caption}
+                                </figcaption>
+                              )}
+                            </figure>
+                          ))}
+
+                          {(stepFields.length > 0 || step.showPem || step.showSubmit) && (
+                            <div className="space-y-4 border-t border-[#2f6b4f]/20 bg-[#e8f2ec]/60 p-5">
+                              {step.showPem && (
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">{c.pemLabel}</label>
+                                  <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{c.pemWhere}</p>
+                                  <p className="text-xs mb-2">
+                                    <a
+                                      className="underline font-semibold text-[#2f6b4f]"
+                                      href={ociLinks.authTokens}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {c.pemUrlLabel}
+                                    </a>
+                                  </p>
+                                  <input
+                                    required={!form.privateKeyPem}
+                                    type="file"
+                                    accept=".pem,application/x-pem-file,application/pkcs8,*/*"
+                                    className="block w-full text-sm text-[#3a4f44] file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#1d3d2e] file:text-white file:font-semibold"
+                                    onChange={onPemFile}
+                                  />
+                                  {pemFileName && (
+                                    <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[#2f6b4f]">
+                                      <span>{c.pemFileReady(pemFileName)}</span>
+                                      <button
+                                        type="button"
+                                        onClick={clearPemFile}
+                                        className="underline text-[#5a6f64]"
+                                      >
+                                        {c.pemFileClear}
+                                      </button>
+                                    </div>
+                                  )}
+                                  {pemFileError && (
+                                    <p className="mt-2 text-sm text-red-700">{pemFileError}</p>
+                                  )}
+                                </div>
+                              )}
+
+                              {stepFields.map((f) => {
+                                const fieldHref = f.ociLink ? ociLinks[f.ociLink] : undefined
+                                return (
+                                  <div key={f.key}>
+                                    <label className="block text-sm font-medium mb-1">{f.label}</label>
+                                    <p className="text-xs text-[#5a6f64] mb-1 leading-relaxed">{f.where}</p>
+                                    {fieldHref && (
+                                      <p className="text-xs mb-2">
+                                        <a
+                                          className="underline font-semibold text-[#2f6b4f]"
+                                          href={fieldHref}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          {f.urlLabel}
+                                        </a>
+                                      </p>
+                                    )}
+                                    {f.key === 'region' ? (
+                                      <select
+                                        required
+                                        className="w-full border px-3 py-2 rounded text-sm bg-white"
+                                        value={form.region}
+                                        onChange={(e) =>
+                                          setForm((prev) => ({ ...prev, region: e.target.value }))
+                                        }
+                                      >
+                                        {regionSelectOptions.map((r) => (
+                                          <option key={r.id} value={r.id}>
+                                            {r.name} ({r.id})
+                                          </option>
+                                        ))}
+                                      </select>
+                                    ) : f.key === 'ociConfig' ? (
+                                      <>
+                                        <textarea
+                                          required
+                                          rows={8}
+                                          className="w-full border px-3 py-2 rounded font-mono text-xs bg-white"
+                                          value={form.ociConfig}
+                                          onChange={(e) => applyOciConfig(e.target.value)}
+                                          placeholder={f.placeholder}
+                                          autoComplete="off"
+                                          spellCheck={false}
+                                        />
+                                        {form.ociConfig.trim() && (
+                                          <p
+                                            className={`mt-2 text-xs ${ociConfigOk ? 'text-[#2f6b4f]' : 'text-red-700'}`}
+                                          >
+                                            {ociConfigOk ? c.ociConfigOk : c.ociConfigInvalid}
+                                          </p>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <input
+                                        required={f.required !== false}
+                                        className="w-full border px-3 py-2 rounded font-mono text-sm bg-white"
+                                        value={form[f.key]}
+                                        onChange={set(f.key)}
+                                        placeholder={f.placeholder}
+                                        autoComplete="off"
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              })}
+
+                              {step.showSubmit && (
+                                <div className="space-y-3 pt-1">
+                                  {submitError && <p className="text-red-700 text-sm">{submitError}</p>}
+                                  <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="px-6 py-3 rounded-md bg-[#1d3d2e] text-white font-semibold disabled:opacity-60"
+                                  >
+                                    {submitting ? c.submitBusy : c.submit}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </article>
+                        {sku === 'minorwire_app' && SUPPORT_UPSELL_STEP_IDS.has(step.id) && (
+                          <SupportUpsellBlock
+                            copy={c}
+                            supportHref={links.support}
+                            showPrompt
+                          />
                         )}
-                      </article>
+                      </div>
                     )
                   })}
                 </section>
