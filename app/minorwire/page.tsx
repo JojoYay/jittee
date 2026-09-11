@@ -470,32 +470,13 @@ function PaidBanner({ c }: { c: Copy }) {
 function MinorWireContent() {
   const { locale } = useLanguage()
   const c = COPY[locale] ?? COPY.ja
-  const { mode, setMode, links, isTest } = useMinorWireStripeMode()
+  const { links } = useMinorWireStripeMode()
 
   return (
     <div className={`${dmSans.className} bg-[#f3f6f4] text-[#14201a]`}>
       <Suspense fallback={null}>
         <PaidBanner c={c} />
       </Suspense>
-
-      {isTest && (
-        <div className="relative z-10 border-b border-amber-700/40 bg-amber-50 text-amber-950">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 text-sm flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
-            <p>
-              Stripe <strong>test mode</strong> — use card{' '}
-              <span className="font-mono">4242 4242 4242 4242</span> (any future expiry / CVC). No
-              real charge. PayNow is live-only.
-            </p>
-            <button
-              type="button"
-              onClick={() => setMode('live')}
-              className="underline font-semibold shrink-0 text-left"
-            >
-              Switch to live
-            </button>
-          </div>
-        </div>
-      )}
 
       <section className="relative min-h-[88vh] overflow-hidden">
         <div
@@ -516,30 +497,10 @@ function MinorWireContent() {
         />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 md:pt-32 md:pb-28">
-          <div className="mb-6 flex flex-wrap items-center gap-3">
+          <div className="mb-6">
             <p className="text-sm font-medium tracking-[0.18em] uppercase text-[#2f6b4f]">
               {c.badge}
             </p>
-            <div
-              className="inline-flex rounded-md border border-[#1d3d2e]/20 bg-white/80 text-xs font-semibold overflow-hidden"
-              role="group"
-              aria-label="Stripe mode"
-            >
-              <button
-                type="button"
-                onClick={() => setMode('live')}
-                className={`px-3 py-1.5 ${mode === 'live' ? 'bg-[#1d3d2e] text-white' : 'text-[#3a4f44]'}`}
-              >
-                Live
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode('test')}
-                className={`px-3 py-1.5 ${mode === 'test' ? 'bg-amber-700 text-white' : 'text-[#3a4f44]'}`}
-              >
-                Test
-              </button>
-            </div>
           </div>
           <h1
             className={`${syne.className} text-5xl sm:text-6xl md:text-7xl font-extrabold leading-[0.95] tracking-tight max-w-4xl`}
@@ -801,10 +762,6 @@ function MinorWireContent() {
             <Link href="/contact" className="underline">
               Contact
             </Link>
-            {' · '}
-            <button type="button" className="underline" onClick={() => setMode(isTest ? 'live' : 'test')}>
-              Stripe: {mode}
-            </button>
           </p>
         </div>
       </section>
