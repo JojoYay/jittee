@@ -1,17 +1,24 @@
 import Stripe from 'stripe'
 import {
+  LEGACY_SETUP_PRICE_IDS,
   STRIPE_CATALOG,
   type StripeMode,
   defaultStripeModeFromEnv,
 } from './stripeCatalog'
 
 export type { StripeMode }
-export { STRIPE_CATALOG, defaultStripeModeFromEnv, normalizeStripeMode, paymentLinksFor } from './stripeCatalog'
+export {
+  STRIPE_CATALOG,
+  LEGACY_SETUP_PRICE_IDS,
+  defaultStripeModeFromEnv,
+  normalizeStripeMode,
+  paymentLinksFor,
+} from './stripeCatalog'
 
 /** @deprecated Use STRIPE_CATALOG.live — kept for older imports */
 export const MINORWIRE_PRICE = {
   app: STRIPE_CATALOG.live.app.priceId,
-  setup: STRIPE_CATALOG.live.setup.priceId,
+  support: STRIPE_CATALOG.live.support.priceId,
 } as const
 
 export type MinorWireSku = 'minorwire_app' | 'minorwire_setup' | 'minorwire_support'
@@ -85,10 +92,10 @@ export function webhookSecrets(): { mode: StripeMode; secret: string }[] {
 
 export function skuFromPriceId(priceId: string | null | undefined): MinorWireSku | null {
   if (!priceId) return null
+  if ((LEGACY_SETUP_PRICE_IDS as readonly string[]).includes(priceId)) return 'minorwire_setup'
   for (const mode of Object.keys(STRIPE_CATALOG) as StripeMode[]) {
     const c = STRIPE_CATALOG[mode]
     if (priceId === c.app.priceId) return 'minorwire_app'
-    if (priceId === c.setup.priceId) return 'minorwire_setup'
     if (priceId === c.support.priceId) return 'minorwire_support'
   }
   return null
@@ -110,9 +117,36 @@ export async function resolveCheckoutSku(
   const full = await stripe.checkout.sessions.retrieve(session.id, {
     expand: ['line_items.data.price'],
   })
-  const priceId = full.line_items?.data?.[0]?.price
-  const id = typeof priceId === 'string' ? priceId : priceId?.id
-  return skuFromPriceId(id)
+  const items = full.line_items?.data ?? []
+  // Prefer app when a bundle checkout includes both products.
+  for (const item of items) {
+    const priceId = typeof item.price === 'string' ? item.price : item.price?.id
+    if (priceId && skuFromPriceId(priceId) === 'minorwire_app') return 'minorwire_app'
+  }
+  for (const item of items) {
+    const priceId = typeof item.price === 'string' ? item.price : item.price?.id
+    const sku = skuFromPriceId(priceId)
+    if (sku) return sku
+  }
+  return null
+}
+
+export async function checkoutIncludesSupport(
+  stripe: Stripe,
+  session: Stripe.Checkout.Session,
+): Promise<boolean> {
+  if (session.metadata?.bundle === 'app_support') return true
+  if (skuFromMetadata(session.metadata) === 'minorwire_support') return true
+  if (skuFromMetadata(session.metadata) === 'minorwire_setup') return true
+
+  const full = await stripe.checkout.sessions.retrieve(session.id, {
+    expand: ['line_items.data.price'],
+  })
+  for (const item of full.line_items?.data ?? []) {
+    const priceId = typeof item.price === 'string' ? item.price : item.price?.id
+    if (skuFromPriceId(priceId) === 'minorwire_support') return true
+  }
+  return false
 }
 
 export function customerEmailFromSession(session: Stripe.Checkout.Session): string | null {

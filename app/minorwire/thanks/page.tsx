@@ -38,7 +38,7 @@ const THANKS: Record<string, ThanksCopy> = {
       '画面共有の日程は WhatsApp でご連絡ください。お名前と都合のよい時間帯を送ってください。',
     supportWhatsApp: 'WhatsApp で連絡する',
     setupAssistBody:
-      'Assisted Setup をご購入の方も、ウィザードを開きつつ WhatsApp（+65 8815 4153）で日程を調整してください。',
+      'DIY + サポートセットをご購入の方は、ウィザードを開きつつ WhatsApp（+65 8815 4153）で日程を調整してください。',
   },
   en: {
     badge: 'MinorWire',
@@ -52,7 +52,7 @@ const THANKS: Record<string, ThanksCopy> = {
       'Please message us on WhatsApp to schedule screen-share. Include your name and a few time slots.',
     supportWhatsApp: 'Message on WhatsApp',
     setupAssistBody:
-      'Assisted Setup buyers: open the wizard and also WhatsApp us (+65 8815 4153) to schedule.',
+      'DIY + support buyers: open the wizard and WhatsApp us (+65 8815 4153) to schedule.',
   },
   zh: {
     badge: 'MinorWire',
@@ -64,7 +64,7 @@ const THANKS: Record<string, ThanksCopy> = {
     supportTitle: '感谢购买支持服务',
     supportBody: '请通过 WhatsApp 联系我们预约远程协助，并告知姓名与方便的时间。',
     supportWhatsApp: '通过 WhatsApp 联系',
-    setupAssistBody: '购买 Assisted Setup 的用户请打开向导，并通过 WhatsApp（+65 8815 4153）预约时间。',
+    setupAssistBody: '购买 DIY + 支持套餐的用户请打开向导，并通过 WhatsApp（+65 8815 4153）预约时间。',
   },
 }
 
@@ -75,7 +75,7 @@ function ThanksInner() {
   const sessionId = params.get('session_id')
   const paid = params.get('paid')
   const isSupport = paid === 'support'
-  const isSetup = paid === 'setup'
+  const isBundle = paid === 'bundle' || paid === 'setup'
   const setupHref = sessionId
     ? `/minorwire/setup?session_id=${encodeURIComponent(sessionId)}`
     : null
@@ -112,8 +112,8 @@ function ThanksInner() {
         <p className="text-sm font-medium tracking-[0.18em] uppercase text-[#2f6b4f] mb-4">{c.badge}</p>
         <h1 className={`${syne.className} text-4xl font-extrabold mb-4`}>{c.title}</h1>
         <p className="text-[#3a4f44] leading-relaxed mb-4">{c.body}</p>
-        {isSetup && <p className="text-[#3a4f44] leading-relaxed mb-8">{c.setupAssistBody}</p>}
-        {!isSetup && <div className="mb-8" />}
+        {isBundle && <p className="text-[#3a4f44] leading-relaxed mb-8">{c.setupAssistBody}</p>}
+        {!isBundle && <div className="mb-8" />}
 
         <div className="flex flex-col sm:flex-row gap-3">
           {setupHref ? (
@@ -126,7 +126,7 @@ function ThanksInner() {
           ) : (
             <p className="text-red-700">{c.missing}</p>
           )}
-          {isSetup && (
+          {isBundle && (
             <a
               href={WHATSAPP_URL}
               target="_blank"

@@ -13,6 +13,7 @@ export async function sendMinorWireFulfillmentEmail(opts: {
   setupUrl: string
   customerName?: string | null
   customerPhone?: string | null
+  includesSupport?: boolean
 }): Promise<{ sent: boolean; reason?: string }> {
   const secret = (process.env.MINORWIRE_FULFILLMENT_SECRET || '').replace(/^\uFEFF/, '').trim()
   if (!secret) {
@@ -32,6 +33,7 @@ export async function sendMinorWireFulfillmentEmail(opts: {
       setupUrl: opts.setupUrl,
       customerName: opts.customerName || '',
       customerPhone: opts.customerPhone || '',
+      includesSupport: Boolean(opts.includesSupport),
     }),
   })
 

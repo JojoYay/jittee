@@ -88,7 +88,7 @@ const COPY: Record<string, Copy> = {
     freeOpsBody:
       'クラウド側の無料枠の範囲で動かすので、サーバー代・VPN 利用料としての月額はかかりません。かかるのは最初のセットアップ料金（買い切り）だけです。',
     ctaApp: '自分で設定 S$18（開始記念・定価 S$30）',
-    ctaSetup: 'Jittee に設定してもらう S$118（PayNow）',
+    ctaSetup: 'DIY + サポート S$118（PayNow）',
     ctaNote: '決済は Stripe PayNow。支払い後にセットアップ画面へ進みます（メールでも URL を送付）。',
     conceptTitle: 'VPNサーバーの真実',
     conceptDesc:
@@ -148,16 +148,17 @@ const COPY: Record<string, Copy> = {
       '端末の接続設定は追加発行可',
     ],
     planAppBest: '自分で触るのが苦にならない人向け',
-    planSetupName: 'Jittee に設定してもらう',
+    planSetupName: 'DIY + サポート',
     planSetupPrice: 'S$118',
-    planSetupDesc: '画面共有などで、キー作成から最初の接続まで一緒に完了します。',
+    planSetupDesc:
+      '自分で設定（S$18）とライブサポート（S$100）の2商品セット。ウィザード＋ WhatsApp 画面共有で一緒に完了します。',
     planSetupPoints: [
-      'セルフ機能も含む',
+      'DIY 機能（サーバー自動作成）を含む',
       'ライブサポート（目安60分）',
       'VPN 起動まで確認',
       '複数端末の設定も一緒に',
     ],
-    planSetupBest: '最短で確実に終わらせたい人向け',
+    planSetupBest: '最初から一緒に進めたい人向け',
     needTitle: '必要なもの',
     needPoints: ['メールアドレス', 'クレジットカード'],
     needLead: '上記を用意し、PayNow 支払いを行うだけで、あなたのプライベート VPN サーバーを構築できます。',
@@ -200,7 +201,7 @@ const COPY: Record<string, Copy> = {
     freeOpsBody:
       'Because it runs within the cloud free allowance, there is no monthly server fee or VPN usage fee. You only pay the one-time setup charge.',
     ctaApp: 'Do it yourself S$18 (launch price; list S$30)',
-    ctaSetup: 'Have Jittee set it up S$118 (PayNow)',
+    ctaSetup: 'DIY + support S$118 (PayNow)',
     ctaNote: 'Stripe PayNow. After payment you open the setup wizard (URL also emailed).',
     conceptTitle: 'The truth about VPN servers',
     conceptDesc:
@@ -260,16 +261,17 @@ const COPY: Record<string, Copy> = {
       'Extra device profiles anytime',
     ],
     planAppBest: 'Best if you are fine clicking through a short guide',
-    planSetupName: 'Have Jittee set it up',
+    planSetupName: 'DIY + support',
     planSetupPrice: 'S$118',
-    planSetupDesc: 'Screen-share from key creation to first successful connection.',
+    planSetupDesc:
+      'Bundle of DIY (S$18) and live support (S$100). Wizard access plus WhatsApp screen-share.',
     planSetupPoints: [
-      'Includes the self-serve flow',
+      'Includes DIY server provisioning',
       'Live help (~60 min)',
       'Confirm VPN is up',
       'Add multiple device profiles together',
     ],
-    planSetupBest: 'Best if you want it done quickly and checked live',
+    planSetupBest: 'Best if you want help from the start',
     needTitle: 'What you need',
     needPoints: ['Email address', 'Credit card'],
     needLead: 'Prepare those, pay with PayNow, and we build your private VPN server.',
@@ -312,7 +314,7 @@ const COPY: Record<string, Copy> = {
     freeOpsBody:
       '因为在云免费额度内运行，没有按月的服务器费或 VPN 使用费。你只需支付一次性的设置费用。',
     ctaApp: '自己设置 S$18（上线纪念价 · 定价 S$30）',
-    ctaSetup: '请 Jittee 代为设置 S$118（PayNow）',
+    ctaSetup: 'DIY + 支持 S$118（PayNow）',
     ctaNote: 'Stripe PayNow。付款后进入设置向导（邮件也会发送链接）。',
     conceptTitle: 'VPN 服务器的真相',
     conceptDesc:
@@ -367,11 +369,11 @@ const COPY: Record<string, Copy> = {
     planAppDesc: '按说明自行完成密钥登记到首次连通。',
     planAppPoints: ['按页面步骤即可完成', '登记密钥后自动建服务器', '每次购买仅搭建一次服务器', '设备配置可反复追加'],
     planAppBest: '适合愿意自己点几步的人',
-    planSetupName: '请 Jittee 代为设置',
+    planSetupName: 'DIY + 支持',
     planSetupPrice: 'S$118',
-    planSetupDesc: '远程协助，从密钥创建到首次连通一起完成。',
-    planSetupPoints: ['含自助流程', '在线协助（约60分钟）', '确认 VPN 已启动', '一起添加多台设备配置'],
-    planSetupBest: '适合想尽快、稳妥完成的人',
+    planSetupDesc: '自助（S$18）与在线支持（S$100）两件套。含向导与 WhatsApp 远程协助。',
+    planSetupPoints: ['含自助建服', '在线协助（约60分钟）', '确认 VPN 已启动', '一起添加多台设备配置'],
+    planSetupBest: '适合希望一开始就有人一起做的人',
     needTitle: '你需要准备',
     needPoints: ['邮箱地址', '信用卡'],
     needLead: '准备好以上两项，用 PayNow 付款即可开始搭建你的专属 VPN 服务器。',
@@ -407,12 +409,18 @@ const COPY: Record<string, Copy> = {
 function PaidBanner({ c }: { c: Copy }) {
   const params = useSearchParams()
   const paid = params.get('paid')
-  if (paid !== 'app' && paid !== 'setup') return null
+  if (paid !== 'app' && paid !== 'setup' && paid !== 'bundle' && paid !== 'support') return null
 
-  const title = paid === 'app' ? c.paidAppTitle : c.paidSetupTitle
-  const body = paid === 'app' ? c.paidAppBody : c.paidSetupBody
+  const title =
+    paid === 'app' ? c.paidAppTitle : paid === 'support' ? c.paidSetupTitle : c.paidSetupTitle
+  const body =
+    paid === 'app' ? c.paidAppBody : paid === 'support' ? c.paidSetupBody : c.paidSetupBody
   const subject =
-    paid === 'app' ? 'MinorWire self-serve purchase' : 'MinorWire assisted setup purchase'
+    paid === 'app'
+      ? 'MinorWire self-serve purchase'
+      : paid === 'support'
+        ? 'MinorWire support purchase'
+        : 'MinorWire DIY + support purchase'
 
   return (
     <div className="relative z-10 border-b border-[#2f6b4f]/30 bg-[#1d3d2e] text-white">
@@ -528,7 +536,7 @@ function MinorWireContent() {
               {c.ctaApp}
             </a>
             <a
-              href={links.setup}
+              href={links.bundle}
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-md border border-[#1d3d2e]/30 bg-white/70 backdrop-blur font-semibold hover:bg-white transition-colors"
             >
               {c.ctaSetup}
@@ -711,7 +719,7 @@ function MinorWireContent() {
               ))}
             </ul>
             <a
-              href={links.setup}
+              href={links.bundle}
               className="mt-8 inline-flex px-5 py-3 bg-white text-[#1d3d2e] font-semibold rounded-md hover:bg-[#e8f2ec] transition-colors"
             >
               {c.ctaSetup}
@@ -756,7 +764,7 @@ function MinorWireContent() {
               {c.ctaApp}
             </a>
             <a
-              href={links.setup}
+              href={links.bundle}
               className="inline-flex justify-center px-6 py-3.5 rounded-md border border-[#1d3d2e]/30 font-semibold hover:bg-white transition-colors"
             >
               {c.ctaSetup}

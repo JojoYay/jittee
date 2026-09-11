@@ -12,11 +12,10 @@ We do **not** sell VPN bandwidth. Traffic runs on the customer's OCI instance.
 
 | SKU | Price | Includes |
 |-----|-------|----------|
-| `MinorWire_app` | SGD 18 | App license + self-serve guide (IAM policy snippet, OCID checklist, provision flow) |
-| `MinorWire_setup` | SGD 118 | App + live assisted setup (screen share through IAM key creation, first VPN up, first device config) |
-| `MinorWire_support` | SGD 100 | Add-on live support after DIY purchase |
+| `minorwire_app` | SGD 18 | DIY: IAM guide + provision flow |
+| `minorwire_support` | SGD 100 | Live support (WhatsApp screen-share); buy alone after DIY or with DIY via bundle checkout |
 
-Currency: **SGD**. Suggested upsell: buy app (S$18), then upgrade to assisted support for +S$100 (total S$118).
+Currency: **SGD**. Two Stripe products only. Bundle Payment Link sells both in one checkout (S$118 total). Legacy `minorwire_setup` is no longer sold.
 
 No monthly VPN fee in MVP. Optional later: support subscription.
 
@@ -46,7 +45,9 @@ No monthly VPN fee in MVP. Optional later: support subscription.
 4. App runs provision + health check
 5. App creates peers / QR / `.conf` per device
 
-### Assisted (S$118)
+### DIY + support bundle (S$118)
+
+Same as buying `minorwire_app` + `minorwire_support` together (one Payment Link, two Stripe products).
 
 Same outcome; Jittee walks steps 2–5 in one session (time-box in offer, e.g. 60 minutes, 2 devices).
 
