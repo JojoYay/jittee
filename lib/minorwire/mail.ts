@@ -12,7 +12,7 @@ export async function sendMinorWireFulfillmentEmail(opts: {
   sku: MinorWireSku
   setupUrl: string
 }): Promise<{ sent: boolean; reason?: string }> {
-  const secret = process.env.MINORWIRE_FULFILLMENT_SECRET
+  const secret = (process.env.MINORWIRE_FULFILLMENT_SECRET || '').replace(/^\uFEFF/, '').trim()
   if (!secret) {
     return { sent: false, reason: 'MINORWIRE_FULFILLMENT_SECRET not set' }
   }

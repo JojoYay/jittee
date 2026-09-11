@@ -74,8 +74,10 @@ export function getStripeForSessionId(sessionId: string): Stripe {
 
 export function webhookSecrets(): { mode: StripeMode; secret: string }[] {
   const out: { mode: StripeMode; secret: string }[] = []
-  const live = process.env.STRIPE_WEBHOOK_SECRET_LIVE || process.env.STRIPE_WEBHOOK_SECRET
-  const test = process.env.STRIPE_WEBHOOK_SECRET_TEST
+  const live = cleanSecret(
+    process.env.STRIPE_WEBHOOK_SECRET_LIVE || process.env.STRIPE_WEBHOOK_SECRET,
+  )
+  const test = cleanSecret(process.env.STRIPE_WEBHOOK_SECRET_TEST)
   if (live) out.push({ mode: 'live', secret: live })
   if (test) out.push({ mode: 'test', secret: test })
   return out
