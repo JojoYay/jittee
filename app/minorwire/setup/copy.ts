@@ -38,7 +38,15 @@ export type GuideStepCopy = {
   showSubmit?: boolean
 }
 
-
+export type WireGuardPlatformGuide = {
+  id: string
+  title: string
+  installUrl: string
+  installLabel: string
+  steps: string[]
+  image: string
+  imageAlt: string
+}
 
 export type SetupCopy = {
   badge: string
@@ -82,6 +90,20 @@ export type SetupCopy = {
   addPeerPlaceholder: string
   addPeerBusy: string
   addPeerSubmit: string
+  wgConnectTitle: string
+  wgConnectIntro: string
+  wgHubUrl: string
+  wgHubLabel: string
+  wgDownloadStepTitle: string
+  wgDownloadStepBody: string
+  wgDownloadStepImage: string
+  wgDownloadStepImageAlt: string
+  wgPlatforms: WireGuardPlatformGuide[]
+  wgActivateTitle: string
+  wgActivateBody: string
+  wgActivateSteps: string[]
+  wgActivateImage: string
+  wgActivateImageAlt: string
   missingSession: string
   paymentUnverified: string
   verifyFailed: string
@@ -284,6 +306,85 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     addPeerPlaceholder: 'iphone',
     addPeerBusy: '追加中…',
     addPeerSubmit: '端末設定を作成',
+    wgConnectTitle: 'WireGuard の入れ方と .conf のインポート',
+    wgConnectIntro:
+      '公式 WireGuard アプリを入れ、上でダウンロードした .conf をインポートしてトンネルをオンにします。OS ごとに手順はほぼ同じです。',
+    wgHubUrl: 'https://www.wireguard.com/install/',
+    wgHubLabel: '公式インストール一覧（wireguard.com）',
+    wgDownloadStepTitle: '共通 — まず .conf をダウンロード',
+    wgDownloadStepBody:
+      'このページの「.conf をダウンロード」を押し、ファイルを端末に保存します（例: phone.conf）。次にそのファイルを WireGuard アプリへ取り込みます。',
+    wgDownloadStepImage: '/minorwire/guide/wg-01-download-conf.png',
+    wgDownloadStepImageAlt: 'Download WireGuard .conf from MinorWire',
+    wgPlatforms: [
+      {
+        id: 'windows',
+        title: 'Windows',
+        installUrl: 'https://download.wireguard.com/windows-client/wireguard-installer.exe',
+        installLabel: 'Windows インストーラをダウンロード',
+        steps: [
+          '公式 WireGuard をインストールして起動する',
+          '「トンネルをインポート」（Import tunnel(s) from file）を選ぶ',
+          'ダウンロードした .conf を選択する',
+          '一覧のトンネルを選び「有効化」（Activate）する',
+        ],
+        image: '/minorwire/guide/wg-02-windows-import.png',
+        imageAlt: 'WireGuard Windows import tunnel',
+      },
+      {
+        id: 'mac',
+        title: 'Mac',
+        installUrl: 'https://apps.apple.com/app/wireguard/id1451685025',
+        installLabel: 'Mac App Store で WireGuard を開く',
+        steps: [
+          'Mac App Store から WireGuard をインストールする',
+          '「トンネルをインポート」（Import tunnel(s) from file）を選ぶ',
+          'ダウンロードした .conf を選ぶ（Finder からドラッグでも可）',
+          'トンネルをオンにし、VPN 構成の追加を許可する',
+        ],
+        image: '/minorwire/guide/wg-03-mac-import.png',
+        imageAlt: 'WireGuard macOS import tunnel',
+      },
+      {
+        id: 'ios',
+        title: 'iPhone / iPad',
+        installUrl: 'https://apps.apple.com/app/wireguard/id1441195209',
+        installLabel: 'App Store で WireGuard を開く',
+        steps: [
+          'App Store から WireGuard をインストールする',
+          '右上の「+」→「ファイルまたはアーカイブから作成」',
+          'Files アプリなどに保存した .conf を選ぶ（AirDrop でも可）',
+          'トグルをオンにし、VPN 構成の追加を許可する',
+        ],
+        image: '/minorwire/guide/wg-04-ios-import.png',
+        imageAlt: 'WireGuard iOS import from file',
+      },
+      {
+        id: 'android',
+        title: 'Android',
+        installUrl: 'https://play.google.com/store/apps/details?id=com.wireguard.android',
+        installLabel: 'Google Play で WireGuard を開く',
+        steps: [
+          'Google Play から WireGuard をインストールする',
+          '右下の「+」→「ファイルまたはアーカイブからインポート」',
+          'ダウンロードした .conf を選ぶ',
+          'トンネルのスイッチをオンにし、VPN 接続を許可する',
+        ],
+        image: '/minorwire/guide/wg-05-android-import.png',
+        imageAlt: 'WireGuard Android import from file',
+      },
+    ],
+    wgActivateTitle: '共通 — トンネルをオンにする',
+    wgActivateBody:
+      'インポート後、トンネル名の横のスイッチ／Activate をオンにします。ブラウザで「自分の IP」を検索し、このページに表示された公開 IP になっていれば接続成功です。',
+    wgActivateSteps: [
+      'WireGuard アプリで対象トンネルをオン（Active）にする',
+      '初回は OS の VPN 許可ダイアログで許可する',
+      '公開 IP がこのページの値と一致するか確認する',
+      '切るときは同じスイッチをオフにする',
+    ],
+    wgActivateImage: '/minorwire/guide/wg-06-activate.png',
+    wgActivateImageAlt: 'Turn on WireGuard tunnel',
     missingSession: 'session_id がありません。先に PayNow で支払いを完了してください。',
     paymentUnverified: '支払いを確認できません',
     verifyFailed: '支払い確認に失敗しました',
@@ -479,6 +580,85 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     addPeerPlaceholder: 'iphone',
     addPeerBusy: 'Adding…',
     addPeerSubmit: 'Create device config',
+    wgConnectTitle: 'Install WireGuard and import the .conf',
+    wgConnectIntro:
+      'Install the official WireGuard app, import the .conf you downloaded above, then turn the tunnel on. Steps are similar on every OS.',
+    wgHubUrl: 'https://www.wireguard.com/install/',
+    wgHubLabel: 'Official install hub (wireguard.com)',
+    wgDownloadStepTitle: 'Shared — download the .conf first',
+    wgDownloadStepBody:
+      'Tap Download .conf on this page and save the file on your device (e.g. phone.conf). Then import that file into the WireGuard app.',
+    wgDownloadStepImage: '/minorwire/guide/wg-01-download-conf.png',
+    wgDownloadStepImageAlt: 'Download WireGuard .conf from MinorWire',
+    wgPlatforms: [
+      {
+        id: 'windows',
+        title: 'Windows',
+        installUrl: 'https://download.wireguard.com/windows-client/wireguard-installer.exe',
+        installLabel: 'Download Windows installer',
+        steps: [
+          'Install and open official WireGuard',
+          'Choose Import tunnel(s) from file',
+          'Select the downloaded .conf',
+          'Select the tunnel and click Activate',
+        ],
+        image: '/minorwire/guide/wg-02-windows-import.png',
+        imageAlt: 'WireGuard Windows import tunnel',
+      },
+      {
+        id: 'mac',
+        title: 'Mac',
+        installUrl: 'https://apps.apple.com/app/wireguard/id1451685025',
+        installLabel: 'Open WireGuard on the Mac App Store',
+        steps: [
+          'Install WireGuard from the Mac App Store',
+          'Choose Import tunnel(s) from file',
+          'Pick the .conf (or drag it from Finder)',
+          'Turn the tunnel on and allow adding a VPN configuration',
+        ],
+        image: '/minorwire/guide/wg-03-mac-import.png',
+        imageAlt: 'WireGuard macOS import tunnel',
+      },
+      {
+        id: 'ios',
+        title: 'iPhone / iPad',
+        installUrl: 'https://apps.apple.com/app/wireguard/id1441195209',
+        installLabel: 'Open WireGuard on the App Store',
+        steps: [
+          'Install WireGuard from the App Store',
+          'Tap + → Create from file or archive',
+          'Choose the .conf from Files (AirDrop also works)',
+          'Toggle on and allow adding a VPN configuration',
+        ],
+        image: '/minorwire/guide/wg-04-ios-import.png',
+        imageAlt: 'WireGuard iOS import from file',
+      },
+      {
+        id: 'android',
+        title: 'Android',
+        installUrl: 'https://play.google.com/store/apps/details?id=com.wireguard.android',
+        installLabel: 'Open WireGuard on Google Play',
+        steps: [
+          'Install WireGuard from Google Play',
+          'Tap + → Create from file or archive',
+          'Select the downloaded .conf',
+          'Turn the tunnel switch on and allow the VPN connection',
+        ],
+        image: '/minorwire/guide/wg-05-android-import.png',
+        imageAlt: 'WireGuard Android import from file',
+      },
+    ],
+    wgActivateTitle: 'Shared — turn the tunnel on',
+    wgActivateBody:
+      'After import, turn on the switch / Activate next to the tunnel name. Search “what is my IP” in a browser — if it matches the public IP on this page, you are connected.',
+    wgActivateSteps: [
+      'Turn the tunnel Active / On in WireGuard',
+      'Allow the OS VPN permission prompt on first use',
+      'Confirm your public IP matches this page',
+      'Turn the same switch off to disconnect',
+    ],
+    wgActivateImage: '/minorwire/guide/wg-06-activate.png',
+    wgActivateImageAlt: 'Turn on WireGuard tunnel',
     missingSession: 'Missing session_id. Complete PayNow payment first.',
     paymentUnverified: 'Could not verify payment',
     verifyFailed: 'Payment verification failed',
@@ -671,6 +851,85 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     addPeerPlaceholder: 'iphone',
     addPeerBusy: '添加中…',
     addPeerSubmit: '创建设备配置',
+    wgConnectTitle: '安装 WireGuard 并导入 .conf',
+    wgConnectIntro:
+      '安装官方 WireGuard 应用，导入上方下载的 .conf，然后打开隧道。各系统步骤基本相同。',
+    wgHubUrl: 'https://www.wireguard.com/install/',
+    wgHubLabel: '官方安装页面（wireguard.com）',
+    wgDownloadStepTitle: '通用 — 先下载 .conf',
+    wgDownloadStepBody:
+      '在本页点击「下载 .conf」并保存到设备（例如 phone.conf），再把该文件导入 WireGuard 应用。',
+    wgDownloadStepImage: '/minorwire/guide/wg-01-download-conf.png',
+    wgDownloadStepImageAlt: '从 MinorWire 下载 WireGuard .conf',
+    wgPlatforms: [
+      {
+        id: 'windows',
+        title: 'Windows',
+        installUrl: 'https://download.wireguard.com/windows-client/wireguard-installer.exe',
+        installLabel: '下载 Windows 安装包',
+        steps: [
+          '安装并打开官方 WireGuard',
+          '选择「从文件导入隧道」（Import tunnel(s) from file）',
+          '选择刚下载的 .conf',
+          '选中隧道并点击 Activate / 启用',
+        ],
+        image: '/minorwire/guide/wg-02-windows-import.png',
+        imageAlt: 'WireGuard Windows 导入隧道',
+      },
+      {
+        id: 'mac',
+        title: 'Mac',
+        installUrl: 'https://apps.apple.com/app/wireguard/id1451685025',
+        installLabel: '在 Mac App Store 打开 WireGuard',
+        steps: [
+          '从 Mac App Store 安装 WireGuard',
+          '选择 Import tunnel(s) from file',
+          '选择 .conf（也可从 Finder 拖入）',
+          '打开隧道并允许添加 VPN 配置',
+        ],
+        image: '/minorwire/guide/wg-03-mac-import.png',
+        imageAlt: 'WireGuard macOS 导入隧道',
+      },
+      {
+        id: 'ios',
+        title: 'iPhone / iPad',
+        installUrl: 'https://apps.apple.com/app/wireguard/id1441195209',
+        installLabel: '在 App Store 打开 WireGuard',
+        steps: [
+          '从 App Store 安装 WireGuard',
+          '点右上角 + → Create from file or archive',
+          '从“文件”选择 .conf（也可用 AirDrop）',
+          '打开开关并允许添加 VPN 配置',
+        ],
+        image: '/minorwire/guide/wg-04-ios-import.png',
+        imageAlt: 'WireGuard iOS 从文件导入',
+      },
+      {
+        id: 'android',
+        title: 'Android',
+        installUrl: 'https://play.google.com/store/apps/details?id=com.wireguard.android',
+        installLabel: '在 Google Play 打开 WireGuard',
+        steps: [
+          '从 Google Play 安装 WireGuard',
+          '点右下角 + → Create from file or archive',
+          '选择下载的 .conf',
+          '打开隧道开关并允许 VPN 连接',
+        ],
+        image: '/minorwire/guide/wg-05-android-import.png',
+        imageAlt: 'WireGuard Android 从文件导入',
+      },
+    ],
+    wgActivateTitle: '通用 — 打开隧道',
+    wgActivateBody:
+      '导入后打开隧道旁的开关 / Activate。在浏览器搜索“我的 IP”，若与本页公网 IP 一致，即表示已连接。',
+    wgActivateSteps: [
+      '在 WireGuard 中将隧道设为 Active / On',
+      '首次使用时允许系统的 VPN 权限提示',
+      '确认公网 IP 与本页一致',
+      '断开时关闭同一开关',
+    ],
+    wgActivateImage: '/minorwire/guide/wg-06-activate.png',
+    wgActivateImageAlt: '打开 WireGuard 隧道',
     missingSession: '缺少 session_id。请先完成 PayNow 付款。',
     paymentUnverified: '无法确认付款',
     verifyFailed: '付款确认失败',

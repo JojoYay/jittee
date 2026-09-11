@@ -422,6 +422,93 @@ function SetupInner() {
                         </a>
                       </div>
                     ))}
+
+                    <section className="border border-[#1d3d2e]/15 bg-white rounded-md overflow-hidden">
+                      <div className="p-5 space-y-3">
+                        <h3 className={`${syne.className} text-xl font-bold`}>{c.wgConnectTitle}</h3>
+                        <p className="text-sm text-[#3a4f44] leading-relaxed">{c.wgConnectIntro}</p>
+                        <p className="text-sm">
+                          <a
+                            className="underline font-semibold text-[#2f6b4f]"
+                            href={c.wgHubUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {c.wgHubLabel}
+                          </a>
+                        </p>
+                      </div>
+
+                      <article className="border-t border-[#1d3d2e]/10">
+                        <div className="p-5 space-y-2">
+                          <h4 className="font-semibold text-[#1d3d2e]">{c.wgDownloadStepTitle}</h4>
+                          <p className="text-sm text-[#3a4f44] leading-relaxed">{c.wgDownloadStepBody}</p>
+                        </div>
+                        <figure>
+                          <Image
+                            src={c.wgDownloadStepImage}
+                            alt={c.wgDownloadStepImageAlt}
+                            width={1280}
+                            height={720}
+                            className="w-full h-auto border-t border-[#1d3d2e]/10"
+                          />
+                        </figure>
+                      </article>
+
+                      {c.wgPlatforms.map((plat) => (
+                        <article key={plat.id} className="border-t border-[#1d3d2e]/10">
+                          <div className="p-5 space-y-3">
+                            <h4 className={`${syne.className} text-lg font-bold`}>{plat.title}</h4>
+                            <p className="text-sm">
+                              <a
+                                className="underline font-semibold text-[#2f6b4f]"
+                                href={plat.installUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {plat.installLabel}
+                              </a>
+                            </p>
+                            <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#3a4f44]">
+                              {plat.steps.map((s) => (
+                                <li key={s}>{s}</li>
+                              ))}
+                            </ol>
+                          </div>
+                          <figure>
+                            <Image
+                              src={plat.image}
+                              alt={plat.imageAlt}
+                              width={plat.id === 'ios' || plat.id === 'android' ? 720 : 1280}
+                              height={plat.id === 'ios' || plat.id === 'android' ? 1280 : 720}
+                              className="w-full max-w-md mx-auto h-auto border-t border-[#1d3d2e]/10 bg-[#f7faf8]"
+                            />
+                          </figure>
+                        </article>
+                      ))}
+
+                      <article className="border-t border-[#1d3d2e]/10">
+                        <div className="p-5 space-y-3">
+                          <h4 className={`${syne.className} text-lg font-bold`}>{c.wgActivateTitle}</h4>
+                          <p className="text-sm text-[#3a4f44] leading-relaxed">{c.wgActivateBody}</p>
+                          <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#3a4f44]">
+                            {c.wgActivateSteps.map((s) => (
+                              <li key={s}>{s}</li>
+                            ))}
+                          </ol>
+                        </div>
+                        <figure>
+                          <Image
+                            src={c.wgActivateImage}
+                            alt={c.wgActivateImageAlt}
+                            width={1280}
+                            height={720}
+                            className="w-full h-auto border-t border-[#1d3d2e]/10"
+                          />
+                        </figure>
+                      </article>
+                    </section>
+
                     <form onSubmit={onAddPeer} className="border-t border-[#1d3d2e]/10 pt-4 space-y-3">
                       <p className="font-semibold">{c.addPeerTitle}</p>
                       <input
