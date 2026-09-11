@@ -52,8 +52,6 @@ export type SetupCopy = {
   badge: string
   title: string
   intro: string
-  needsTitle: string
-  needsItems: string[]
   flowTitle: string
   flowSteps: string[]
   guideTitle: string
@@ -132,21 +130,15 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     title: 'かんたんセットアップ（管理者キー）',
     intro:
       'あなたが用意する Cloud (Oracle Cloud) 上に VPN サーバー (WireGuard) を1台作ります。管理者アカウントの API キーを登録するだけですべて自動で作成します。',
-    needsTitle: '最初に必要なもの',
-    needsItems: [
-      'Oracle Cloud アカウント（VPN を置きたいリージョンをホームリージョンにして作成。日本語UIの推奨は Japan East / Tokyo）',
-      '管理者ユーザーの API キー（Configuration file preview の Copy 内容 + 秘密鍵 .pem）。IAM 設定は不要',
-      'VPN 動作確認のあと、Pay As You Go（有料プラン）へのアップグレード（未アップグレードだとアイドル整理でサーバーが消えることがあります。枠内は課金されません）',
-    ],
     flowTitle: '全体の流れ',
     flowSteps: [
-      '作りたいリージョンをホームリージョンにして Oracle Cloud アカウントを作成する（推奨: 東京）',
+      '作りたいリージョンをホームリージョンにして Oracle Cloud アカウントを作成する',
       '管理者のまま API キーを作り、Configuration file preview を Copy、.pem を保存',
       '下に .pem をアップロードし、Copy 内容を貼って「VPN を作成」',
-      '成功後、Compute → Instances で minorwire-* が Running か確認し、.conf を WireGuard に入れて動作確認',
+      '成功後、.conf を WireGuard に入れて動作確認',
       '最後に Pay As You Go へアップグレードする（カード登録・有料化しないと、アイドル整理でサーバーが削除されることがあります）',
     ],
-    guideTitle: '手順ガイド（上から順に）',
+    guideTitle: '手順ガイド',
     guideIntro:
       'スクショを見ながら進めてください。すでにアカウントがある場合は Step 1–2 を飛ばし、Step 3（カード登録済みなら Step 4）からで構いません。Pay As You Go へのアップグレードは VPN 動作確認後の最後の Step です。',
     guideSteps: [
@@ -162,9 +154,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'homeRegion',
-        title: 'Step 2 — ホームリージョンを選ぶ（推奨: Japan East / Tokyo）',
+        title: 'Step 2 — ホームリージョンを選ぶ',
         body:
-          'Cloud Account Name のあと Home Region を選びます。後から変更できません。Always Free の Micro はホームリージョンにしか作れないので、VPN を置きたい場所を選んでください。日本語向けの推奨は Japan East (Tokyo) です。下の選択も同じリージョンにしてください。',
+          'Cloud Account Name のあと Home Region を選びます。後から変更できません。Always Free の Micro はホームリージョンにしか作れないので、VPN を置きたい場所を選んでください。下の選択も同じリージョンにしてください。',
         image: '/minorwire/guide/signup-02-home-region.png',
         imageAlt: 'Home Region selection',
         fields: ['region'],
@@ -241,12 +233,12 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'upgrade',
         title: 'Step 6 — Pay As You Go（有料アカウント）へアップグレード',
         body:
-          'VPN が動くことを確認してから行います。メニューは Billing & Cost Management → Billing → Upgrade and Manage Payment です（下の直リンクでも開けます）。Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。カード未登録・アップグレード未実施のままでも当面動くことがありますが、アイドル整理でサーバーが削除されることがあります。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。アップグレード時、カードに約 USD $100 のオーソリ（与信枠の確保）がかかることがあります。これは実課金ではなく、確認後に取り消されます。成功すると Plan type が Pay As You Go と表示されます。',
+          'VPN が動くことを確認してから行います。メニューは Billing & Cost Management → Billing → Upgrade and Manage Payment です（下の直リンクでも開けます）。Pay As You Go → Individual → Upgrade。Always Free のリソースは引き続き無料です。カード未登録・アップグレード未実施のままでも当面動くことがありますが、アイドル整理でサーバーが削除されることがあります。容量確保のためこの手順を推奨します。反映に1〜2日かかることがあります。アップグレード時、カードに USD $100 の与信枠の確保が発生します。これは実課金ではなく、確認後に取り消されます。成功すると Plan type が Pay As You Go と表示されます。',
         clickSteps: [
           'コンソール左上メニュー（≡）→ Billing & Cost Management',
           'Billing → Upgrade and Manage Payment（または下の直リンク）',
           'Pay As You Go を選び、Account type は Individual',
-          'Upgrade を実行（約 USD $100 のオーソリがかかることがあります。後で取消）',
+          'Upgrade を実行（USD $100 の与信枠の確保が発生します。後で取消）',
           '完了後、Plan type が Pay As You Go になっていることを確認',
         ],
         image: '/minorwire/guide/signup-04-upgrade-payg.png',
@@ -418,18 +410,12 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     title: 'Simple setup (admin API key)',
     intro:
       'We create one VPN server (WireGuard) on the cloud account you provide (Oracle Cloud). Register an admin API key and everything is created automatically.',
-    needsTitle: 'What you need first',
-    needsItems: [
-      'An Oracle Cloud account with Home Region set to where you want the VPN (English UI default: Singapore)',
-      'An admin API key (Configuration file preview Copy text + private key .pem). No IAM setup required',
-      'After the VPN works, upgrade to Pay As You Go (without upgrade, idle cleanup may delete the server; Always Free resources stay free)',
-    ],
     flowTitle: 'Overall flow',
     flowSteps: [
-      'Create an Oracle Cloud account whose home region is where you want the VPN (recommended: Singapore)',
+      'Create an Oracle Cloud account whose home region is where you want the VPN',
       'Create an admin API key, Copy the Configuration file preview, and save the .pem',
       'Paste the Copy text below after uploading the .pem, then create the VPN',
-      'After success, confirm minorwire-* is Running under Compute → Instances, import the .conf into WireGuard, and verify it works',
+      'After success, import the .conf into WireGuard and verify it works',
       'Finally upgrade to Pay As You Go (without a paid plan / card upgrade, idle cleanup may delete the server)',
     ],
     guideTitle: 'Step-by-step guide',
@@ -447,7 +433,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'homeRegion',
-        title: 'Step 2 — Choose Home Region (recommended: Singapore)',
+        title: 'Step 2 — Choose Home Region',
         body:
           'After Cloud Account Name, pick Home Region. You cannot change it later. Always Free Micro only works in the home region, so choose where you want the VPN. English UI defaults to Singapore — select the same region below.',
         image: '/minorwire/guide/signup-02-home-region.png',
@@ -526,12 +512,12 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'upgrade',
         title: 'Step 6 — Upgrade to Pay As You Go',
         body:
-          'Do this after the VPN works. Menu path: Billing & Cost Management → Billing → Upgrade and Manage Payment (or use the direct link below). Choose Pay As You Go → Individual → Upgrade. Always Free resources stay free. It may keep working without upgrade for a while, but idle cleanup can delete the server if you stay on unpaid / free-only status. Upgrade can take 1–2 days. During upgrade, Oracle may place an authorization hold of about USD $100 on your card. This is not a charge and is reversed after verification. When done, Plan type shows Pay As You Go.',
+          'Do this after the VPN works. Menu path: Billing & Cost Management → Billing → Upgrade and Manage Payment (or use the direct link below). Choose Pay As You Go → Individual → Upgrade. Always Free resources stay free. It may keep working without upgrade for a while, but idle cleanup can delete the server if you stay on unpaid / free-only status. Upgrade can take 1–2 days. During upgrade, a USD $100 authorization hold occurs on your card. This is not a charge and is reversed after verification. When done, Plan type shows Pay As You Go.',
         clickSteps: [
           'Open the console hamburger (≡) → Billing & Cost Management',
           'Billing → Upgrade and Manage Payment (or the direct link below)',
           'Select Pay As You Go, Account type Individual',
-          'Click Upgrade (about USD $100 authorization may appear; it is reversed later)',
+          'Click Upgrade (a USD $100 authorization hold will occur; it is reversed later)',
           'Confirm Plan type is Pay As You Go',
         ],
         image: '/minorwire/guide/signup-04-upgrade-payg.png',
@@ -703,21 +689,15 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     title: '简易设置（管理员 API 密钥）',
     intro:
       '我们会在你准备的云账号（Oracle Cloud）上创建一台 VPN 服务器（WireGuard）。只需登记管理员 API 密钥，其余全部自动完成。',
-    needsTitle: '首先需要准备',
-    needsItems: [
-      'Oracle Cloud 账号（Home Region 选你想放 VPN 的区域；中文界面默认推荐 Singapore）',
-      '管理员 API 密钥（Configuration file preview 的 Copy 全文 + 私钥 .pem）。无需 IAM 配置',
-      'VPN 可用之后，再升级到 Pay As You Go（不升级时，闲置清理可能删除服务器；Always Free 资源仍免费）',
-    ],
     flowTitle: '整体流程',
     flowSteps: [
-      '用目标区域作为 Home Region 创建 Oracle Cloud 账号（推荐：Singapore）',
+      '用目标区域作为 Home Region 创建 Oracle Cloud 账号',
       '用管理员创建 API 密钥，Copy Configuration file preview，并保存 .pem',
       '先上传 .pem，再粘贴 Copy 内容，然后创建 VPN',
-      '成功后在 Compute → Instances 确认 minorwire-* 为 Running，把 .conf 导入 WireGuard 并验证可用',
+      '成功后把 .conf 导入 WireGuard 并验证可用',
       '最后升级到 Pay As You Go（未付费升级时，闲置清理可能删除服务器）',
     ],
-    guideTitle: '分步指南（按顺序）',
+    guideTitle: '分步指南',
     guideIntro:
       '对照截图操作。若已有账号，可跳过 Step 1–2，从 Step 3（若已绑卡则从 Step 4）开始。Pay As You Go 升级放在 VPN 可用之后的最后一步。',
     guideSteps: [
@@ -732,9 +712,9 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
       },
       {
         id: 'homeRegion',
-        title: 'Step 2 — 选择 Home Region（推荐：Singapore）',
+        title: 'Step 2 — 选择 Home Region',
         body:
-          '填写 Cloud Account Name 后选择 Home Region，之后无法更改。Always Free Micro 只能建在 Home Region，因此请选你想放 VPN 的地方。中文界面默认推荐 Singapore；请在下方选择同一区域。',
+          '填写 Cloud Account Name 后选择 Home Region，之后无法更改。Always Free Micro 只能建在 Home Region，因此请选你想放 VPN 的地方。中文界面默认为 Singapore；请在下方选择同一区域。',
         image: '/minorwire/guide/signup-02-home-region.png',
         imageAlt: 'Home Region selection',
         fields: ['region'],
@@ -811,12 +791,12 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
         id: 'upgrade',
         title: 'Step 6 — 升级到 Pay As You Go',
         body:
-          '请在确认 VPN 可用之后再执行。菜单路径：Billing & Cost Management → Billing → Upgrade and Manage Payment（也可用下方直链）。选择 Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。未升级时短期内可能仍能用，但闲置清理可能删除服务器。升级可能需要 1–2 天。升级时卡片上可能出现约 USD $100 的预授权（占用额度），这不是实际扣款，验证后会撤销。完成后 Plan type 会显示为 Pay As You Go。',
+          '请在确认 VPN 可用之后再执行。菜单路径：Billing & Cost Management → Billing → Upgrade and Manage Payment（也可用下方直链）。选择 Pay As You Go → Individual → Upgrade。Always Free 资源仍免费。未升级时短期内可能仍能用，但闲置清理可能删除服务器。升级可能需要 1–2 天。升级时会发生 USD $100 的额度预授权（占用额度）。这不是实际扣款，验证后会撤销。完成后 Plan type 会显示为 Pay As You Go。',
         clickSteps: [
           '打开控制台左上菜单（≡）→ Billing & Cost Management',
           'Billing → Upgrade and Manage Payment（或使用下方直链）',
           '选择 Pay As You Go，Account type 选 Individual',
-          '点击 Upgrade（可能出现约 USD $100 预授权，之后会撤销）',
+          '点击 Upgrade（会发生 USD $100 的额度预授权，之后会撤销）',
           '确认 Plan type 为 Pay As You Go',
         ],
         image: '/minorwire/guide/signup-04-upgrade-payg.png',

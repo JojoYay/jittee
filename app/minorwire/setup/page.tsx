@@ -358,26 +358,14 @@ function SetupInner() {
         <p className="text-[#3a4f44] mb-8 leading-relaxed">{c.intro}</p>
 
         {gate !== 'loading' && (
-          <div className="mb-8 space-y-4">
-            <section className="border border-[#1d3d2e]/15 bg-white p-5 rounded-md">
-              <h2 className={`${syne.className} text-xl font-bold mb-3`}>{c.needsTitle}</h2>
-              <ul className="space-y-2 text-[#3a4f44]">
-                {c.needsItems.map((item) => (
-                  <li key={item} className="border-l-2 border-[#7dba98] pl-3">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </section>
-            <section className="border border-[#1d3d2e]/15 bg-white p-5 rounded-md">
-              <h2 className={`${syne.className} text-xl font-bold mb-3`}>{c.flowTitle}</h2>
-              <ol className="list-decimal pl-5 space-y-2 text-[#3a4f44]">
-                {c.flowSteps.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
-            </section>
-          </div>
+          <section className="mb-8 border border-[#1d3d2e]/15 bg-white p-5 rounded-md">
+            <h2 className={`${syne.className} text-xl font-bold mb-3`}>{c.flowTitle}</h2>
+            <ol className="list-decimal pl-5 space-y-2 text-[#3a4f44]">
+              {c.flowSteps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </section>
         )}
 
         {gate === 'loading' && <p>{c.verifying}</p>}
