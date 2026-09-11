@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
 import {
   customerEmailFromSession,
   getStripe,
@@ -25,14 +26,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 })
   }
 
-  let event: ReturnType<ReturnType<typeof getStripe>['webhooks']['constructEvent']> | null = null
+  let event: Stripe.Event | null = null
   let mode: StripeMode | null = null
   const errors: string[] = []
 
   for (const entry of secrets) {
     try {
-      const stripe = getStripe(entry.mode)
-      event = stripe.webhooks.constructEvent(body, signature, entry.secret)
+      // Verify with webhook secret only — do not require Stripe API keys first.
+      event = Stripe.webhooks.constructEvent(body, signature, entry.secret)
       mode = entry.mode
       break
     } catch (err) {
@@ -41,6 +42,12 @@ export async function POST(req: NextRequest) {
   }
 
   if (!event || !mode) {
+    console.error('[stripe/webhook] invalid signature', {
+      tried: errors,
+      liveSecretLen: (process.env.STRIPE_WEBHOOK_SECRET || '').replace(/^\uFEFF/, '').trim().length,
+      testSecretLen: (process.env.STRIPE_WEBHOOK_SECRET_TEST || '').replace(/^\uFEFF/, '').trim().length,
+      bodyLen: body.length,
+    })
     return NextResponse.json(
       { error: 'Invalid signature', tried: errors },
       { status: 400 },
@@ -50,7 +57,7 @@ export async function POST(req: NextRequest) {
   const stripe = getStripe(mode)
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object
+    const session = event.data.object as Stripe.Checkout.Session
     if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
       return NextResponse.json({ ok: true, skipped: 'not_paid', mode })
     }
@@ -69,6 +76,7 @@ export async function POST(req: NextRequest) {
     const setupUrl = `${base}/minorwire/setup?session_id=${encodeURIComponent(session.id)}`
 
     const mail = await sendMinorWireFulfillmentEmail({ to: email, sku, setupUrl })
+    console.log('[stripe/webhook] fulfillment', { sku, mode, emailed: mail.sent, reason: mail.reason })
     return NextResponse.json({ ok: true, sku, mode, emailed: mail.sent, reason: mail.reason })
   }
 
