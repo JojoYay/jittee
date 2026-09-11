@@ -39,22 +39,12 @@ function SupportUpsellBlock({
       <div className="border border-[#1d3d2e]/20 bg-[#e8f2ec]/70 rounded-md p-5 space-y-3">
         <p className={`${syne.className} text-lg font-bold`}>{copy.supportUpsellTitle}</p>
         <p className="text-sm text-[#3a4f44] leading-relaxed">{copy.supportUpsellBody}</p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <a
-            href={supportHref}
-            className="inline-flex justify-center px-5 py-2.5 rounded-md bg-[#1d3d2e] text-white font-semibold text-sm"
-          >
-            {copy.supportUpsellCta}
-          </a>
-          <a
-            href={copy.supportWhatsAppUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex justify-center px-5 py-2.5 rounded-md border border-[#1d3d2e] font-semibold text-sm"
-          >
-            {copy.supportWhatsAppLabel} ({copy.supportWhatsAppPhone})
-          </a>
-        </div>
+        <a
+          href={supportHref}
+          className="inline-flex justify-center px-5 py-2.5 rounded-md bg-[#1d3d2e] text-white font-semibold text-sm"
+        >
+          {copy.supportUpsellCta}
+        </a>
       </div>
     </div>
   )

@@ -115,9 +115,6 @@ export type SetupCopy = {
   supportUpsellTitle: string
   supportUpsellBody: string
   supportUpsellCta: string
-  supportWhatsAppLabel: string
-  supportWhatsAppPhone: string
-  supportWhatsAppUrl: string
 }
 
 const fieldUrls = {
@@ -390,11 +387,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     supportUpsellPrompt: 'これは、お困りではないですか？',
     supportUpsellTitle: 'サポートを購入（S$100）',
     supportUpsellBody:
-      '自分で進めていて行き詰まったとき用です。画面共有で一緒に設定します。購入後は WhatsApp（+65 8815 4153）へ連絡してください。',
+      '自分で進めていて行き詰まったとき用です。画面共有で一緒に設定します。',
     supportUpsellCta: 'サポートを購入 S$100（PayNow）',
-    supportWhatsAppLabel: 'WhatsApp で連絡',
-    supportWhatsAppPhone: '+65 8815 4153',
-    supportWhatsAppUrl: 'https://wa.me/6588154153',
   },
 
   en: {
@@ -659,12 +653,8 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     failedPeer: 'Failed to add device config',
     supportUpsellPrompt: 'Having trouble with this?',
     supportUpsellTitle: 'Buy support (S$100)',
-    supportUpsellBody:
-      'If you get stuck on DIY, buy live screen-share help. After payment, message us on WhatsApp (+65 8815 4153).',
+    supportUpsellBody: 'If you get stuck on DIY, buy live screen-share help.',
     supportUpsellCta: 'Buy support S$100 (PayNow)',
-    supportWhatsAppLabel: 'Contact on WhatsApp',
-    supportWhatsAppPhone: '+65 8815 4153',
-    supportWhatsAppUrl: 'https://wa.me/6588154153',
   },
 
   zh: {
@@ -928,11 +918,7 @@ export const SETUP_COPY: Record<string, SetupCopy> = {
     failedPeer: '追加设备配置失败',
     supportUpsellPrompt: '这一步卡住了吗？',
     supportUpsellTitle: '购买支持（S$100）',
-    supportUpsellBody:
-      '自助过程中卡住时，可购买远程协助。付款后请通过 WhatsApp（+65 8815 4153）联系我们。',
+    supportUpsellBody: '自助过程中卡住时，可购买远程协助。',
     supportUpsellCta: '购买支持 S$100（PayNow）',
-    supportWhatsAppLabel: '通过 WhatsApp 联系',
-    supportWhatsAppPhone: '+65 8815 4153',
-    supportWhatsAppUrl: 'https://wa.me/6588154153',
   },
 }
