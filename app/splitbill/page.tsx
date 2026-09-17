@@ -74,6 +74,7 @@ const COPY: Record<string, Copy> = {
       { icon: '👥', title: '大人数は人数だけ', desc: '名前を並べるのが面倒なときは、人数だけ入れればOK。名前は払う人が自分で書きます。' },
       { icon: '✏️', title: 'あとから直せる', desc: '人が増えた・金額が変わった。配ったURLはそのまま、中身だけ直せます。' },
       { icon: '🌏', title: '日本語 / English / 中文', desc: '受け取った人が自分の言葉で読めます。' },
+      { icon: '🤖', title: 'AIに任せられる', desc: 'PayNowを一度預けておけば、「このレシート4人で」と言うだけで割り勘ページができます (MCP)。' },
     ],
     faqTitle: 'よくある質問',
     faqs: [
@@ -120,6 +121,7 @@ const COPY: Record<string, Copy> = {
       { icon: '👥', title: 'Big group? Just a number', desc: 'Skip the names and enter a head count. Each person types their own name when they pay.' },
       { icon: '✏️', title: 'Change it later', desc: 'Someone joined, the amount changed. Edit the details — the links you already sent keep working.' },
       { icon: '🌏', title: '日本語 / English / 中文', desc: 'Whoever receives the link reads it in their own language.' },
+      { icon: '🤖', title: 'Let your AI do it', desc: 'Save your PayNow once, then just say "split this receipt four ways" (MCP).' },
     ],
     faqTitle: 'Questions people ask',
     faqs: [
@@ -166,6 +168,7 @@ const COPY: Record<string, Copy> = {
       { icon: '👥', title: '人多就只填人數', desc: '懶得一個個打名字時，填人數就好，付款時各自填自己的名字。' },
       { icon: '✏️', title: '事後可以修改', desc: '有人加入、金額變了都能改，已經發出去的連結照樣可用。' },
       { icon: '🌏', title: '日本語 / English / 中文', desc: '收到連結的人可以用自己的語言閱讀。' },
+      { icon: '🤖', title: '交給 AI 處理', desc: '先存好 PayNow，之後只要說「這張收據四個人分」就能建立 (MCP)。' },
     ],
     faqTitle: '常見問題',
     faqs: [
