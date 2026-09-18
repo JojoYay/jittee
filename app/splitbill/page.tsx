@@ -14,6 +14,7 @@ import { useLanguage } from '../contexts/LanguageContext'
 
 const APP_URL = 'https://sposched.jittee.com/split/'
 const TERMS_URL = 'https://sposched.jittee.com/split/terms/'
+const MCP_URL = 'https://sposched.jittee.com/split/mcp/'
 
 const BLUE = '#0072FA'
 
@@ -33,6 +34,14 @@ interface Copy {
   safes: { icon: string; title: string; desc: string }[]
   featTitle: string
   feats: { icon: string; title: string; desc: string }[]
+  mcpTitle: string
+  mcpLead: string
+  mcpSteps: { head: string; body: string }[]
+  mcpCode: string
+  mcpToolsTitle: string
+  mcpTools: { name: string; desc: string }[]
+  mcpWarn: string
+  mcpCta: string
   faqTitle: string
   faqs: Faq[]
   lastTitle: string
@@ -76,6 +85,22 @@ const COPY: Record<string, Copy> = {
       { icon: '🌏', title: '日本語 / English / 中文', desc: '受け取った人が自分の言葉で読めます。' },
       { icon: '🤖', title: 'AIに任せられる', desc: 'PayNowを一度預けておけば、「このレシート4人で」と言うだけで割り勘ページができます (MCP)。' },
     ],
+    mcpTitle: 'AIに任せる (MCP)',
+    mcpLead: 'PayNowの宛先を一度預けておくと、あとは AI に「このレシート、4人で割って」と言うだけ。宛先を毎回聞かれることもありません。',
+    mcpSteps: [
+      { head: '① 接続を作る', body: 'SplitBill の「AIに繋ぐ」を開き、PayNowの宛先と表示名を入れます。つなぐためのURLが1回だけ出るので、控えてください。' },
+      { head: '② AIに登録する', body: 'Claude のデスクトップ / Web なら、設定 → コネクタ → カスタムコネクタを追加 → そのURLを貼るだけ。Claude Code は下のコマンドです。' },
+      { head: '③ 話しかける', body: '「このレシート、4人で割って。田中は飲んでないから$20で」。管理URLと、配るURLが返ってきます。' },
+    ],
+    mcpCode: 'claude mcp add --transport http splitbill "<①で出たURL>"',
+    mcpToolsTitle: 'AIができること',
+    mcpTools: [
+      { name: '割り勘を作る', desc: 'レシートの内訳か総額と人数から作り、管理URL・配るURL・見るだけのURLを返します。既定ではあなたが立て替えた扱いです。' },
+      { name: '一覧を見る', desc: 'この接続で作った割り勘を新しい順に。いくら集まって、あと何人かが分かります。' },
+      { name: '様子を見る', desc: '1つの割り勘の中身。誰が払ったか、ひとこと、配るURL。' },
+    ],
+    mcpWarn: 'このURLは、あなたのPayNowで集金するページを作れる鍵です。人に渡さないでください。送金はできませんし、お金は当社を通りません。',
+    mcpCta: 'AIに繋ぐ',
     faqTitle: 'よくある質問',
     faqs: [
       { q: '本当に登録は要りませんか？', a: '要りません。メールも電話番号も聞きません。作ると「管理URL」が1回だけ出るので、それが鍵になります（無くすと管理できません）。' },
@@ -123,6 +148,22 @@ const COPY: Record<string, Copy> = {
       { icon: '🌏', title: '日本語 / English / 中文', desc: 'Whoever receives the link reads it in their own language.' },
       { icon: '🤖', title: 'Let your AI do it', desc: 'Save your PayNow once, then just say "split this receipt four ways" (MCP).' },
     ],
+    mcpTitle: 'Let your AI do it (MCP)',
+    mcpLead: 'Save your PayNow details once, then just tell your AI "split this receipt four ways". It never asks for your PayNow again.',
+    mcpSteps: [
+      { head: '1. Create a connection', body: 'Open "Connect to your AI" in SplitBill and enter your PayNow recipient and display name. You get a URL — shown only once, so keep it.' },
+      { head: '2. Add it to your AI', body: 'In Claude desktop or web: Settings → Connectors → Add custom connector → paste the URL. For Claude Code, use the command below.' },
+      { head: '3. Just ask', body: '"Split this receipt four ways. Tanaka did not drink, so $20 for him." You get back the admin link and the links to share.' },
+    ],
+    mcpCode: 'claude mcp add --transport http splitbill "<the URL from step 1>"',
+    mcpToolsTitle: 'What the AI can do',
+    mcpTools: [
+      { name: 'Create a split', desc: 'From a receipt or a total plus a head count. Returns the admin link, the links to share and a read-only status link. By default you are the one who paid up front.' },
+      { name: 'List your splits', desc: 'Everything created through this connection, newest first, with how much has come in and who is left.' },
+      { name: 'Check one', desc: 'Who has paid, their notes, and the links to share.' },
+    ],
+    mcpWarn: 'That URL can create pages that collect money to your PayNow. Do not share it. It cannot move money, and money never passes through us.',
+    mcpCta: 'Connect to your AI',
     faqTitle: 'Questions people ask',
     faqs: [
       { q: 'Really no sign-up?', a: 'Really. No email, no phone number. You get an admin link once when you create it — that link is the key, so keep it.' },
@@ -170,6 +211,22 @@ const COPY: Record<string, Copy> = {
       { icon: '🌏', title: '日本語 / English / 中文', desc: '收到連結的人可以用自己的語言閱讀。' },
       { icon: '🤖', title: '交給 AI 處理', desc: '先存好 PayNow，之後只要說「這張收據四個人分」就能建立 (MCP)。' },
     ],
+    mcpTitle: '交給 AI 處理 (MCP)',
+    mcpLead: '先存好一次 PayNow 資訊，之後只要對 AI 說「這張收據四個人分」即可，不會再問你收款資訊。',
+    mcpSteps: [
+      { head: '① 建立連線', body: '打開 SplitBill 的「連接到你的 AI」，填入 PayNow 收款帳號與顯示名稱。連線用的網址只會顯示一次，請先保存。' },
+      { head: '② 加入你的 AI', body: 'Claude 桌面版或網頁版：設定 → 連接器 → 新增自訂連接器 → 貼上網址。Claude Code 請用下面的指令。' },
+      { head: '③ 直接說', body: '「這張收據四個人分，田中沒喝酒算 $20」。系統會回傳管理連結與分享連結。' },
+    ],
+    mcpCode: 'claude mcp add --transport http splitbill "<步驟①的網址>"',
+    mcpToolsTitle: 'AI 能做的事',
+    mcpTools: [
+      { name: '建立均攤', desc: '依收據明細或總額加人數建立，回傳管理連結、分享連結與唯讀狀態連結。預設由你先墊付。' },
+      { name: '查看清單', desc: '此連線建立過的均攤，由新到舊，含已收金額與剩餘人數。' },
+      { name: '查看單筆', desc: '誰付了、備註，以及分享連結。' },
+    ],
+    mcpWarn: '該網址能建立以你的 PayNow 收款的頁面，請勿分享。它無法轉帳，款項也不會經過我們。',
+    mcpCta: '連接到你的 AI',
     faqTitle: '常見問題',
     faqs: [
       { q: '真的不用註冊？', a: '真的。不問 email、也不問電話。建立後會顯示一次「管理連結」，那就是鑰匙，請保存好。' },
@@ -368,6 +425,50 @@ export default function SplitBillPage() {
                 <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AIに任せる (MCP) */}
+      <section className="bg-white border-y border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-10">
+            <span className="inline-block text-4xl mb-3">🤖</span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{c.mcpTitle}</h2>
+            <p className="text-gray-600 mt-3 max-w-2xl mx-auto leading-relaxed">{c.mcpLead}</p>
+          </div>
+
+          <ol className="grid gap-5 md:grid-cols-3 mb-8">
+            {c.mcpSteps.map((s, i) => (
+              <li key={i} className="rounded-xl border-2 border-gray-200 p-5">
+                <p className="font-bold mb-1" style={{ color: BLUE }}>{s.head}</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{s.body}</p>
+              </li>
+            ))}
+          </ol>
+
+          <pre className="overflow-x-auto rounded-xl bg-gray-900 text-gray-100 text-xs sm:text-sm p-4 mb-8">
+            <code>{c.mcpCode}</code>
+          </pre>
+
+          <h3 className="font-bold text-gray-900 mb-3">{c.mcpToolsTitle}</h3>
+          <ul className="grid gap-3 sm:grid-cols-3 mb-8">
+            {c.mcpTools.map((tool, i) => (
+              <li key={i} className="rounded-xl bg-gray-50 p-4">
+                <p className="font-bold text-sm text-gray-900 mb-1">{tool.name}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">{tool.desc}</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="rounded-xl border-2 border-red-200 bg-red-50 p-4 mb-8">
+            <p className="text-sm text-red-800 leading-relaxed">⚠ {c.mcpWarn}</p>
+          </div>
+
+          <div className="text-center">
+            <a href={MCP_URL} className="inline-block font-bold px-8 py-3 rounded-full shadow-lg text-white transition-opacity hover:opacity-90" style={{ background: BLUE }}>
+              {c.mcpCta}
+            </a>
           </div>
         </div>
       </section>
