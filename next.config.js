@@ -27,6 +27,8 @@ const nextConfig = {
       // 公式MCPレジストリの所有確認。ドットで始まるフォルダは public からも
       // app/ からも運ばれないので、普通のルートに寄せてここでつなぐ
       { source: '/.well-known/mcp-registry-auth', destination: '/well-known/mcp-registry-auth' },
+      // ChatGPT のプラグイン申請のドメイン確認 (トークン未設定のうちは404)
+      { source: '/.well-known/openai-apps-challenge', destination: '/well-known/openai-apps-challenge' },
       // SplitBillのMCP (/mcp/splitbill) の認可の案内。401 の WWW-Authenticate が
       // 案内するのは資源URLの下 (…/mcp/splitbill/.well-known/…) だが、RFC 9728 が
       // 決めた正規の場所を先に見に来るクライアントもいるので、そこへ寄せる。

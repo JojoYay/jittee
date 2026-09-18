@@ -16,6 +16,15 @@ const APP_URL = 'https://sposched.jittee.com/split/'
 const TERMS_URL = 'https://sposched.jittee.com/split/terms/'
 const MCP_URL = 'https://sposched.jittee.com/split/mcp/'
 
+/** 掲載しているディレクトリ (掲載側の所有確認でも使われる) */
+const DIRECTORIES = [
+  { name: 'Smithery', url: 'https://smithery.ai/servers/jittee/splitbill' },
+  { name: 'MCP Registry', url: 'https://registry.modelcontextprotocol.io/v0/servers?search=splitbill' },
+  { name: 'Glama', url: 'https://glama.ai/mcp/servers/JojoYay/splitbill-mcp' },
+  { name: 'npm', url: 'https://www.npmjs.com/package/splitbill-mcp' },
+  { name: 'GitHub', url: 'https://github.com/JojoYay/splitbill-mcp' },
+]
+
 const BLUE = '#0072FA'
 
 interface Panel { cap: string; line: string }
@@ -40,6 +49,7 @@ interface Copy {
   mcpChatAi: string
   mcpHowNote: string
   mcpCta: string
+  mcpFind: string
   faqTitle: string
   faqs: Faq[]
   lastTitle: string
@@ -89,6 +99,7 @@ const COPY: Record<string, Copy> = {
     mcpChatAi: '割り勘を作りました。総額 $323 を4人で、あなた以外は1人 $101 です。\n配るURL: sposched.jittee.com/split/pay/?t=…\nこれをグループに貼ってください。管理URLはあなただけに送ります。',
     mcpHowNote: 'PayNowの宛先は最初に一度だけ預けます (毎回聞かれません)。繋ぎ方は下のページに、Claude と ChatGPT それぞれ書いてあります。',
     mcpCta: 'AIに繋ぐ (繋ぎ方はこちら)',
+    mcpFind: 'ディレクトリからも探せます:',
     faqTitle: 'よくある質問',
     faqs: [
       { q: '本当に登録は要りませんか？', a: '要りません。メールも電話番号も聞きません。作ると「管理URL」が1回だけ出るので、それが鍵になります（無くすと管理できません）。' },
@@ -142,6 +153,7 @@ const COPY: Record<string, Copy> = {
     mcpChatAi: 'Done. $323 among four — $101 each for the other three.\nLink to share: sposched.jittee.com/split/pay/?t=…\nPaste that in the group chat. The admin link is for you only.',
     mcpHowNote: 'Your PayNow details are saved once at the start, so you are never asked again. The page below has the steps for Claude and for ChatGPT.',
     mcpCta: 'Connect to your AI (steps here)',
+    mcpFind: 'Also listed on:',
     faqTitle: 'Questions people ask',
     faqs: [
       { q: 'Really no sign-up?', a: 'Really. No email, no phone number. You get an admin link once when you create it — that link is the key, so keep it.' },
@@ -195,6 +207,7 @@ const COPY: Record<string, Copy> = {
     mcpChatAi: '已建立。總額 $323 由四人分攤，其他三人各 $101。\n分享連結：sposched.jittee.com/split/pay/?t=…\n把它貼到群組即可，管理連結只給你。',
     mcpHowNote: 'PayNow 資訊只需在一開始存一次，之後不會再問。下面的頁面分別寫了 Claude 與 ChatGPT 的連接步驟。',
     mcpCta: '連接到你的 AI (步驟在這裡)',
+    mcpFind: '也可以在這些目錄找到:',
     faqTitle: '常見問題',
     faqs: [
       { q: '真的不用註冊？', a: '真的。不問 email、也不問電話。建立後會顯示一次「管理連結」，那就是鑰匙，請保存好。' },
@@ -430,6 +443,20 @@ export default function SplitBillPage() {
             <a href={MCP_URL} className="inline-block font-bold px-8 py-3 rounded-full shadow-lg text-white transition-opacity hover:opacity-90" style={{ background: BLUE }}>
               {c.mcpCta}
             </a>
+          </div>
+
+          {/* 掲載先。ディレクトリ側は「自分のサイトから戻るリンクがあるか」を見て
+              本物かどうかを確かめるので、ここは飾りではなく確認の材料になる */}
+          <div className="text-center mt-8">
+            <p className="text-xs text-gray-500 mb-2">{c.mcpFind}</p>
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs">
+              {DIRECTORIES.map(d => (
+                <a key={d.name} href={d.url} target="_blank" rel="noreferrer"
+                  className="text-gray-500 hover:text-gray-900 underline underline-offset-2">
+                  {d.name}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
