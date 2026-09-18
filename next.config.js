@@ -22,6 +22,13 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   serverExternalPackages: ['oci-common', 'oci-core', 'oci-identity', 'ssh2', 'firebase-admin'],
+  async rewrites() {
+    return [
+      // 公式MCPレジストリの所有確認。ドットで始まるフォルダは public からも
+      // app/ からも運ばれないので、普通のルートに寄せてここでつなぐ
+      { source: '/.well-known/mcp-registry-auth', destination: '/well-known/mcp-registry-auth' },
+    ]
+  },
 }
 
 module.exports = nextConfig
