@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 
 /**
@@ -15,6 +16,8 @@ import { useLanguage } from '../contexts/LanguageContext'
 const APP_URL = 'https://sposched.jittee.com/split/'
 const TERMS_URL = 'https://sposched.jittee.com/split/terms/'
 const MCP_URL = 'https://sposched.jittee.com/split/mcp/'
+/** AIに貼ってもらうURL。**ここが表玄関** (中身はEdge Function) */
+const MCP_ENDPOINT = 'https://jittee.com/mcp/splitbill'
 
 /** 掲載しているディレクトリ (掲載側の所有確認でも使われる) */
 const DIRECTORIES = [
@@ -50,6 +53,13 @@ interface Copy {
   mcpHowNote: string
   mcpCta: string
   mcpFind: string
+  mcpUrlLabel: string
+  mcpStep1: string
+  mcpStep2: string
+  mcpStep3: string
+  mcpCopy: string
+  mcpCopied: string
+  mcpKeyNote: string
   faqTitle: string
   faqs: Faq[]
   lastTitle: string
@@ -97,8 +107,15 @@ const COPY: Record<string, Copy> = {
     mcpLead: 'お使いのAI (Claude や ChatGPT) と繋いでおくと、入力画面を開くことすらなくなります。レシートを見せて一言頼むだけ。',
     mcpChatUser: 'このレシート、4人で割って。田中は飲んでないから $20 で',
     mcpChatAi: '割り勘を作りました。総額 $323 を4人で、あなた以外は1人 $101 です。\n配るURL: sposched.jittee.com/split/pay/?t=…\nこれをグループに貼ってください。管理URLはあなただけに送ります。',
-    mcpHowNote: 'PayNowの宛先は最初に一度だけ預けます (毎回聞かれません)。繋ぎ方は下のページに、Claude と ChatGPT それぞれ書いてあります。',
-    mcpCta: 'AIに繋ぐ (繋ぎ方はこちら)',
+    mcpHowNote: 'PayNowの宛先は最初に一度だけ預けます。以後、毎回聞かれることはありません。',
+    mcpCta: '鍵を作る・繋ぎ方の詳細',
+    mcpUrlLabel: 'AIに貼るURL',
+    mcpStep1: 'このURLを、お使いのAIの「コネクタ」や「リモートMCP」の欄に貼る',
+    mcpStep2: 'SplitBillの画面が開くので、集金先のPayNow (携帯番号かUEN) を一度だけ入れて許可する',
+    mcpStep3: 'あとは「このレシート4人で」と頼むだけ',
+    mcpCopy: 'コピー',
+    mcpCopied: 'コピーしました',
+    mcpKeyNote: 'OAuthに対応していないクライアントや、npmで手元に入れたい場合は、鍵を作って渡す方式もあります。',
     mcpFind: 'ディレクトリからも探せます:',
     faqTitle: 'よくある質問',
     faqs: [
@@ -151,8 +168,15 @@ const COPY: Record<string, Copy> = {
     mcpLead: 'Connect SplitBill to the AI you already use (Claude or ChatGPT) and you never open the form at all. Show it the receipt and ask.',
     mcpChatUser: 'Split this receipt four ways. Tanaka did not drink, so $20 for him.',
     mcpChatAi: 'Done. $323 among four — $101 each for the other three.\nLink to share: sposched.jittee.com/split/pay/?t=…\nPaste that in the group chat. The admin link is for you only.',
-    mcpHowNote: 'Your PayNow details are saved once at the start, so you are never asked again. The page below has the steps for Claude and for ChatGPT.',
-    mcpCta: 'Connect to your AI (steps here)',
+    mcpHowNote: 'Your PayNow details are saved once at the start, so you are never asked again.',
+    mcpCta: 'Create a key / connection details',
+    mcpUrlLabel: 'The URL to paste into your AI',
+    mcpStep1: 'Paste this URL into your AI\u2019s "connector" or "remote MCP" field.',
+    mcpStep2: 'SplitBill opens. Enter the PayNow number (or UEN) that collects the money, once, and allow it.',
+    mcpStep3: 'Then just ask \u2014 "split this receipt four ways".',
+    mcpCopy: 'Copy',
+    mcpCopied: 'Copied',
+    mcpKeyNote: 'If your client does not speak OAuth, or you would rather install it from npm, you can create a key and pass it yourself.',
     mcpFind: 'Also listed on:',
     faqTitle: 'Questions people ask',
     faqs: [
@@ -205,8 +229,15 @@ const COPY: Record<string, Copy> = {
     mcpLead: '把 SplitBill 連到你已在用的 AI (Claude 或 ChatGPT)，連表單都不用打開。給它看收據，說一句話就好。',
     mcpChatUser: '這張收據四個人分，田中沒喝酒算 $20',
     mcpChatAi: '已建立。總額 $323 由四人分攤，其他三人各 $101。\n分享連結：sposched.jittee.com/split/pay/?t=…\n把它貼到群組即可，管理連結只給你。',
-    mcpHowNote: 'PayNow 資訊只需在一開始存一次，之後不會再問。下面的頁面分別寫了 Claude 與 ChatGPT 的連接步驟。',
-    mcpCta: '連接到你的 AI (步驟在這裡)',
+    mcpHowNote: 'PayNow 資訊只需在一開始存一次，之後不會再問。',
+    mcpCta: '建立金鑰 / 連接方式詳情',
+    mcpUrlLabel: '貼到 AI 的網址',
+    mcpStep1: '把這個網址貼到你的 AI 的「連接器」或「遠端 MCP」欄位。',
+    mcpStep2: 'SplitBill 會開啟，輸入一次收款的 PayNow (手機號碼或 UEN) 並允許。',
+    mcpStep3: '接著只要說「這張收據四個人分」就好。',
+    mcpCopy: '複製',
+    mcpCopied: '已複製',
+    mcpKeyNote: '若你的用戶端不支援 OAuth，或想用 npm 安裝在本機，也可以自行建立金鑰傳入。',
     mcpFind: '也可以在這些目錄找到:',
     faqTitle: '常見問題',
     faqs: [
@@ -318,6 +349,7 @@ const PANELS = [PanelOne, PanelTwo, PanelThree, PanelFour]
 export default function SplitBillPage() {
   const { locale } = useLanguage()
   const c = COPY[locale] ?? COPY.ja
+  const [copied, setCopied] = useState(false)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -439,11 +471,40 @@ export default function SplitBillPage() {
             {c.mcpHowNote}
           </p>
 
-          <div className="text-center">
-            <a href={MCP_URL} className="inline-block font-bold px-8 py-3 rounded-full shadow-lg text-white transition-opacity hover:opacity-90" style={{ background: BLUE }}>
+          {/* 繋ぎ方の本体。**URLを1本貼るだけ**なので、それを一番目立たせる */}
+          <div className="max-w-2xl mx-auto rounded-2xl border border-gray-200 bg-gray-50 p-5 sm:p-6">
+            <p className="text-xs font-bold text-gray-500 mb-2">{c.mcpUrlLabel}</p>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <code className="flex-1 block bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 break-all">
+                {MCP_ENDPOINT}
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(MCP_ENDPOINT).then(
+                    () => { setCopied(true); setTimeout(() => setCopied(false), 2000) },
+                    () => { /* クリップボードが使えない環境では何もしない (URLは見えている) */ },
+                  )
+                }}
+                className="shrink-0 font-bold px-5 py-2 rounded-full text-white text-sm transition-opacity hover:opacity-90"
+                style={{ background: BLUE }}
+              >
+                {copied ? c.mcpCopied : c.mcpCopy}
+              </button>
+            </div>
+            <ol className="mt-5 space-y-2 text-sm text-gray-700 list-decimal pl-5">
+              <li>{c.mcpStep1}</li>
+              <li>{c.mcpStep2}</li>
+              <li>{c.mcpStep3}</li>
+            </ol>
+          </div>
+
+          <p className="text-xs text-gray-500 text-center max-w-2xl mx-auto mt-6 leading-relaxed">
+            {c.mcpKeyNote}{' '}
+            <a href={MCP_URL} className="underline underline-offset-2 hover:text-gray-900">
               {c.mcpCta}
             </a>
-          </div>
+          </p>
 
           {/* 掲載先。ディレクトリ側は「自分のサイトから戻るリンクがあるか」を見て
               本物かどうかを確かめるので、ここは飾りではなく確認の材料になる */}
