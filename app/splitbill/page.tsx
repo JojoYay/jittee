@@ -89,7 +89,7 @@ const COPY: Record<string, Copy> = {
     mcpLead: 'PayNowの宛先を一度預けておくと、あとは AI に「このレシート、4人で割って」と言うだけ。宛先を毎回聞かれることもありません。',
     mcpSteps: [
       { head: '① 接続を作る', body: 'SplitBill の「AIに繋ぐ」を開き、PayNowの宛先と表示名を入れます。つなぐためのURLが1回だけ出るので、控えてください。' },
-      { head: '② AIに登録する', body: 'Claude のデスクトップ / Web なら、設定 → コネクタ → カスタムコネクタを追加 → そのURLを貼るだけ。Claude Code は下のコマンドです。' },
+      { head: '② AIに登録する', body: 'Claude は 設定 → コネクタ → カスタムコネクタを追加 → そのURLを貼るだけ。ChatGPT は 設定 → コネクタ → 新規プラグイン で、認証を「認証なし」に変えるのが要点です (既定のOAuthでは繋がりません)。Claude Code は下のコマンド。' },
       { head: '③ 話しかける', body: '「このレシート、4人で割って。田中は飲んでないから$20で」。管理URLと、配るURLが返ってきます。' },
     ],
     mcpCode: 'claude mcp add --transport http splitbill "<①で出たURL>"',
@@ -152,7 +152,7 @@ const COPY: Record<string, Copy> = {
     mcpLead: 'Save your PayNow details once, then just tell your AI "split this receipt four ways". It never asks for your PayNow again.',
     mcpSteps: [
       { head: '1. Create a connection', body: 'Open "Connect to your AI" in SplitBill and enter your PayNow recipient and display name. You get a URL — shown only once, so keep it.' },
-      { head: '2. Add it to your AI', body: 'In Claude desktop or web: Settings → Connectors → Add custom connector → paste the URL. For Claude Code, use the command below.' },
+      { head: '2. Add it to your AI', body: 'Claude: Settings → Connectors → Add custom connector → paste the URL. ChatGPT: Settings → Connectors → New plugin, and set Authentication to "No authentication" (the default OAuth will not connect). For Claude Code, use the command below.' },
       { head: '3. Just ask', body: '"Split this receipt four ways. Tanaka did not drink, so $20 for him." You get back the admin link and the links to share.' },
     ],
     mcpCode: 'claude mcp add --transport http splitbill "<the URL from step 1>"',
@@ -215,7 +215,7 @@ const COPY: Record<string, Copy> = {
     mcpLead: '先存好一次 PayNow 資訊，之後只要對 AI 說「這張收據四個人分」即可，不會再問你收款資訊。',
     mcpSteps: [
       { head: '① 建立連線', body: '打開 SplitBill 的「連接到你的 AI」，填入 PayNow 收款帳號與顯示名稱。連線用的網址只會顯示一次，請先保存。' },
-      { head: '② 加入你的 AI', body: 'Claude 桌面版或網頁版：設定 → 連接器 → 新增自訂連接器 → 貼上網址。Claude Code 請用下面的指令。' },
+      { head: '② 加入你的 AI', body: 'Claude：設定 → 連接器 → 新增自訂連接器 → 貼上網址。ChatGPT：設定 → 連接器 → 新增外掛，並把驗證改成「不需驗證」(預設的 OAuth 連不上)。Claude Code 請用下面的指令。' },
       { head: '③ 直接說', body: '「這張收據四個人分，田中沒喝酒算 $20」。系統會回傳管理連結與分享連結。' },
     ],
     mcpCode: 'claude mcp add --transport http splitbill "<步驟①的網址>"',
