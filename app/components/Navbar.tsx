@@ -56,7 +56,7 @@ export default function Navbar() {
                       SpoSched
                     </Link>
                     <Link href="/splitbill" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
-                      SplitBill
+                      Splitator
                     </Link>
                     <Link href="/minorwire" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors">
                       MinorWire
@@ -166,7 +166,7 @@ export default function Navbar() {
               className="block pl-4 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              SplitBill
+              Splitator
             </Link>
             <Link
               href="/minorwire"

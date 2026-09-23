@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useLanguage } from '../contexts/LanguageContext'
 
 /**
- * SplitBill 紹介ページ — 1ページ・3言語 (ja/en/zh)。
+ * Splitator 紹介ページ — 1ページ・3言語 (ja/en/zh)。
  *
  * アプリ本体 (https://sposched.jittee.com/split/) は**作るだけの画面**にして、
  * 説明はここに置く。初めての人がまずここを読み、納得してから作りに行く。
@@ -70,7 +70,7 @@ interface Copy {
 const COPY: Record<string, Copy> = {
   ja: {
     tagline: '立て替えた分、集めるところまで。',
-    lead: '飲み会やコートの予約で、あなたが先に払った。あとは集めるだけ — なのに、その「あとは」が一番面倒です。SplitBill は、一人いくらかを計算して、そのまま請求できるページを作ります。',
+    lead: '飲み会やコートの予約で、あなたが先に払った。あとは集めるだけ — なのに、その「あとは」が一番面倒です。Splitator は、一人いくらかを計算して、そのまま請求できるページを作ります。',
     cta: '割り勘を作る（無料）',
     ctaNote: '登録もアプリのインストールも要りません',
     painTitle: 'この「集める」が、いちばん面倒',
@@ -89,7 +89,7 @@ const COPY: Record<string, Copy> = {
     ],
     safeTitle: 'お金の扱いについて、正直なところ',
     safes: [
-      { icon: '🏦', title: 'お金は当社を通りません', desc: '送金は各自が自分の銀行アプリで直接行います。SplitBill は金額とPayNow先を表示するだけで、預かりも仲介もしません。' },
+      { icon: '🏦', title: 'お金は当社を通りません', desc: '送金は各自が自分の銀行アプリで直接行います。Splitator は金額とPayNow先を表示するだけで、預かりも仲介もしません。' },
       { icon: '🗓️', title: '7日で消えます', desc: '最後の支払いから7日で、ページも写真もまとめて自動的に削除されます。延長も保存もできません。' },
       { icon: '🙅', title: '身元の保証はしません', desc: 'このページは誰でも作れます。知らない相手から届いたリンクに送金しないでください。怪しいページは通報できます。' },
     ],
@@ -111,7 +111,7 @@ const COPY: Record<string, Copy> = {
     mcpCta: '鍵を作る・繋ぎ方の詳細',
     mcpUrlLabel: 'AIに貼るURL',
     mcpStep1: 'このURLを、お使いのAIの「コネクタ」や「リモートMCP」の欄に貼る',
-    mcpStep2: 'SplitBillの画面が開くので、集金先のPayNow (携帯番号かUEN) を一度だけ入れて許可する',
+    mcpStep2: 'Splitatorの画面が開くので、集金先のPayNow (携帯番号かUEN) を一度だけ入れて許可する',
     mcpStep3: 'あとは「このレシート4人で」と頼むだけ',
     mcpCopy: 'コピー',
     mcpCopied: 'コピーしました',
@@ -131,7 +131,7 @@ const COPY: Record<string, Copy> = {
   },
   en: {
     tagline: 'You paid. Now get paid back.',
-    lead: 'You covered the dinner or the court booking. All that is left is collecting — and that is the annoying part. SplitBill works out who owes what and gives you a page you can send them.',
+    lead: 'You covered the dinner or the court booking. All that is left is collecting — and that is the annoying part. Splitator works out who owes what and gives you a page you can send them.',
     cta: 'Create a split (free)',
     ctaNote: 'No sign-up, no app to install',
     painTitle: 'Collecting is the hard part',
@@ -150,7 +150,7 @@ const COPY: Record<string, Copy> = {
     ],
     safeTitle: 'Straight talk about the money',
     safes: [
-      { icon: '🏦', title: 'The money never touches us', desc: 'Everyone pays from their own banking app. SplitBill only shows the amount and the PayNow recipient — we never hold or handle funds.' },
+      { icon: '🏦', title: 'The money never touches us', desc: 'Everyone pays from their own banking app. Splitator only shows the amount and the PayNow recipient — we never hold or handle funds.' },
       { icon: '🗓️', title: 'Gone in 7 days', desc: 'Seven days after the last payment, the page and every image on it are deleted. No extensions, no archive.' },
       { icon: '🙅', title: 'We do not vouch for anyone', desc: 'Anyone can create one of these pages. Never send money from a link you got from someone you do not know. Suspicious pages can be reported.' },
     ],
@@ -165,14 +165,14 @@ const COPY: Record<string, Copy> = {
       { icon: '🤖', title: 'Let your AI do it', desc: 'Save your PayNow once, then just say "split this receipt four ways" (MCP).' },
     ],
     mcpTitle: 'Let your AI do it',
-    mcpLead: 'Connect SplitBill to the AI you already use (Claude or ChatGPT) and you never open the form at all. Show it the receipt and ask.',
+    mcpLead: 'Connect Splitator to the AI you already use (Claude or ChatGPT) and you never open the form at all. Show it the receipt and ask.',
     mcpChatUser: 'Split this receipt four ways. Tanaka did not drink, so $20 for him.',
     mcpChatAi: 'Done. $323 among four — $101 each for the other three.\nLink to share: sposched.jittee.com/split/pay/?t=…\nPaste that in the group chat. The admin link is for you only.',
     mcpHowNote: 'Your PayNow details are saved once at the start, so you are never asked again.',
     mcpCta: 'Create a key / connection details',
     mcpUrlLabel: 'The URL to paste into your AI',
     mcpStep1: 'Paste this URL into your AI\u2019s "connector" or "remote MCP" field.',
-    mcpStep2: 'SplitBill opens. Enter the PayNow number (or UEN) that collects the money, once, and allow it.',
+    mcpStep2: 'Splitator opens. Enter the PayNow number (or UEN) that collects the money, once, and allow it.',
     mcpStep3: 'Then just ask \u2014 "split this receipt four ways".',
     mcpCopy: 'Copy',
     mcpCopied: 'Copied',
@@ -192,7 +192,7 @@ const COPY: Record<string, Copy> = {
   },
   zh: {
     tagline: '你先付的錢，好好收回來。',
-    lead: '聚餐或訂場地，你先付了。剩下就是收錢 — 偏偏這件事最麻煩。SplitBill 幫你算好每人多少，並產生一個可以直接發出去的收款頁面。',
+    lead: '聚餐或訂場地，你先付了。剩下就是收錢 — 偏偏這件事最麻煩。Splitator 幫你算好每人多少，並產生一個可以直接發出去的收款頁面。',
     cta: '建立均攤（免費）',
     ctaNote: '不用註冊，也不用安裝 App',
     painTitle: '「收錢」才是最麻煩的一步',
@@ -211,7 +211,7 @@ const COPY: Record<string, Copy> = {
     ],
     safeTitle: '關於金流，說清楚',
     safes: [
-      { icon: '🏦', title: '款項不經過我們', desc: '每個人都用自己的銀行 App 轉帳。SplitBill 只顯示金額與 PayNow 收款資訊，不保管也不代收。' },
+      { icon: '🏦', title: '款項不經過我們', desc: '每個人都用自己的銀行 App 轉帳。Splitator 只顯示金額與 PayNow 收款資訊，不保管也不代收。' },
       { icon: '🗓️', title: '7 天後自動刪除', desc: '最後一次付款後 7 天，頁面與所有圖片會一併刪除，不能延長也不會留存。' },
       { icon: '🙅', title: '我們不擔保任何人', desc: '任何人都能建立這種頁面。請勿依陌生人傳來的連結轉帳；可疑頁面可以檢舉。' },
     ],
@@ -226,14 +226,14 @@ const COPY: Record<string, Copy> = {
       { icon: '🤖', title: '交給 AI 處理', desc: '先存好 PayNow，之後只要說「這張收據四個人分」就能建立 (MCP)。' },
     ],
     mcpTitle: '交給 AI 處理',
-    mcpLead: '把 SplitBill 連到你已在用的 AI (Claude 或 ChatGPT)，連表單都不用打開。給它看收據，說一句話就好。',
+    mcpLead: '把 Splitator 連到你已在用的 AI (Claude 或 ChatGPT)，連表單都不用打開。給它看收據，說一句話就好。',
     mcpChatUser: '這張收據四個人分，田中沒喝酒算 $20',
     mcpChatAi: '已建立。總額 $323 由四人分攤，其他三人各 $101。\n分享連結：sposched.jittee.com/split/pay/?t=…\n把它貼到群組即可，管理連結只給你。',
     mcpHowNote: 'PayNow 資訊只需在一開始存一次，之後不會再問。',
     mcpCta: '建立金鑰 / 連接方式詳情',
     mcpUrlLabel: '貼到 AI 的網址',
     mcpStep1: '把這個網址貼到你的 AI 的「連接器」或「遠端 MCP」欄位。',
-    mcpStep2: 'SplitBill 會開啟，輸入一次收款的 PayNow (手機號碼或 UEN) 並允許。',
+    mcpStep2: 'Splitator 會開啟，輸入一次收款的 PayNow (手機號碼或 UEN) 並允許。',
     mcpStep3: '接著只要說「這張收據四個人分」就好。',
     mcpCopy: '複製',
     mcpCopied: '已複製',
@@ -346,7 +346,7 @@ function PanelFour() {
 
 const PANELS = [PanelOne, PanelTwo, PanelThree, PanelFour]
 
-export default function SplitBillPage() {
+export default function SplitatorPage() {
   const { locale } = useLanguage()
   const c = COPY[locale] ?? COPY.ja
   const [copied, setCopied] = useState(false)
@@ -358,8 +358,8 @@ export default function SplitBillPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
           <div className="inline-flex items-center gap-4 mb-8">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/splitbill/icon-512.png" alt="SplitBill" className="h-16 sm:h-20 w-auto rounded-2xl shadow-xl bg-white/10" />
-            <span className="text-4xl sm:text-5xl font-extrabold tracking-tight">SplitBill</span>
+            <img src="/splitbill/icon-512.png" alt="Splitator" className="h-16 sm:h-20 w-auto rounded-2xl shadow-xl bg-white/10" />
+            <span className="text-4xl sm:text-5xl font-extrabold tracking-tight">Splitator</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-bold mb-4 drop-shadow">{c.tagline}</h1>
           <p className="text-base sm:text-lg text-white/95 max-w-2xl mx-auto mb-8 leading-relaxed">{c.lead}</p>

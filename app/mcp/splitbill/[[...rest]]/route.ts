@@ -1,5 +1,5 @@
 /**
- * SplitBill のMCPの表玄関 — https://jittee.com/mcp/splitbill
+ * Splitator のMCPの表玄関 — https://jittee.com/mcp/splitbill
  *
  * 中身はSupabaseのEdge Function (warikan-mcp) で、ここは**素通しの中継**。
  * 置いている理由は見た目だけではなく、
